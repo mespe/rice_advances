@@ -82,14 +82,13 @@ were typically higher yielding, which might lead ot a false optimism
 regarding M-209. 
 
 \begin{figure}
-  
 <<label=plot2, fig=TRUE, echo=FALSE>>=
-vars <- c("M206","M202","M204","M205", "M209")
-i <- all_vt_result$id %in% vars
-
-boxplot(yield_lb ~ id, data = all_vt_result[i,],
-        xlab = "Cultivar",
-        ylab = "Yield (lbs/ac)")
+  vars <- grepl("^M[0-9]{3}$", all_vt_result$id)
+  mod_data <- all_vt_result[vars,]
+  
+  boxplot(yield_lb ~ id, data = mod_data,
+          xlab = "Cultivar",
+          ylab = "Yield (lbs/ac)")
 @
 \caption{Boxplot of yields for four common medium grain cultivars for
   the period 1995--2015.}
@@ -98,43 +97,69 @@ boxplot(yield_lb ~ id, data = all_vt_result[i,],
 However, the question remains how CA yield have not been improving
 more after 20 years of breeding effort.
 
-\section{Evidence of yield decreases over time}
+\subsection{Hypotheses}
+
+\begin{enumerate}
+  \item After a cultivar has been released, the yield decreases over
+    time.
+  \item Each cultivar release is recovering to the old yield, not
+    increasing yield potential.
+\end{enumerate}
+
+  
+\section{H1: Do yields decreases over time once a cultivar is released?}
+
+\subsection{Methods}
+
+Linear model of yield of a cultivar as a response to the number of years since it
+was entered into the trials. Corrections for year, site, year:site,
+and cultivar differences are made according to:
+
+
+$ yield = \alpha + \beta_{years in trial j}*x_{years in trials j} +
+\beta_{site} + \beta_{year} + \beta_{site:year} + \beta_{cultivar j}$
+
+Only medium-grained, released varieties were included in the analysis,
+reducing the data from \Sexpr{nrow(all_vt_result)} to
+\Sexpr{nrow(mod_data)} observations. Included varieties are:
+\Sexpr{paste(gsub('^M', 'M-', unique(mod_data$id)), collapse = ', ')}.
 
 There is some evidence of a yield decrease over time, though this
 turns out to be a tricky thing to estimate. This is because there are
 several plausible and related mechanisms at work that are potentially
 confounding eachother.
 
-\begin{figure}
+% \begin{figure}
 
-  <<fig = TRUE, echo=FALSE>>=
-  plot(yield_lb ~ year, data = all_vt_result, type = "n")
-  mods <- lmList(yield_lb ~ (1|year) | id, data = all_vt_result[i,])
-  pred <- lapply(mods, function(x){
-      data.frame(pred = unique(predict(x)),
-                 year = unique(x$model$year))
-  })
-  sapply(seq_along(pred), function(i) points(x = pred[[i]]$year, y = pred[[i]]$pred,
-                                             pch = i))
-  legend("bottomright", legend = vars, pch = 1:5)
+%   <<fig = TRUE, echo=FALSE>>=
+%   ## plot(yield_lb ~ year, data = all_vt_result, type = "n")
+%   ## mods <- lmList(yield_lb ~ (1|year) | id, data = mod_data)
+%   ## pred <- lapply(mods, function(x){
+%   ##     data.frame(pred = unique(predict(x)),
+%   ##                year = unique(x$model$year))
+%   ## })
+%   ## sapply(seq_along(pred), function(i) points(x = pred[[i]]$year, y = pred[[i]]$pred,
+%   ##                                            pch = i))
+%   ## legend("bottomright", legend = vars, pch = 1:5)
 
-@
+% @
 
-<<echo=FALSE>>=
-meds_split <- split(all_vt_result[i,], paste(all_vt_result[i, "year"], all_vt_result[i,"site"]))
-meds_scaled <- lapply(meds_split, function(x){
-    m202 <- mean(x$yield_lb[x$id == "M202"])
-    x$yield_lb <- x$yield_lb - m202
-    return(x)
-    })
-meds_scaled <- do.call(rbind, meds_scaled)
-ggplot(meds_scaled, aes(y = yield_lb, x = year, group = id)) + geom_smooth(aes(color = id), method = "lm") + geom_point()
+% <<echo=FALSE>>=
+% ## meds_split <- split(mod_data, paste(all_vt_result[i, "year"], all_vt_result[i,"site"]))
+% ## meds_scaled <- lapply(meds_split, function(x){
+% ##     m202 <- mean(x$yield_lb[x$id == "M202"])
+% ##     x$yield_lb <- x$yield_lb - m202
+% ##     return(x)
+% ##     })
+% ## meds_scaled <- do.call(rbind, meds_scaled)
+% ## ggplot(meds_scaled, aes(y = yield_lb, x = year, group = id)) + geom_smooth(aes(color = id), method = "lm") + geom_point()
 
-mod <- stan_glm(yield_lb ~ factor(year) + site + factor(year):site +
-                    yrs_in_trial + id + id:yrs_in_trial,
-                data = all_vt_result[i,], prior = normal(), cores = 2L, iter = 1000)
+% ## mod <- stan_glm(yield_lb ~ factor(year) + site + factor(year):site +
+% ##                     yrs_in_trial + id + id:yrs_in_trial,
+% ##                 data = mod_data, prior = normal(), cores = 2L, iter = 1000)
 
 @ 
+
 \begin{enumerate}
   \item Technology improvements over time, including advances in
     nutrient, pest, and water management
@@ -155,10 +180,10 @@ morethan3 <- by_year$year > 3
 
 i <- all_vt_result$id %in% by_year$id[morethan3]
 
-plot(yield_lb ~ year, all_vt_result[i,],
+plot(yield_lb ~ year, mod_data,
      xlab = "Year", ylab = "Yield (lbs/ac)")
 
-abline(lm(yield_lb ~ year, all_vt_result[i,]))
+abline(lm(yield_lb ~ year, mod_data))
 
 @
 \caption{Yield over time for all cultivars during the period 1995 --
