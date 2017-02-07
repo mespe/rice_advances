@@ -1,0 +1,56 @@
+California Rice Production Workshop, v15
+
+
+
+                                    Table A-IV. Grain shape, year of release, maturity category and parentage of
+                                    California public rice varieties.*
+Cultivar            Grain      Year        Maturity   Parents
+Caloro                S        1917           L       Early Wateribune
+Colusa                S        1921           L       Chinese
+Calrose              M         1948           L       Caloro/Calady*2
+CS-M3                M         1971           L       C6 Smooth/Calrose
+CS-S4                 S        1972           L       Caloro/Smooth No. 3//Caloro/3/Caloro
+M5                   M         1975           L       CS-M3 natural mutation selections
+S6                    S        1975           E       Colusa/CS-M3
+Calrose 76           M         1976           L       Induced mutant of Calrose
+M7                   M         1978           L       Calrose 76/CS-M3
+M9                   M         1978           E       IR-8/CS-M3*2//10-7*2
+Calmochi-201          S        1979           E       Induced mutant of S6
+L-201                L         1979           E       CI 9701/3/R134-1/R48-257//R50-11
+M-101                M         1979          VE       CS-M3/Calrose 76//D31
+M-301                M         1980          M        Calrose 76/CS-M3//M5
+S-201                 S        1980           E       Calrose 76/CS-M3//S6
+Calmochi-202          S        1981           E       R57-362-4/D51//Calmochi-201
+M-302                M         1981          M        Calrose 76/CM-M3//M5
+M-401                M         1981           L       Induced mutant of Terso
+M-201                M         1982           E       Terso/3/IR-8/CS-M3*2//Kokuhorose
+L-202                L         1984           E       723761/ 7232278//L-201
+Calmochi-101          S        1985          VE       Tatsumi mochi//M7/S6
+M-202                M         1985           E       IR-8/CS-M3*2//10-7*2/3/M-101
+A-301                L         1987          M        IR-22/R48-257//5915C35-8/3/Della
+M-102                M         1987          VE       M-201/M-101
+M-203                M         1988           E       Induced mutant of M-401
+S-101                 S        1988          VE       0-6526//R26/Toyohikari/3/M7/74-Y-89//SD7/73-221
+M-103                M         1989          VE       SD7//Earlirose/Reimei/3/M-302
+S-301                 S        1990          M        SD7/73-221/M7P-1/3/M7P-5
+L-203                L         1991           E       L-202/83-Y-45
+M-204                M         1994           E       M-201/M7/3/M7//ESD7-3/Kokuhorose
+A-201                L         1996           E       L-202/PI 457920//L-202
+L-204                L         1996           E       Lemont//Tainung-sen-yu 2414/L-201
+S-102                 S        1996          VE       Calpearl/Calmochi-101//Calpearl
+Calhikari-201         S        1999           E       Koshihikari/(Koshihikari/S-101)*2
+Calmati-201          L         1999           E       82-Y-51/83-Y-45//L202/PI373938/3/83-Y-45/PI457918
+L-205                L         1999           E       M7/R660//M7/R1588/3/82-Y-52/4/Rexmont/83-Y-45
+M-402                M         1999           L       Kokuhorose/4/M7*2/M9//M7/3/M-401/Kokuhorose
+M-104                M         2000          VE       M-103/6/F1(M-102/4/M-201/3/M7/M9//M7/5/M-103)
+M-205                M         2000           E       M-201/M7//M-201/3/M-202
+M-206                M         2000           E       S-301/M204
+M-208                M         2006           E       M-401/3/Mercury//Mercury/Koshihikari/4/M-204
+Calmati-202          B         2006           E       A-201/9543483 (Calmati-201 sib)
+L-206                L         2006           E       L-203/4/Lemont/3/R1588/L-201//R1588/Labelle
+
+                                               *Parts taken from Rice Origin, History, Technology, and Production Smith and Dilday
+                                               Wiley & sons 2002
+
+                                                                   3.26
+

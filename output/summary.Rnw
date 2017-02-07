@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[margins=1in]{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage{Sweave}
 
 \title{Summary of CA Rice Breeding}
@@ -10,27 +10,14 @@
 \maketitle
 
 <<echo = FALSE>>=
+
 library(rstan)
 library(ggplot2)
 library(lme4)
 library(rstanarm)
 
-load("../data/all_vt_weather.Rda")
-##fit <- read_stan_csv(list.files("~/Dropbox/vt_results", "^samples[0-9].csv",
-##                                full.names = TRUE))
-
-## Get the number of years in the trial
-n_years <- aggregate(year ~ id, data = all_vt_result,
-          function(x) {
-              length(unique(x))})
-
-first_yr <- aggregate(year ~ id, data = all_vt_result,
-          min)
-
-i <- match(all_vt_result$id, first_yr$id)
-all_vt_result$first_yr <- first_yr$year[i]
-all_vt_result$yrs_in_trial <- all_vt_result$year - first_yr$year[i]
-
+source("../src/prep_model_data.R")
+load("h1_fit.Rda")
 @
 
 \section{Background}
@@ -39,7 +26,7 @@ In general, rice yields in CA have been flat over the last 20+ years,
 compared to the preceeding period. Yet, annual reports from the CA
 Cooperative Rice Research Foundation show that each released variety
 has a yield advantage over the previous varieties, typically on the
-order of 4-6\%. This raises the question of how to reconcile these
+order of 4--6\%. This raises the question of how to reconcile these
 facts. Namely, there are two possibilities:
 
 \begin{enumerate}
@@ -59,54 +46,15 @@ facts. Namely, there are two possibilities:
   increase in yield over this period.
 \end{enumerate}
 
-\begin{figure}
-
-<<label=plot1, fig=TRUE, echo=FALSE>>=
-boxplot(yield_lb ~ year, data = all_vt_result,
-        xlab = "Year", ylab = expression("Yield ( lb ac"^-1~")"))
-@
-
-
-  \caption{Distribution of yield over the period 1995 -- 2015.} \label{fig:plot}
-\end{figure}
-
-\section{Do newer cultivars have a yield advantage?}
-
-Looking at the numbers, it seems that each new medium-grain cultivar
-has an advantage over the previous ones, but that the advantage is not
-huge. Typical improvements of 5\% are reported by the breeders at the
-RES, and the data show perhaps a bit less than this. There does not
-appear to be a yield advantage of M-206 of M-205. It is worth
-noting that there are fewer years of data for M-209, and those years
-were typically higher yielding, which might lead ot a false optimism
-regarding M-209. 
-
-\begin{figure}
-<<label=plot2, fig=TRUE, echo=FALSE>>=
-  vars <- grepl("^M[0-9]{3}$", all_vt_result$id)
-  mod_data <- all_vt_result[vars,]
-  
-  boxplot(yield_lb ~ id, data = mod_data,
-          xlab = "Cultivar",
-          ylab = "Yield (lbs/ac)")
-@
-\caption{Boxplot of yields for four common medium grain cultivars for
-  the period 1995--2015.}
-\end{figure}
-
-However, the question remains how CA yield have not been improving
-more after 20 years of breeding effort.
-
 \subsection{Hypotheses}
 
 \begin{enumerate}
-  \item After a cultivar has been released, the yield decreases over
+  \item H1: After a cultivar has been released, its yield decreases over
     time.
-  \item Each cultivar release is recovering to the old yield, not
+  \item H2: Each cultivar release is recovering to the old yield benchmark, not
     increasing yield potential.
 \end{enumerate}
 
-  
 \section{H1: Do yields decreases over time once a cultivar is released?}
 
 \subsection{Methods}
@@ -115,19 +63,67 @@ Linear model of yield of a cultivar as a response to the number of years since i
 was entered into the trials. Corrections for year, site, year:site,
 and cultivar differences are made according to:
 
-
 $ yield = \alpha + \beta_{years in trial j}*x_{years in trials j} +
 \beta_{site} + \beta_{year} + \beta_{site:year} + \beta_{cultivar j}$
 
 Only medium-grained, released varieties were included in the analysis,
 reducing the data from \Sexpr{nrow(all_vt_result)} to
 \Sexpr{nrow(mod_data)} observations. Included varieties are:
-\Sexpr{paste(gsub('^M', 'M-', unique(mod_data$id)), collapse = ', ')}.
+\Sexpr{paste(gsub('^M', 'M-', unique(mod_data[,'id'])), collapse = ', ')}.
 
-There is some evidence of a yield decrease over time, though this
-turns out to be a tricky thing to estimate. This is because there are
-several plausible and related mechanisms at work that are potentially
-confounding eachother.
+\subsection{Results}
+
+<<fig=TRUE, echo=FALSE>>=
+plot(mod, regex_pars = "yrs_in_trial")
+@ 
+\section{H2: Do newer cultivars have a yield advantage?}
+
+\subsection{Methods}
+
+In the above model, the estimate for $\beta_{cultivar}$ is
+the estimated advantage for cultivar X at year 0 (first year in the
+trial) averaged over variability attributable to differences in years,
+sites, and the year:site interaction.
+
+% Notes: the expected result here is that there is no difference
+% between varieties in year 0. This might be complicated by the fact
+% that we have M-202 15 years into its release. We might need to get a
+% better way to cross reference these to the true start year.
+
+\subsection{Results}
+
+The raw numbers generally support the conclusion that each new
+medium-grain cultivar has an advantage over the previous ones, but
+that advantage is not large (Fig. \ref{fig:raw_yield}). Typical
+improvements of 5\% are reported by the breeders at the RES, and the
+data do not support gains this large.
+
+
+\begin{figure}
+
+<<label=plot1, fig=TRUE, echo=FALSE>>=
+boxplot(yield_lb ~ year, data = mod_data,
+        xlab = "Year", ylab = expression("Yield ( lb ac"^-1~")"))
+@
+  \caption{Distribution of yield over the period 1995 -- 2015.} \label{fig:plot}
+\end{figure}
+
+
+\begin{figure}
+<<label=plot2, fig=TRUE, echo=FALSE>>=
+  
+  boxplot(yield_lb ~ id, data = mod_data,
+          xlab = "Cultivar",
+          ylab = "Yield (lbs/ac)")
+@
+\caption{Boxplot of yields for released medium grain cultivars for
+  the period 1995--2015.}
+\label{fig:raw_yield}
+\end{figure}
+
+However, the question remains how CA yield have not been improving
+more after 20 years of breeding effort.
+
 
 % \begin{figure}
 
@@ -153,10 +149,6 @@ confounding eachother.
 % ##     })
 % ## meds_scaled <- do.call(rbind, meds_scaled)
 % ## ggplot(meds_scaled, aes(y = yield_lb, x = year, group = id)) + geom_smooth(aes(color = id), method = "lm") + geom_point()
-
-% ## mod <- stan_glm(yield_lb ~ factor(year) + site + factor(year):site +
-% ##                     yrs_in_trial + id + id:yrs_in_trial,
-% ##                 data = mod_data, prior = normal(), cores = 2L, iter = 1000)
 
 @ 
 
