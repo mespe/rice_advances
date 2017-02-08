@@ -2,7 +2,7 @@
 ##.args = list(commandArgs(trailingOnly=TRUE))
 
 library(rstan)
-##library(rstanarm)
+library(rstanarm)
 source("prep_model_data.R")
 
 mm <- stan_model(file = "yield_model.stan", verbose = TRUE)
@@ -28,6 +28,15 @@ dd <- list(N = nrow(mod_data),
            release_yr = mod_data$release_yr - 2000,
            yield = mod_data$yield_cs)
 
-fit <- sampling(mm, data = dd, iter = 1000, cores = 2L, control = list(adapt_delta = 0.9))
+## Rprof("mod.Rprof")
+fit <- sampling(mm, data = dd, iter = 100, cores = 1L, control = list(adapt_delta = 0.9))
+## Rprof(NULL)
+
+fit <- stan_glmer(yield_cs ~ (1|year) + (1|site) + (1|id) + (1|yr_site_fact) + yrs_in_trial,
+                  data = mod_data, iter = 1000, cores = 2L)
+
+fit2 <- stan_glmer(yield_cs ~ (1|year) + (1|site) + (1|id) + (1|yr_site_fact) + release_yr,
+                  data = mod_data, iter = 1000, cores = 2L)
+
 
 save(fit, file = "../output/h1_fit.Rda")
