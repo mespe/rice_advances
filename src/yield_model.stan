@@ -9,8 +9,7 @@ data{
   int<lower = 1, upper = n_site> site[N];
   int<lower = 1, upper = n_year> year[N];
   int<lower = 1, upper = n_yr_site> yr_site[N];
-  vector[N] duration;
-  vector[N] release_yr;
+  vector[N] x;
   vector[N] yield;    
 }
 
@@ -20,9 +19,7 @@ parameters{
   vector[n_site] b_site_raw;
   vector[n_year] b_year_raw;
   vector[n_yr_site] b_yrsite_raw;
-  real<upper = 0> b_dur_shared;
-  real<lower = 0> b_rel_yr;
-  vector[n_cult] b_dur_raw;
+  real b_x;
   vector<lower = 0>[n_var] tau;
   real<lower = 0> sigma;
 }
@@ -32,14 +29,12 @@ transformed parameters{
   vector[n_site] b_site = b_site_raw * tau[2];
   vector[n_year] b_year = b_year_raw * tau[3];
   vector[n_yr_site] b_yrsite = b_yrsite_raw * tau[4];
-  vector[n_cult] b_dur = b_dur_raw * tau[5];
   vector[N] mu = alpha +
 	b_cult[cult] +
 	b_site[site] +
 	b_year[year] +
 	b_yrsite[yr_site] +
-	b_rel_yr * release_yr +
-	(b_dur_shared + b_dur[cult]) .* duration;
+	b_x * x;
 }
 
 model{
@@ -50,9 +45,7 @@ model{
   target += normal_lpdf(b_site_raw | 0, 1);
   target += normal_lpdf(b_year_raw | 0, 1);
   target += normal_lpdf(b_yrsite_raw | 0, 1);
-  target += normal_lpdf(b_dur_raw | 0, 1);
-  target += normal_lpdf(b_dur_shared | 0, 1);
-  target += normal_lpdf(b_rel_yr | 0, 1);
+  target += normal_lpdf(b_x | 0, 1);
   target += normal_lpdf(tau | 0, 1);
   target += normal_lpdf(sigma | 0, 1);
   

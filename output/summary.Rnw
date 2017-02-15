@@ -14,8 +14,10 @@
 
 library(rstan)
 library(rstanarm)
+library(lme4)
+
 source("../src/prep_model_data.R")
-load("../output/h1_fit.Rda")
+load("h1_fit.Rda")
 
 @
 
@@ -123,7 +125,7 @@ sites, years, and site:years.
   
 <<fig=TRUE, echo=FALSE>>=
 yrs <- 1980:2015
-pp <- posterior_predict(release_fit, re.form = NA, newdata = data.frame(release_yr = yrs))
+pp <- posterior_predict(release_fit, re.form = NA, newdata = data.frame(release_yr_c = yrs - 2000))
 pp <-  pp * 1000 + 9000
 
 ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
@@ -227,5 +229,61 @@ boxplot(yield_lb ~ year, data = mod_data,
 \label{fig:raw_yield}
 \end{figure}
 
+\begin{figure}
+<<fig=TRUE, fig.width = 8, fig.height = 5, out.width = '80%', echo=FALSE>>=
+tars <- c("M202","M206","M209")
+par(mfrow = c(1,3),
+    mar = c(4,0,2,0),
+    oma = c(4,4,0.5,0.5))
+
+invisible(sapply(tars, function(x){
+    plot(yield_lb ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
+         xlim = c(1995, 2016), ylim = c(6000,12000),
+         pch = 16, main = x,
+         ylab = "",
+         yaxt = "n",
+         xlab = "Year")
+    if(x == "M202"){
+        axis(2)
+        mtext(expression("Yield ( lbs acre"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
+    }
+    abline(lm(yield_lb ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
+   
+}))
+
+@
+\caption{The performance of three major cultivars at the RES site over
+time.}
+\label{fig:res_yrs}
+\end{figure}
+
+\begin{figure}
+  
+<<fig=TRUE, echo=FALSE>>=
+par(mfrow = c(1,3),
+    mar = c(4,0,2,0),
+    oma = c(4,4,0.5,0.5))
+
+invisible(sapply(tars, function(x){
+    plot(yield_lb ~ yrs_in_trial,
+         data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
+         xlim = c(-6, 36), ylim = c(6000,12000),
+         pch = 16, main = x,
+         ylab = "",
+         yaxt = "n",
+         xlab = "Years after release")
+    if(x == "M202"){
+        axis(2)
+        mtext(expression("Yield ( lbs acre"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
+    }
+    abline(lm(yield_lb ~ yrs_in_trial,
+              data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
+}))
+
+@
+\caption{The performance of three major cultivars at the RES site
+  since the year each cultivar was released.}
+\label{fig:res_since_release}
+\end{figure}
 
 \end{document}

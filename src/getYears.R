@@ -1,3 +1,5 @@
+## Get published years of release for varieties
+## to see if there is an improvement over time
 
 doc <- readLines("../data/var_list.txt")
 first <- grep("^Cultivar", doc)
@@ -20,5 +22,8 @@ yrTbl <- rbind(yrTbl, data.frame(Cultivar = c("M105","M207","M209"),
                                  Year = c(2012, 2005, 2015),
                                  Maturity = c("E","E","E"),
                                  Parents = ""))
+
+## Date for M-206 is wrong - should be 2004
+yrTbl$Year[yrTbl$Cultivar == "M206"] <- 2004
 
 save(yrTbl, file = "../data/yrTbl.Rda")
