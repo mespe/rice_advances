@@ -1,4 +1,14 @@
-all: summary.pdf
+output/breed_paper.pdf: output/breed_paper.tex
+	cd output && \
+	pdflatex breed_paper.tex && \
+	bibtex breed_paper && \
+	pdflatex breed_paper.tex && \
+	pdflatex breed_paper.tex 
+
+output/breed_paper.tex: output/breed_paper.Rnw 
+	cd output && R CMD Sweave breed_paper.Rnw
+
+output/breed_paper.Rnw: data/all_vt_weather.Rda src/prep_model_data.R output/h1_fit.Rda
 
 output/summary.pdf: output/summary.tex
 	cd output && pdflatex summary.tex

@@ -14,12 +14,14 @@ mod_data <- all_vt_result[(vars & no_sj),]
 
 ## Exclude M-401/402 and Tucker site, per conversation with Bruce
 ## 10 Feb 2017:
-## M-401 and M-402 are often mis-managed in trials
+## M-401 and M-402 are often mis-managed in trials, however they are also old varieties
+## Question if excluding them is not creating more issues
+## not4s <- !mod_data$id %in% c("M401","M402")
+
 ## Tucker was a problematic site with high variability and low yields
-not4s <- !mod_data$id %in% c("M401","M402")
 notTuck <- mod_data$site != "TUCKER"
 
-mod_data <- mod_data[(notTuck & not4s),]
+mod_data <- mod_data[(notTuck),]
 
 ## Use officially published years instead of years in trial
 load("../data/yrTbl.Rda")
