@@ -6,7 +6,7 @@ output/breed_paper.pdf: output/breed_paper.tex
 	pdflatex breed_paper.tex 
 
 output/breed_paper.tex: output/breed_paper.Rnw 
-	cd output && R CMD Sweave breed_paper.Rnw
+	cd output && Rscript -e "Sweave('breed_paper.Rnw')"
 
 output/breed_paper.Rnw: data/all_vt_weather.Rda src/prep_model_data.R output/h1_fit.Rda
 

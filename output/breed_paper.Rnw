@@ -26,7 +26,7 @@
 
 \begin{frontmatter}
   
-\title{Rice yield improvement by plant breeding are offset by
+\title{Rice yield improvements by plant breeding are offset by
   decreases over time}
 \author[ucd]{Matthew B. Espe\corref{corresauthor}}
 \cortext[corresauthor]{Corresponding author} \ead{mespe@ucdavis.edu}
@@ -60,7 +60,7 @@ CI: Credible Interval
 
 \newpage
 
-%\linenumbers
+\linenumbers
 
 <<echo = FALSE>>=
 
@@ -71,6 +71,14 @@ library(lme4)
 source("../src/prep_model_data.R")
 load("h1_fit.Rda")
 
+prep_plot_data = function(x, idx)
+{
+    as.data.frame(do.call(rbind, tapply(x, idx, function(x){
+        c(mean = mean(x), se = (sd(x)/sqrt(length(x))))
+    })))
+}
+
+
 @
 
 \section{Introduction}\label{intro}
@@ -78,47 +86,62 @@ load("h1_fit.Rda")
 \setlength{\parindent}{1cm}
 
 Constraints on ariable land are increasing simultaneous with the need
-to increase total production to meet growing demand, which has
-necessitated harvesting more grain per unit land area. Historically,
+to increase total production to meet growing demand \citep{Foley2011a,
+  Godfray2010, Mueller2012}, which has
+necessitated harvesting more grain per unit land area
+\citep{Lobell2009, Tittonell2014}. Historically,
 agricultural research has been successful in staving off the Mathesian
 disaster through continued yield improvement of staple crops, however
 more and more production systems are experiencing plateaus in grain
-yield \citep{Peng2010}. If continued improvements per unit land area
+yield \citep{Grassini2013, Peng2010}. If continued improvements per unit land area
 are no longer possible, increasing the area under cultivation will be
 needed to meet demand, which carries with it undesirable ecological
 implications. Therefore, it is of critical importance to better
-understand why grain yields have not continued to increase.
+understand why grain yields have not continued to increase in
+instensified production systems.
 
-CA rice production represents one such rice production system. Rice
-yields in CA during the period from 1920 -- 1990 increased rapidly, but
-since 1990 have increased only slowly if at all (Fig. 1
-\ref{fig:avg_yields}). However, continued improvement of grain yield
+California (CA) rice production represents one such rice production
+system. Rice yields in CA during the period from 1920 -- 1990
+increased rapidly, but since 1990 have increased more slowly (Fig. 1
+\ref{fig:state_yield}). However, continued improvement of grain yield
 as the result of plant breeding has been demonstrated since 1990
 \citep{rrb}, with each new cultivar having a yield advantage over the
 previous cultivars. Yet, these same reports show stagnant yields; for
-example, at the year of release (1984), cultivar 'M-202' averaged
-9,600 lbs acre\textsuperscript{-1}. In 2015, the yield of 'M-209' was
-between 9,000 -- 10,000 lbs acre\textsuperscript{-1}. We sought to better
-understand how grain yields have increased in the breeders' fields
-without a corresponding increase in yield in the farmers' fields. Two
-competing hypotheses were tested: (1) Grain yields have not improved
-since 1990, or (2) grain yield improvements have been offset by an
-associated decrease in yield once a cultivar was selected.
+example, at the year of release (1985), cultivar 'M-202' averaged
+11,060 kg ha\textsuperscript{-1} \citep[14\% MC;][]{m202}. In 2015,
+the average yield of the newest released cultivar 'M-209' was 10,841
+kg ha\textsuperscript{-1} \citep{m209}. This suggests little to no
+progress via breeding, however 'M-209' demonstrated an overall 10\%
+yield advantage over 'M-202' in side-by-side comparisons \citep{m209}. We sought to
+better understand how grain yields have increased in the breeders'
+fields without a corresponding increase in yield in the farmers'
+fields. Two competing hypotheses were tested: (1) Grain yields have
+not improved since 1990, or (2) grain yield improvements have been
+offset by an associated decrease in yield once a cultivar was
+selected.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 <<fig=TRUE, echo=FALSE>>=
 CA_data = read.csv("../data/CA_rice_yield.csv", stringsAsFactors = FALSE)
 CA_data$Value = as.numeric(gsub(",", "", CA_data$Value))
+CA_data = CA_data[order(CA_data$Year),]
 plot(Value * 1.12 ~ Year, CA_data,
-     type = "l",
+     # type = "l",
+     pch = 16,
      xlab = "Year",
-     ylab = expression("Average grain yield (kg ha"^-1~")"))
+     ylab = expression("Average grain yield ( kg ha"^-1~")"))
+mv_avg = filter(c(rep(mean(CA_data$Value[1:10] * 1.12), 5),
+                  CA_data$Value * 1.12,
+                  rep(mean(CA_data$Value[(nrow(CA_data) - 10):nrow(CA_data)] * 1.12), 5)),
+                rep(1/11,11))
+lines(x = c(1907:1911, CA_data$Year, 2017:2021), y = mv_avg)
 
 @
 \caption{Average rice yields over the period \Sexpr{min(CA_data$Year)}
   -- \Sexpr{max(CA_data$Year)} for California, USA. Rapid gains in
     grain yield were experienced from approximately 1950 -- 1990, but
-    annual gains since 1990 have been slower.}
+    annual gains since 1990 have been slower. The line represents the
+    10 year moving average.}
 \label{fig:state_yield}
 \end{figure}
 
@@ -141,6 +164,9 @@ possibilities:
 \section{Methods}\label{methods}
 
 \subsection{Site description}
+
+The Rice Experiment Station (RES) of the California Cooperative Rice
+Research Foundation
 
 \subsection{Statistical analysis}
 
@@ -186,15 +212,12 @@ pp <-  (pp * 1000 + 9000) * 1.12
 ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
 
 res = mod_data$site == "RES"
-plot_data = as.data.frame(tapply(mod_data$yield_lb[res] * 1.12,
-                                 mod_data$id[res], mean))
-plot_data$se = tapply(mod_data$yield_lb[res] * 1.12,
-                      mod_data$id[res],
-                      function(x)
-                          sd(x)/sqrt(length(x)))
+plot_data = prep_plot_data(mod_data$yield_lb[res] * 1.12,
+                           mod_data$id[res])
 
 plot_data$tmp = tapply(mod_data$release_yr[res],
                        mod_data$id[res], unique)
+
 colnames(plot_data) = c("yield_kg", "yield_se", "release_yr")
 
 plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
@@ -204,23 +227,15 @@ plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
      xlim = c(1980,2019))
 abline(a = (((fixef(RES_rel_fit)[1] * 1000) + 9000) * 1.12) -
            (2000 * fixef(RES_rel_fit)[2] * 1000),
-       b = fixef(RES_rel_fit)[2] * 1000, col = "grey")
+       b = fixef(RES_rel_fit)[2] * 1000, col = "grey50")
 with(plot_data, segments(x0 = release_yr, y0=yield_kg + yield_se,
                          y1 = yield_kg - yield_se))
 text(x = plot_data$release_yr, y = plot_data$yield_kg,
      labels = gsub("M", "M-", row.names(plot_data)),
      pos = 4, cex = 0.8)
 
-# ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-# polygon(x = c(yrs_in, rev(yrs_in)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-# text(0, 7000, bquote(.(round(fixef(RES_yrs_fit)[2] * 1000, 1))~lbs~year^-1))
-
-# plot(yield_lb ~ release_yr, data = mod_data, pch = 16, col = rgb(0,0,0,0.25),
-#      xlab = "Year of Release",
-#      ylab =  expression("Yield ( lbs acre"^-1~")"))
-# lines(x = yrs, y = ints[2,], lty = 2) 
-# polygon(x = c(yrs, rev(yrs)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
 text(1990, 8000, bquote(.(round(fixef(release_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~year^-1))
+
 @
 
 \caption{The yield increase over time of medium grain rice varieties
@@ -298,12 +313,8 @@ pp <- posterior_predict(RES_yrs_fit, re.form = NA, newdata = data.frame(yrs_in_t
 pp <-  (pp * 1000 + 9000) * 1.12
 
 RES = res = mod_data$site == "RES"
-plot_data = as.data.frame(tapply(mod_data$yield_lb[res] * 1.12,
-                                 mod_data$yrs_in_trial[res], mean))
-plot_data$se = tapply(mod_data$yield_lb[res] * 1.12,
-                      mod_data$yrs_in_trial[res],
-                      function(x)
-                          sd(x)/sqrt(length(x)))
+plot_data = prep_plot_data(mod_data$yield_lb[res] * 1.12,
+                           mod_data$yrs_in_trial[res])
 
 plot_data$tmp = as.numeric(row.names(plot_data))
 colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
@@ -311,15 +322,13 @@ colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
 plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
      xlab = "Year since entry",
      ylab = expression("Grain yield ( kg ha"^-1~")"),
-     ylim = c(7000, 13000),
-     xlim = c(-5,33))
+     ylim = c(7000, 13000))
 with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
                          y1 = yield_kg - yield_se))
 abline(a = ((fixef(RES_yrs_fit)[1] * 1000) + 9000) * 1.12,
-       b = fixef(RES_yrs_fit)[2] * 1000)
+       b = fixef(RES_yrs_fit)[2] * 1000, col = "grey50")
 ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-#polygon(x = c(yrs_in, rev(yrs_in)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-text(0, 7000, bquote(.(round(fixef(RES_yrs_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~year^-1))
+text(5, 7000, bquote(.(round(fixef(RES_yrs_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~year^-1))
 
 @
 \caption{The relationship between yield and the years since entry for
@@ -329,32 +338,67 @@ text(0, 7000, bquote(.(round(fixef(RES_yrs_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~y
   sites. The estimated decrease over time is estimated to be stronger
   using only these data (\Sexpr{round(fixef(RES_yrs_fit)[2] * 1000, 1)}
   lbs year\textsuperscript{-1}), primarly due to lower variability.}
-\label{fig:RES_yrs}
+\label{fig:RES_year}
 \end{figure}
 
-\begin{figure}
-<<fig=TRUE, fig.width = 10, fig.height = 5, out.width = '80%', echo=FALSE>>=
+
+\begin{figure}[ht]
+<<fig=TRUE, width = 8, height = 5, out.width = '85%', echo=FALSE>>=
 tars <- c("M202","M206")
 par(mfrow = c(1, length(tars)),
     mar = c(4,0,2,0),
     oma = c(4,4,0.5,0.5))
 
-invisible(sapply(tars, function(x){
-    plot(yield_lb * 1.12 ~ year,
-         data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
-         xlim = c(1995, 2016), ylim = c(5000,14000),
-         pch = 16, main = gsub("M", "M-", x),
+plot_data = lapply(tars, function(x) {
+    dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
+    tmp = prep_plot_data(dd$yield_lb * 1.12, dd$year)
+    tmp$year = as.numeric(row.names(tmp))
+    tmp
+    })
+
+invisible(sapply(1:2, function(i){
+    plot(mean ~ year,
+         data = plot_data[[i]],
+         xlim = c(1995, 2016), ylim = c(6500,14500),
+         pch = 16, main = gsub("M","M-", tars[i]),
          ylab = "",
          yaxt = "n",
-         xlab = "Year")
-    if(x == "M202"){
+         xlab = "Years after release")
+    segments(x0 = plot_data[[i]]$year,
+             y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
+             y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
+    if(i == 1){
         axis(2)
         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
     }
-    # abline(lm(yield_lb ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
-    abline(h = mean(mod_data$yield_lb[(mod_data$id == x & mod_data$site == "RES")] * 1.12),
-           lty = 2)
+#     abline(lm(yield_lb*1.12 ~ year,
+    #               data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
+    # lty = 2)
+
+    abline(h = mean(mod_data$yield_lb[(mod_data$id == tars[i] &
+                                       mod_data$site == "RES")] * 1.12),
+           lty = 1, col = "grey50")
+
 }))
+
+# invisible(sapply(tars, function(x){
+#     plot(yield_lb * 1.12 ~ year,
+#          data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
+#          xlim = c(1995, 2016), ylim = c(6500,14500),
+#          pch = 16,
+#          col = rgb(0,0,0,0.5),
+#          main = gsub("M", "M-", x),
+#          ylab = "",
+#          yaxt = "n",
+#          xlab = "Year")
+#     if(x == "M202"){
+#         axis(2)
+#         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
+#     }
+#     # abline(lm(yield_lb ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
+#     abline(h = mean(mod_data$yield_lb[(mod_data$id == x & mod_data$site == "RES")] * 1.12),
+#            lty = 2)
+# }))
 
 @
 \caption{The performance of two major cultivars at the CA Rice
@@ -368,25 +412,36 @@ invisible(sapply(tars, function(x){
 
 \begin{figure}
   
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width = 8, height = 5>>=
 par(mfrow = c(1, length(tars)),
     mar = c(4,0,2,0),
     oma = c(4,4,0.5,0.5))
 
-invisible(sapply(tars, function(x){
-    plot(yield_lb*1.12 ~ yrs_in_trial,
-         data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
-         xlim = c(-6, 36), ylim = c(5000,14000),
-         pch = 16, main = gsub("M","M-", x),
+plot_data = lapply(tars, function(x) {
+    dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
+    tmp = prep_plot_data(dd$yield_lb * 1.12, dd$yrs_in_trial)
+    tmp$yrs_in_trial = as.numeric(row.names(tmp))
+    tmp
+    })
+
+invisible(sapply(1:2, function(i){
+    plot(mean ~ yrs_in_trial,
+         data = plot_data[[i]],
+         xlim = c(-6, 36), ylim = c(6500,14500),
+         pch = 16, main = gsub("M","M-", tars[i]),
          ylab = "",
          yaxt = "n",
          xlab = "Years after release")
-    if(x == "M202"){
+    segments(x0 = plot_data[[i]]$yrs_in_trial,
+             y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
+             y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
+    if(i == 1){
         axis(2)
         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
     }
     abline(lm(yield_lb*1.12 ~ yrs_in_trial,
-              data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
+              data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
+           lty = 1, col = "grey50")
 }))
 
 @
@@ -452,41 +507,45 @@ which have characteristics not similar to conventional cultivars.
 
 \section{Conclusions}
 
-\begin{itemize}
-  \item H1: There is evidence of a small decrease in yield once a cultivar is
-    released. This complicates comparisons between new entries and
-    checks, since the check will decrease over time. This decrease
-    will manifest as an apparent larger yield advantage of the new
-    entry over the check.
-  \item H2: There is evidence of a small increase in yield with each
-    new released cultivar. Therefore, it appears that successive
-    cultivar releases are not merely recovering to the old benchmark
-    but are surpassing it. However, progress is slower than previously
-    estimated (\Sexpr{round(fixef(release_fit)[2] * 1000, 1)}
-    lbs acre\textsuperscript{-1} year\textsuperscript{-1} increase
-    verses a previous estimate of 54 lbs acre\textsuperscript{-1}
-    year\textsuperscript{-1}).
-\end{itemize}
+There is evidence of a small decrease in yield over time once a cultivar is
+released. This complicates comparisons between new entries and checks,
+since the check will decrease over time. This decrease will manifest
+as an apparent larger yield advantage of the new entry over the check.
+There is evidence of a small increase in yield with each new released
+cultivar. Therefore, it appears that successive cultivar releases are
+not merely recovering to the old benchmark but are surpassing
+it. However, progress is slower than previously estimated
+(\Sexpr{round(fixef(release_fit)[2] * 1000, 1)} lbs
+acre\textsuperscript{-1} year\textsuperscript{-1} increase verses a
+previous estimate of 54 lbs acre\textsuperscript{-1}
+year\textsuperscript{-1}).
 
-The practical impact of these results is:
-
-\begin{enumerate}
-\item Breeders need to be aware of the potential for the yield of
-  checks to decrease over time. Due to this, comparisons to older checks
-  might give a false sense of improvement. In order to have greater
-  improvements in yield, the target yield improvement for a new cultivar
-  needs to be higher to offset the impact of yield decrease once a
-  cultivar is released.
-\item Breeding is essential to maintaining yield in rice. Yield is not
-  stable and without continuous effort, yield potential will decrease
-  over time.
+The practical impact of these results is: Breeders need to be aware of
+the potential for the yield of checks to decrease over time. Due to
+this, comparisons to older checks might give a false sense of
+improvement. In order to have greater improvements in yield, the
+target yield improvement for a new cultivar needs to be higher to
+offset the impact of yield decrease once a cultivar is
+released. Breeding is essential to maintaining yield in rice. Yield is
+not stable and without continuous effort, yield potential will
+decrease over time.
   
-\end{enumerate}
 
 
 \newpage
+\section{References}\label{references}
 
-\section{Supplemental figures}
+\setlength{\parindent}{-0.2in} \setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+
+\bibliography{breeding}
+
+\newpage
+
+\section{Supplemental tables and
+figures}\label{supplemental-tables-and-figures}
+
+\beginsupplement
 
 \begin{figure}[h]
 
@@ -510,18 +569,5 @@ boxplot(yield_lb ~ year, data = mod_data,
 \label{fig:raw_yield}
 \end{figure}
 
-\section{References}\label{references}
-
-\setlength{\parindent}{-0.2in} \setlength{\leftskip}{0.2in}
-\setlength{\parskip}{8pt}
-
-\bibliography{breeding}
-
-\newpage
-
-\section{Supplemental tables and
-figures}\label{supplemental-tables-and-figures}
-
-\beginsupplement
 
 \end{document}
