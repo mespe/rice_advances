@@ -1,6 +1,7 @@
 \documentclass[12pt,]{elsarticle}
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
+\usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile, textcomp}
@@ -29,10 +30,18 @@
 \title{Rice yield improvements by plant breeding are offset by
   decreases over time}
 \author[ucd]{Matthew B. Espe\corref{corresauthor}}
+\author[ucd]{David MacKill}
+\author[ucd]{Jim E. Hill}
+\author[res]{Kent McKenzie}
+\author[ucd]{Bruce A. Linquist}
+
 \cortext[corresauthor]{Corresponding author} \ead{mespe@ucdavis.edu}
 
 \address[ucd]{Dept. of Plant Sciences, University of California --
 Davis, Davis CA 95616}
+
+\address[res]{Rice Experiment Station, California Cooperative Rice
+Research Foundation, Biggs, CA 95917}
 
 \begin{abstract}
 
@@ -77,7 +86,6 @@ prep_plot_data = function(x, idx)
         c(mean = mean(x), se = (sd(x)/sqrt(length(x))))
     })))
 }
-
 
 @
 
@@ -163,56 +171,114 @@ possibilities:
 
 \section{Methods}\label{methods}
 
-\subsection{Site description}
+\subsection{Site and data description}
 
 The Rice Experiment Station (RES) of the California Cooperative Rice
-Research Foundation
+Research Foundation (CCRRF) is located northwest of Biggs, CA (39.4648,
+-121.7342), and has been the central location for the development of
+improved rice varieties suited for CA since 1969. The climate at the
+RES is Mediterranian, characterized by mild winters during which most
+of the annual precipitation occurs (\Sexpr{18*24.5} -- \Sexpr{25*24.5}
+mm annually) and warm summers largely free of precipitation
+events. Soils at the RES are classified as Esquon-Neerdobe clays with
+roughly 2\% SOM \citep{ssurgo} in the top 15cm. As the central
+location for the breeding program, the RES is researcher-managed (as
+opposed to farmer-managed trials) and conducts the bulk of the trials
+for the Statewide Variety Trials (approximately 30\% of the total
+plots are planted at RES). For these reasons, we focused our
+investigation on the RES to avoid complications due to site, climate, and
+management differences at the other 6 -- 8 farmer-managed trials.
+
+As part of the annual Statewide Variety Trials, newly developed
+entries are tested against named and released cultivars (checks) at
+the RES in multiple trials spanning multiple planting dates per
+year. For the purposes of this study, we concentrated on released
+medium grain cultivars, as medium grain cultivars constitute roughly
+90\% of the planted area in CA. This lead to a final data set of
+\Sexpr{format(nrow(mod_data), big.mark = ',')} observations with
+\Sexpr{length(unique(mod_data[,'id']))} cultivars represented,
+constituting every publicly released medium grain variety developed by
+the CCRRF from \Sexpr{min(mod_data[,'release_yr'])} --
+\Sexpr{max(mod_data[,'release_yr'])}. For each cultivar, the official
+year of release (typically 3 -- 5 years after introduction to the
+trials but prior to widespread commercial seed availability) and the
+time elapse (in years) since release was calculated.
 
 \subsection{Statistical analysis}
 
-Linear model of yield of a cultivar as a response to the number of years since it
-was entered into the trials. Corrections for year, site, year:site,
-and cultivar differences are made according to:
+Yield was modeled as a response to the number of years since the
+variety was officially released using a mixed-effects linear
+model. Differences between years and cultivars were included in the
+model as random effects according to:
 
 \begin{equation}
- yield = \alpha + \beta_{years\ in\ trial}* x_{years\ in\ trials} + \beta_{site} + \beta_{year} + \beta_{site:year} + \beta_{cultivar}
+ yield_i = \alpha + \beta_{years\ since\ release\ i}* x_{years\ since\
+   release\ i} + \beta_{year\ i} + \beta_{cultivar\ i}
 \end{equation}
 
-Only medium-grained, released cultivars were included in the analysis
-and data from the San Joaquin trials, which are not representative of
-typical CA rice production (frequent exposure to cold, drill-seeded,
-etc.) were excluded. This reduced the data from \Sexpr{nrow(all_vt_result)} to
-\Sexpr{nrow(mod_data)} observations. Included cultivars are:
-\Sexpr{paste(gsub('^M', 'M-', unique(mod_data[,'id'])), collapse = ', ')}. The
-official release years were used for each cultivar for the year of
-release (i.e., not the year seed was first commercially available).
-
-A similar but separate model was used to estimate whether newer
-releases had a yield advantage over older ones: 
+Where $yield_i$ is the grain yield for plot $i$, $\alpha$ is the
+average yield for the RES across varieties and years (intercept),
+$\beta_{years\ since\ release\ i}$ is effect of $x_{years\ since\
+release\ i}$, the number of years $i$'s cultivar has been in the
+trials (negative for years prior to release, zero at the year of
+release), $\beta_{year}$ is the random effect of year, and
+$\beta_{cultivar}$ is the random effect of cultivar. A similar but
+separate model was used to estimate the yield advantage of newer
+releases over older ones:
 
 \begin{equation}
-yield = \alpha + \beta_{release\ year}*x_{release\ year} +
-\beta_{site} + \beta_{year} + \beta_{site:year} + \beta_{cultivar}
+yield_i = \alpha + \beta_{release\ year\ i}*x_{release\ year\ i} +
+\beta_{year\ i} + \beta_{cultivar\ i}
 \end{equation}
 
-Again, the estimate was conditioned on differences between cultivars,
-sites, years, and site:years.
+
+Where $\beta_{release\ year\ i}$ is effect of $x_{release\ year\ i}$,
+the year of release for $i$'s cultivar. All other parameters are
+similar to Eq. 1.
+
+Data was processed and models were fit in R, an environment for
+statistical computing \citep{R}. Models were fit using the 'rstanarm'
+package \citep{rstanarm}, an interface to Stan, a language for
+probabilistic programming \citep{stan}. All model diagnostics,
+including $\hat{R}$, effective size, and posterior predictive checks
+were examined before reporting results.
 
 \section{Results}\label{results}
 
 \subsection{Yield improvements over time}
 
-\begin{figure}[h]
+<<echo=FALSE>>=
+rel_CI = round(posterior_interval(RES_rel_fit, pars = "release_yr_c") * scl, 1)
+
+posterior_interval(RES_rel_fit, pars = "release_yr_c") * scl
+m202_v_206 = ((posterior_predict(RES_rel_fit, newdata = data.frame(release_yr_c = c(-15, 4)),
+                                 re.form = NA) * scl) + center)
+m202_v_206 = m202_v_206[,2] - m202_v_206[,1]
+m202_v_206 = round(quantile(m202_v_206, p = c(0.05, 0.5, 0.95)), 1)
+@ 
+
+There was a positive relationship between the year of release and
+yield, with an estimated \Sexpr{round(fixef(RES_rel_fit)[2] * scl, 1)}
+kg ha\textsuperscript{-1} year\textsuperscript{-1} increase (90\% CI:
+\Sexpr{rel_CI[1]} -- \Sexpr{rel_CI[2]})
+(Fig. \ref{fig:release}). Comparing the two dominate cultivars M-202,
+which was widely planted from the late 1980s until the early 2000s,
+and M-206, currently the most widely planted CRRFS cultivar
+(approximately 50\% of planted area), there is an estimated
+\Sexpr{m202_v_206[2]} kg ha\textsuperscript{-1} yield advantage of M-206
+over M-202 (Figs \ref{fig:release} \& \ref{fig:compare_yrs}).
+
+\begin{figure}[ht]
   
 <<fig=TRUE, echo=FALSE>>=
 yrs <- 1980:2015
-pp <- posterior_predict(release_fit, re.form = NA, newdata = data.frame(release_yr_c = yrs - 2000))
-pp <-  (pp * 1000 + 9000) * 1.12
+pp <- posterior_predict(RES_rel_fit, re.form = NA, newdata = data.frame(release_yr_c = yrs - 2000))
+pp <-  (pp * scl + center)
 
 ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
 
 res = mod_data$site == "RES"
-plot_data = prep_plot_data(mod_data$yield_lb[res] * 1.12,
+plot_data = prep_plot_data(mod_data$yield_kg[res] ,
                            mod_data$id[res])
 
 plot_data$tmp = tapply(mod_data$release_yr[res],
@@ -223,18 +289,19 @@ colnames(plot_data) = c("yield_kg", "yield_se", "release_yr")
 plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
      xlab = "Release year",
      ylab = expression("Grain yield ( kg ha"^-1~")"),
-     ylim = c(8000, 13000),
+     ylim = c(8000, 12500),
      xlim = c(1980,2019))
-abline(a = (((fixef(RES_rel_fit)[1] * 1000) + 9000) * 1.12) -
-           (2000 * fixef(RES_rel_fit)[2] * 1000),
-       b = fixef(RES_rel_fit)[2] * 1000, col = "grey50")
+abline(a = (((fixef(RES_rel_fit)[1] * scl) + center) ) -
+           (2000 * fixef(RES_rel_fit)[2] * scl),
+       b = fixef(RES_rel_fit)[2] * scl, col = "grey50",
+       lty = 2)
 with(plot_data, segments(x0 = release_yr, y0=yield_kg + yield_se,
                          y1 = yield_kg - yield_se))
 text(x = plot_data$release_yr, y = plot_data$yield_kg,
      labels = gsub("M", "M-", row.names(plot_data)),
      pos = 4, cex = 0.8)
 
-text(1990, 8000, bquote(.(round(fixef(release_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~year^-1))
+text(1990, 8000, bquote(.(round(fixef(RES_rel_fit)[2] * scl , 1))~kg~ha^-1~year^-1))
 
 @
 
@@ -249,98 +316,6 @@ text(1990, 8000, bquote(.(round(fixef(release_fit)[2] * 1000 * 1.12, 1))~kg~ha^-
 \label{fig:release}
 \end{figure}
 
-\subsection{Yield decreases over time}
-
-% \begin{figure}[h]
-  
-% <<fig=TRUE, echo=FALSE>>=
-% yrs_in <- -6:34
-% pp <- posterior_predict(yrs_fit, re.form = NA, newdata = data.frame(yrs_in_trial = yrs_in))
-% pp <-  (pp * 1000 + 9000) * 1.12
-
-% ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-
-% plot_data = as.data.frame(tapply(mod_data$yield_lb * 1.12, mod_data$yrs_in_trial, mean))
-% plot_data$se = tapply(mod_data$yield_lb * 1.12, mod_data$yrs_in_trial, function(x)
-%     sd(x)/sqrt(length(x)))
-% plot_data$tmp = as.numeric(row.names(plot_data))
-% colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
-
-% plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
-%      xlab = "Year since entry",
-%      ylab = expression("Yield ( kg ha"^-1~")"),
-%      ylim = c(8700, 11200))
-% with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
-%                          y1 = yield_kg - yield_se))
-% abline(a = ((fixef(yrs_fit)[1] * 1000) + 9000) * 1.12, b = fixef(yrs_fit)[2] * 1000)
-% # lines(x = yrs_in, y = ints[2,], lty = 2) 
-% # polygon(x = c(yrs_in, rev(yrs_in)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-% text(30, 4500, bquote(.(round(fixef(yrs_fit)[2] * 1000, 1))~lbs~year^-1))
-
-% @ 
-% \caption{There is a small decrease in yield over the time since a
-  % cultivar was entered into the trial using the full data
-  % set. However, the effect is small (\Sexpr{round(fixef(yrs_fit)[2] * 1000, 1)}
-  % lbs year\textsuperscript{-1}) in relation to the variability
-  % between sites and years.}
-% \label{fig:yrs}
-% \end{figure}
-
-
-<<echo=FALSE>>=
-all_CI <- round(posterior_interval(yrs_fit, pars = "yrs_in_trial") * 1000, 1)
-RES_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * 1000, 1)
-@ 
-
-As seen in Fig. \ref{fig:yrs}, there is a small decrease in yield
-over time once a cultivar is released, though the estimated effect is
-small compared to the variability in the data set. This decrease is estimated to be
-\Sexpr{round(fixef(yrs_fit)[2] * 1000, 1)} lbs
-year\textsuperscript{-1}. The oldest cultivar in the trials has lost
-an estimated \Sexpr{round(fixef(yrs_fit)[2] * 1000 * 36 * 1.12, 1)} kg ha\textsuperscript{-1} since release. Using just data from the Rice
-Experiment Station (RES), the estimated effect is more drastic
-(an estimated \Sexpr{round(fixef(RES_yrs_fit)[2] * 1000 * 1.12, 1)} kg
-ha\textsuperscript{-1} year\textsuperscript{-1}), but with a wider credible interval
-(\Sexpr{RES_CI[1]} -- \Sexpr{RES_CI[2]} vs \Sexpr{all_CI[1]} --
-\Sexpr{all_CI[2]}).
-
-
-\begin{figure}[h]
-  
-<<fig=TRUE, echo=FALSE>>=
-yrs_in <- -7:35
-pp <- posterior_predict(RES_yrs_fit, re.form = NA, newdata = data.frame(yrs_in_trial = yrs_in))
-pp <-  (pp * 1000 + 9000) * 1.12
-
-RES = res = mod_data$site == "RES"
-plot_data = prep_plot_data(mod_data$yield_lb[res] * 1.12,
-                           mod_data$yrs_in_trial[res])
-
-plot_data$tmp = as.numeric(row.names(plot_data))
-colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
-
-plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
-     xlab = "Year since entry",
-     ylab = expression("Grain yield ( kg ha"^-1~")"),
-     ylim = c(7000, 13000))
-with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
-                         y1 = yield_kg - yield_se))
-abline(a = ((fixef(RES_yrs_fit)[1] * 1000) + 9000) * 1.12,
-       b = fixef(RES_yrs_fit)[2] * 1000, col = "grey50")
-ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-text(5, 7000, bquote(.(round(fixef(RES_yrs_fit)[2] * 1000 * 1.12, 1))~kg~ha^-1~year^-1))
-
-@
-\caption{The relationship between yield and the years since entry for
-  medium grain rice varieties planted at the Rice Experiment Station
-  (RES), California, USA. RES is considered
-  the best managed site, and has the most plots per year of any of the
-  sites. The estimated decrease over time is estimated to be stronger
-  using only these data (\Sexpr{round(fixef(RES_yrs_fit)[2] * 1000, 1)}
-  lbs year\textsuperscript{-1}), primarly due to lower variability.}
-\label{fig:RES_year}
-\end{figure}
-
 
 \begin{figure}[ht]
 <<fig=TRUE, width = 8, height = 5, out.width = '85%', echo=FALSE>>=
@@ -351,7 +326,7 @@ par(mfrow = c(1, length(tars)),
 
 plot_data = lapply(tars, function(x) {
     dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
-    tmp = prep_plot_data(dd$yield_lb * 1.12, dd$year)
+    tmp = prep_plot_data(dd$yield_kg , dd$year)
     tmp$year = as.numeric(row.names(tmp))
     tmp
     })
@@ -359,7 +334,7 @@ plot_data = lapply(tars, function(x) {
 invisible(sapply(1:2, function(i){
     plot(mean ~ year,
          data = plot_data[[i]],
-         xlim = c(1995, 2016), ylim = c(6500,14500),
+         xlim = c(1995, 2016), ylim = c(7500,13500),
          pch = 16, main = gsub("M","M-", tars[i]),
          ylab = "",
          yaxt = "n",
@@ -371,18 +346,18 @@ invisible(sapply(1:2, function(i){
         axis(2)
         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
     }
-#     abline(lm(yield_lb*1.12 ~ year,
+#     abline(lm(yield_kg*1.12 ~ year,
     #               data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
     # lty = 2)
 
-    abline(h = mean(mod_data$yield_lb[(mod_data$id == tars[i] &
-                                       mod_data$site == "RES")] * 1.12),
+    abline(h = mean(mod_data$yield_kg[(mod_data$id == tars[i] &
+                                       mod_data$site == "RES")] ),
            lty = 1, col = "grey50")
 
 }))
 
 # invisible(sapply(tars, function(x){
-#     plot(yield_lb * 1.12 ~ year,
+#     plot(yield_kg  ~ year,
 #          data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
 #          xlim = c(1995, 2016), ylim = c(6500,14500),
 #          pch = 16,
@@ -395,71 +370,189 @@ invisible(sapply(1:2, function(i){
 #         axis(2)
 #         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
 #     }
-#     # abline(lm(yield_lb ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
-#     abline(h = mean(mod_data$yield_lb[(mod_data$id == x & mod_data$site == "RES")] * 1.12),
+#     # abline(lm(yield_kg ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
+#     abline(h = mean(mod_data$yield_kg[(mod_data$id == x & mod_data$site == "RES")] ),
 #            lty = 2)
 # }))
 
 @
 \caption{The performance of two major cultivars at the CA Rice
-  Experiment Station (RES) over the period 1995 -- 2015. The dashed line is the average
+  Experiment Station (RES) over the period 1995 -- 2015. The line is the average
   yield for each cultivar over the period which it was planted at the
-  RES. The newer cultivar, M-209, appears to have a slight yield
+  RES. The newer cultivar, M-206, appears to have a slight yield
   advantage over the older cultivar, M-202.}
-\label{fig:res_yrs}
+\label{fig:compare_yrs}
 \end{figure}
+
+\subsection{Yield decreases over time}
+
+% \begin{figure}[h]
+  
+% <<fig=TRUE, echo=FALSE>>=
+% yrs_in <- -6:34
+% pp <- posterior_predict(RES_yrs_fit, re.form = NA, newdata = data.frame(yrs_in_trial = yrs_in))
+% pp <-  (pp * scl + center) 
+
+% ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
+
+% plot_data = as.data.frame(tapply(mod_data$yield_kg , mod_data$yrs_in_trial, mean))
+% plot_data$se = tapply(mod_data$yield_kg , mod_data$yrs_in_trial, function(x)
+%     sd(x)/sqrt(length(x)))
+% plot_data$tmp = as.numeric(row.names(plot_data))
+% colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
+
+% plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
+%      xlab = "Year since entry",
+%      ylab = expression("Yield ( kg ha"^-1~")"),
+%      ylim = c(8700, 11200))
+% with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
+%                          y1 = yield_kg - yield_se))
+% abline(a = ((fixef(RES_yrs_fit)[1] * scl) + center) , b = fixef(RES_yrs_fit)[2] * scl)
+% # lines(x = yrs_in, y = ints[2,], lty = 2) 
+% # polygon(x = c(yrs_in, rev(yrs_in)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
+% text(30, 4500, bquote(.(round(fixef(RES_yrs_fit)[2] * scl, 1))~lbs~year^-1))
+
+% @ 
+% \caption{There is a small decrease in yield over the time since a
+  % cultivar was entered into the trial using the full data
+  % set. However, the effect is small (\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)}
+  % lbs year\textsuperscript{-1}) in relation to the variability
+  % between sites and years.}
+% \label{fig:yrs}
+% \end{figure}
+
+
+<<echo=FALSE>>=
+all_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * scl, 1)
+RES_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * scl, 1)
+@ 
+
+As seen in Fig. \ref{fig:yrs}, there is a small decrease in yield
+over time once a cultivar is released, though the estimated effect is
+small compared to the variability in the data set. This decrease is estimated to be
+\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)} lbs
+year\textsuperscript{-1}. The oldest cultivar in the trials has lost
+an estimated \Sexpr{round(fixef(RES_yrs_fit)[2] * scl * 36 , 1)} kg ha\textsuperscript{-1} since release. Using just data from the Rice
+Experiment Station (RES), the estimated effect is more drastic
+(an estimated \Sexpr{round(fixef(RES_yrs_fit)[2] * scl , 1)} kg
+ha\textsuperscript{-1} year\textsuperscript{-1}), but with a wider credible interval
+(\Sexpr{RES_CI[1]} -- \Sexpr{RES_CI[2]} vs \Sexpr{all_CI[1]} --
+\Sexpr{all_CI[2]}).
+
+
+\begin{figure}[ht]
+  
+<<fig=TRUE, echo=FALSE>>=
+yrs_in <- -7:35
+pp <- posterior_predict(RES_yrs_fit, re.form = NA, newdata = data.frame(yrs_in_trial = yrs_in))
+pp <-  (pp * scl + center) 
+
+RES = res = mod_data$site == "RES"
+plot_data = prep_plot_data(mod_data$yield_kg[res] ,
+                           mod_data$yrs_in_trial[res])
+
+plot_data$tmp = as.numeric(row.names(plot_data))
+colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
+
+plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
+     xlab = "Year since release",
+     ylab = expression("Grain yield ( kg ha"^-1~")"),
+     ylim = c(8000, 12500))
+with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
+                         y1 = yield_kg - yield_se))
+abline(a = ((fixef(RES_yrs_fit)[1] * scl) + center) ,
+       b = fixef(RES_yrs_fit)[2] * scl, col = "grey50",
+       lty = 2)
+ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
+text(5, 8000, bquote(.(round(fixef(RES_yrs_fit)[2] * scl , 1))~kg~ha^-1~year^-1))
+
+@
+\caption{The relationship between yield and the years since release for
+  medium grain rice varieties planted at the Rice Experiment Station
+  (RES), California, USA. RES is considered
+  the best managed site, and has the most plots per year of any of the
+  sites. The estimated decrease over time is estimated to be stronger
+  using only these data (\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)}
+  lbs year\textsuperscript{-1}), primarly due to lower variability.}
+\label{fig:RES_year}
+\end{figure}
+
 
 
 \begin{figure}
   
-<<fig=TRUE, echo=FALSE, width = 8, height = 5>>=
-par(mfrow = c(1, length(tars)),
-    mar = c(4,0,2,0),
-    oma = c(4,4,0.5,0.5))
+<<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
+# par(mfrow = c(1, length(tars)),
+#     mar = c(4,0,2,0),
+#     oma = c(4,4,0.5,0.5))
 
 plot_data = lapply(tars, function(x) {
     dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
-    tmp = prep_plot_data(dd$yield_lb * 1.12, dd$yrs_in_trial)
+    tmp = prep_plot_data(dd$yield_kg , dd$yrs_in_trial)
     tmp$yrs_in_trial = as.numeric(row.names(tmp))
     tmp
     })
 
-invisible(sapply(1:2, function(i){
-    plot(mean ~ yrs_in_trial,
-         data = plot_data[[i]],
-         xlim = c(-6, 36), ylim = c(6500,14500),
-         pch = 16, main = gsub("M","M-", tars[i]),
-         ylab = "",
-         yaxt = "n",
-         xlab = "Years after release")
-    segments(x0 = plot_data[[i]]$yrs_in_trial,
-             y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
-             y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
-    if(i == 1){
-        axis(2)
-        mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
-    }
-    abline(lm(yield_lb*1.12 ~ yrs_in_trial,
-              data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
-           lty = 1, col = "grey50")
-}))
+# invisible(sapply(1:2, function(i){
+#     plot(mean ~ yrs_in_trial,
+#          data = plot_data[[i]],
+#          xlim = c(-6, 36), ylim = c(6500,14500),
+#          pch = 16, main = gsub("M","M-", tars[i]),
+#          ylab = "",
+#          yaxt = "n",
+#          xlab = "Years after release")
+#     segments(x0 = plot_data[[i]]$yrs_in_trial,
+#              y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
+#              y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
+#     if(i == 1){
+#         axis(2)
+#         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
+#     }
+#     abline(lm(yield_kg*1.12 ~ yrs_in_trial,
+#               data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
+#            lty = 1, col = "grey50")
+# }))
+
+plot(mean ~ yrs_in_trial,
+     data = plot_data[[1]],
+     xlim = c(-6, 32), ylim = c(6500,14500),
+     pch = 16, main = gsub("M","M-", tars[i]),
+     ylab = expression("Yield ( kg ha"^-1~")"),
+     xlab = "Years after release")
+segments(x0 = plot_data[[1]]$yrs_in_trial,
+         y0 = plot_data[[1]]$mean + plot_data[[1]]$se,
+         y1 = plot_data[[1]]$mean - plot_data[[1]]$se)
+points(mean ~ yrs_in_trial,
+       data = plot_data[[2]],
+       pch = 17, col = "grey40")
+segments(x0 = plot_data[[2]]$yrs_in_trial,
+         y0 = plot_data[[2]]$mean + plot_data[[2]]$se,
+         y1 = plot_data[[2]]$mean - plot_data[[2]]$se,
+         col = "grey40")
+abline(lm(yield_kg ~ yrs_in_trial,
+          data = mod_data[(mod_data$id %in% tars & mod_data$site == "RES"),]),
+       lty = 1, col = "grey50")
+legend("topright", legend = gsub("M","M-", tars),
+       pch = c(16, 17), col = c("black","grey40"))
+
 
 @
 \caption{The performance of two major cultivars at the CA Rice
   Experiment Station (RES) since the year each cultivar was
-  released. Both M-202 and M-206 have similar intercepts, suggesting
-  similar yield at the time of release and an apparent yield advantage
-  of the newer cultivar, M-209, might be explained by a yield loss of
-  M-202 over time.}
+  released. Both M-202 ($\bullet$) and M-206 ($\blacktriangle$) have similar
+  intercepts, suggesting similar yield at the time of release and an
+  apparent yield advantage of the newer cultivar, M-206, might be
+  explained by a yield loss of M-202 over time. Points represent the
+  mean, and bars (|) the standard error.}
 \label{fig:res_since_release}
 \end{figure}
 
 Contrary to the estimates for decreases once a cultivar is released, there was a
 small increase over time (Fig. \ref{fig:release}), though it was small
-(\Sexpr{round(fixef(release_fit)[2] * 1000, 1)} lbs
+(\Sexpr{round(fixef(RES_rel_fit)[2] * scl, 1)} lbs
 year\textsuperscript{-1}). This suggests that the overall progress on
 yield over the period from 1980 -- 2016 is approximately
-\Sexpr{round(fixef(release_fit)[2] * 1000 * 36, 1)} lbs acre\textsuperscript{-1}.
+\Sexpr{round(fixef(RES_rel_fit)[2] * scl * 36, 1)} lbs acre\textsuperscript{-1}.
 
 % \begin{figure}[h]
   
@@ -467,16 +560,16 @@ yield over the period from 1980 -- 2016 is approximately
 % yrs <- 1980:2015
 % pp <- posterior_predict(RES_rel_fit, re.form = NA,
 %                         newdata = data.frame(release_yr_c = yrs - 2000))
-% pp <-  pp * 1000 + 9000
+% pp <-  pp * scl + center
 
 % ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
 
-% plot(yield_lb ~ release_yr, data = mod_data[RES,], pch = 16, col = rgb(0,0,0,0.25),
+% plot(yield_kg ~ release_yr, data = mod_data[RES,], pch = 16, col = rgb(0,0,0,0.25),
 %      xlab = "Year of Release",
 %      ylab =  expression("Yield ( lbs acre"^-1~")"))
 % lines(x = yrs, y = ints[2,], lty = 2) 
 % polygon(x = c(yrs, rev(yrs)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-% text(2010, 4500, bquote(.(round(fixef(RES_rel_fit)[2] * 1000, 1))~lbs~year^-1))
+% text(2010, 4500, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~lbs~year^-1))
 % @
 
 % \caption{The effect of year of release on yield for only data from the
@@ -515,7 +608,7 @@ There is evidence of a small increase in yield with each new released
 cultivar. Therefore, it appears that successive cultivar releases are
 not merely recovering to the old benchmark but are surpassing
 it. However, progress is slower than previously estimated
-(\Sexpr{round(fixef(release_fit)[2] * 1000, 1)} lbs
+(\Sexpr{round(fixef(RES_rel_fit)[2] * scl, 1)} lbs
 acre\textsuperscript{-1} year\textsuperscript{-1} increase verses a
 previous estimate of 54 lbs acre\textsuperscript{-1}
 year\textsuperscript{-1}).
@@ -550,7 +643,7 @@ figures}\label{supplemental-tables-and-figures}
 \begin{figure}[h]
 
 <<label=plot1, fig=TRUE, echo=FALSE>>=
-boxplot(yield_lb ~ year, data = mod_data,
+boxplot(yield_kg ~ year, data = mod_data,
         xlab = "Year", ylab = expression("Yield ( lb ac"^-1~")"))
 @
   \caption{Distribution of yield over the period 1995 -- 2015.} \label{fig:plot}
@@ -560,7 +653,7 @@ boxplot(yield_lb ~ year, data = mod_data,
 \begin{figure}[h]
 <<label=plot2, fig=TRUE, echo=FALSE>>=
   
-  boxplot(yield_lb ~ id, data = mod_data,
+  boxplot(yield_kg ~ id, data = mod_data,
           xlab = "Cultivar",
           ylab = "Yield (lbs/ac)")
 @

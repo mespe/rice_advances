@@ -32,8 +32,14 @@ mod_data$release_yr_c <- mod_data$release_yr - 2000
 
 mod_data$yrs_in_trial <- mod_data$year - mod_data$release_yr
 
+# convert yield to kg/ha here once, rather than repeatedly in paper
+mod_data$yield_kg = mod_data$yield_lb * 1.12
+
 ## Get some centered and scaled vars for model
-mod_data$yield_cs <- (mod_data$yield - 9000) / 1000
+center = 10000
+scl = 1000
+
+mod_data$yield_cs <- (mod_data$yield_kg - center) / scl
 mod_data$yr_fact <- factor(mod_data$year)
 mod_data$yr_site_fact <- factor(paste(mod_data$year, mod_data$site))
 

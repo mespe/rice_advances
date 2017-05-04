@@ -36,13 +36,13 @@ source("prep_model_data.R")
 ## release_fit <- sampling(mm, data = c(dd, list(x = mod_data$release_yr - 2000)),
 ##                     iter = 500, cores = 2L, control = list(adapt_delta = 0.9))
 
-yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|site) + (1|id) +
-                          (1|yr_site_fact) + yrs_in_trial,
-                      data = mod_data, iter = 1000, cores = 2L)
+# yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|site) + (1|id) +
+#                           (1|yr_site_fact) + yrs_in_trial,
+#                       data = mod_data, iter = 1000, cores = 2L)
 
-release_fit <- stan_glmer(yield_cs ~ (1|year) + (1|site) +
-                              (1|id) + (1|yr_site_fact) + release_yr_c,
-                          data = mod_data, iter = 1000, cores = 2L)
+# release_fit <- stan_glmer(yield_cs ~ (1|year) + (1|site) +
+#                               (1|id) + (1|yr_site_fact) + release_yr_c,
+#                           data = mod_data, iter = 1000, cores = 2L)
 
 i <- mod_data$site == "RES"
 
@@ -53,4 +53,5 @@ RES_rel_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c,
                           data = mod_data[i,], iter = 1000, cores = 2L)
 
 
-save(yrs_fit, release_fit, RES_yrs_fit, RES_rel_fit, file = "../output/h1_fit.Rda")
+save( #yrs_fit, release_fit,
+     RES_yrs_fit, RES_rel_fit, file = "../output/h1_fit.Rda")
