@@ -358,7 +358,7 @@ invisible(sapply(1:2, function(i){
   Experiment Station (RES) over the period 1995 -- 2015. The line is the average
   yield for each cultivar over the period which it was planted at the
   RES. The newer cultivar, M-206, appears to have a slight yield
-  advantage over the older cultivar, M-202.}
+  advantage (an estimated \Sexpr{m202_v_206[2]} kg ha\textsuperscript{-1})over the older cultivar, M-202.}
 \label{fig:compare_yrs}
 \end{figure}
 
@@ -369,18 +369,24 @@ all_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * scl, 1)
 RES_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * scl, 1)
 @ 
 
-As seen in Fig. \ref{fig:yrs}, there is a small decrease in yield
-over time once a cultivar is released, though the estimated effect is
-small compared to the variability in the data set. This decrease is estimated to be
-\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)} lbs
-year\textsuperscript{-1}. The oldest cultivar in the trials has lost
-an estimated \Sexpr{round(fixef(RES_yrs_fit)[2] * scl * 36 , 1)} kg ha\textsuperscript{-1} since release. Using just data from the Rice
-Experiment Station (RES), the estimated effect is more drastic
-(an estimated \Sexpr{round(fixef(RES_yrs_fit)[2] * scl , 1)} kg
-ha\textsuperscript{-1} year\textsuperscript{-1}), but with a wider credible interval
-(\Sexpr{RES_CI[1]} -- \Sexpr{RES_CI[2]} vs \Sexpr{all_CI[1]} --
-\Sexpr{all_CI[2]}).
+When yields are arranged according to the years since release, there
+is a small decrease in yield over time once a cultivar is released,
+though the estimated effect is small compared to the variability in
+the data set. This decrease is estimated to be
+\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)} kg
+ha\textsuperscript{-1} year\textsuperscript{-1} (90\% CI: \Sexpr{RES_CI[2]} --
+\Sexpr{RES_CI[1]}). The oldest cultivar
+in the trials is estimated to have lost
+\Sexpr{round(fixef(RES_yrs_fit)[2] * scl * 36 , 1)} kg
+ha\textsuperscript{-1} since release.
 
+Again comparing the yield of two prominant cultivars, M-202 and M-206,
+arranged not by the year but rather the years since release, we find
+that the two cultivars are compariable and that the estimated yield
+advantage (\Sexpr{m202_v_206[2]} kg ha\textsuperscript{-1}) can be
+explained by the differences in the amount of time that has passed
+since each cultivar was released
+(Fig. \ref{fig:compare_since_release})
 
 \begin{figure}[ht]
   
@@ -462,7 +468,7 @@ legend("topright", legend = gsub("M","M-", tars),
   apparent yield advantage of the newer cultivar, M-206, might be
   explained by a yield loss of M-202 over time. Points represent the
   mean, and bars (|) the standard error.}
-\label{fig:res_since_release}
+\label{fig:compare_since_release}
 \end{figure}
 
 Contrary to the estimates for decreases once a cultivar is released, there was a
