@@ -346,34 +346,12 @@ invisible(sapply(1:2, function(i){
         axis(2)
         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
     }
-#     abline(lm(yield_kg*1.12 ~ year,
-    #               data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
-    # lty = 2)
 
     abline(h = mean(mod_data$yield_kg[(mod_data$id == tars[i] &
                                        mod_data$site == "RES")] ),
            lty = 1, col = "grey50")
 
 }))
-
-# invisible(sapply(tars, function(x){
-#     plot(yield_kg  ~ year,
-#          data = mod_data[(mod_data$id == x & mod_data$site == "RES"),],
-#          xlim = c(1995, 2016), ylim = c(6500,14500),
-#          pch = 16,
-#          col = rgb(0,0,0,0.5),
-#          main = gsub("M", "M-", x),
-#          ylab = "",
-#          yaxt = "n",
-#          xlab = "Year")
-#     if(x == "M202"){
-#         axis(2)
-#         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
-#     }
-#     # abline(lm(yield_kg ~ year, data = mod_data[(mod_data$id == x & mod_data$site == "RES"),]), lty = 2)
-#     abline(h = mean(mod_data$yield_kg[(mod_data$id == x & mod_data$site == "RES")] ),
-#            lty = 2)
-# }))
 
 @
 \caption{The performance of two major cultivars at the CA Rice
@@ -385,42 +363,6 @@ invisible(sapply(1:2, function(i){
 \end{figure}
 
 \subsection{Yield decreases over time}
-
-% \begin{figure}[h]
-  
-% <<fig=TRUE, echo=FALSE>>=
-% yrs_in <- -6:34
-% pp <- posterior_predict(RES_yrs_fit, re.form = NA, newdata = data.frame(yrs_in_trial = yrs_in))
-% pp <-  (pp * scl + center) 
-
-% ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-
-% plot_data = as.data.frame(tapply(mod_data$yield_kg , mod_data$yrs_in_trial, mean))
-% plot_data$se = tapply(mod_data$yield_kg , mod_data$yrs_in_trial, function(x)
-%     sd(x)/sqrt(length(x)))
-% plot_data$tmp = as.numeric(row.names(plot_data))
-% colnames(plot_data) = c("yield_kg", "yield_se", "yrs_in_trial")
-
-% plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
-%      xlab = "Year since entry",
-%      ylab = expression("Yield ( kg ha"^-1~")"),
-%      ylim = c(8700, 11200))
-% with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
-%                          y1 = yield_kg - yield_se))
-% abline(a = ((fixef(RES_yrs_fit)[1] * scl) + center) , b = fixef(RES_yrs_fit)[2] * scl)
-% # lines(x = yrs_in, y = ints[2,], lty = 2) 
-% # polygon(x = c(yrs_in, rev(yrs_in)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-% text(30, 4500, bquote(.(round(fixef(RES_yrs_fit)[2] * scl, 1))~lbs~year^-1))
-
-% @ 
-% \caption{There is a small decrease in yield over the time since a
-  % cultivar was entered into the trial using the full data
-  % set. However, the effect is small (\Sexpr{round(fixef(RES_yrs_fit)[2] * scl, 1)}
-  % lbs year\textsuperscript{-1}) in relation to the variability
-  % between sites and years.}
-% \label{fig:yrs}
-% \end{figure}
-
 
 <<echo=FALSE>>=
 all_CI <- round(posterior_interval(RES_yrs_fit, pars = "yrs_in_trial") * scl, 1)
@@ -482,9 +424,6 @@ text(5, 8000, bquote(.(round(fixef(RES_yrs_fit)[2] * scl , 1))~kg~ha^-1~year^-1)
 \begin{figure}
   
 <<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
-# par(mfrow = c(1, length(tars)),
-#     mar = c(4,0,2,0),
-#     oma = c(4,4,0.5,0.5))
 
 plot_data = lapply(tars, function(x) {
     dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
@@ -492,26 +431,6 @@ plot_data = lapply(tars, function(x) {
     tmp$yrs_in_trial = as.numeric(row.names(tmp))
     tmp
     })
-
-# invisible(sapply(1:2, function(i){
-#     plot(mean ~ yrs_in_trial,
-#          data = plot_data[[i]],
-#          xlim = c(-6, 36), ylim = c(6500,14500),
-#          pch = 16, main = gsub("M","M-", tars[i]),
-#          ylab = "",
-#          yaxt = "n",
-#          xlab = "Years after release")
-#     segments(x0 = plot_data[[i]]$yrs_in_trial,
-#              y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
-#              y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
-#     if(i == 1){
-#         axis(2)
-#         mtext(expression("Yield ( kg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
-#     }
-#     abline(lm(yield_kg*1.12 ~ yrs_in_trial,
-#               data = mod_data[(mod_data$id == tars[i] & mod_data$site == "RES"),]),
-#            lty = 1, col = "grey50")
-# }))
 
 plot(mean ~ yrs_in_trial,
      data = plot_data[[1]],
@@ -535,7 +454,6 @@ abline(lm(yield_kg ~ yrs_in_trial,
 legend("topright", legend = gsub("M","M-", tars),
        pch = c(16, 17), col = c("black","grey40"))
 
-
 @
 \caption{The performance of two major cultivars at the CA Rice
   Experiment Station (RES) since the year each cultivar was
@@ -553,31 +471,6 @@ small increase over time (Fig. \ref{fig:release}), though it was small
 year\textsuperscript{-1}). This suggests that the overall progress on
 yield over the period from 1980 -- 2016 is approximately
 \Sexpr{round(fixef(RES_rel_fit)[2] * scl * 36, 1)} lbs acre\textsuperscript{-1}.
-
-% \begin{figure}[h]
-  
-% <<fig=TRUE, echo=FALSE>>=
-% yrs <- 1980:2015
-% pp <- posterior_predict(RES_rel_fit, re.form = NA,
-%                         newdata = data.frame(release_yr_c = yrs - 2000))
-% pp <-  pp * scl + center
-
-% ints <- apply(pp, 2, quantile, p = c(0.05, 0.5, 0.95))
-
-% plot(yield_kg ~ release_yr, data = mod_data[RES,], pch = 16, col = rgb(0,0,0,0.25),
-%      xlab = "Year of Release",
-%      ylab =  expression("Yield ( lbs acre"^-1~")"))
-% lines(x = yrs, y = ints[2,], lty = 2) 
-% polygon(x = c(yrs, rev(yrs)), y = c(ints[1,],rev(ints[3,])), col = rgb(0,0,0,0.2), border = NA)
-% text(2010, 4500, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~lbs~year^-1))
-% @
-
-% \caption{The effect of year of release on yield for only data from the
-%   Rice Experiment Station (RES). There is an estimated
-%   increase in yield over time, but it is smaller than the previously estimated 54 lbs
-%   year\textsuperscript{-1}}
-% \label{fig:RES_release}
-% \end{figure}
 
 \section{Discussion}
   
