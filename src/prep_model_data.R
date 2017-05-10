@@ -4,13 +4,16 @@ load("../data/all_vt_weather.Rda")
 ## Replace 08Y3269 with M209
 all_vt_result$id[all_vt_result$id == "08Y3269"] <- "M209"
 
+## Merge with pre95 data
+source("../src/munge_pre95.R")
+
 ## Subset to medium grains
-vars <- grepl("^M[0-9]{3}$", all_vt_result$id)
+vars <- grepl("^M[0-9]{3}$", all_data$id)
 
 ## Do not include San Joaquin sites - known to hammer with cold and
 ## Not managed similar to most of CA rice production
-no_sj <- all_vt_result$county != "SAN JOAQUIN"
-mod_data <- all_vt_result[(vars & no_sj),]
+no_sj <- all_data$county != "SAN JOAQUIN"
+mod_data <- all_data[(vars & no_sj),]
 
 ## Exclude M-401/402 and Tucker site, per conversation with Bruce
 ## 10 Feb 2017:
@@ -43,4 +46,5 @@ mod_data$yield_cs <- (mod_data$yield_kg - center) / scl
 mod_data$yr_fact <- factor(mod_data$year)
 mod_data$yr_site_fact <- factor(paste(mod_data$year, mod_data$site))
 
-
+save(mod_data, scl, center, file = "../data/model_data.rda")
+################################################################################
