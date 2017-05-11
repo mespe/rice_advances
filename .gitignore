@@ -5,3 +5,5 @@
 *.spl
 *.blg
 .Rhistory
+*.tex
+*.pdf
