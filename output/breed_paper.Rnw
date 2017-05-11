@@ -220,22 +220,24 @@ moisture content prior to reporting.
 Yield was modeled as a response to the number of years since the
 variety was officially released using a mixed-effects linear
 model. Differences between years and cultivars were included in the
-model as random effects according to:
 
-\begin{equation}
- yield_i = \alpha + \beta_{years\ since\ release\ i}* x_{years\ since\
-   release\ i} + \beta_{release\ year\ i}*x_{release\ year\ i} + \beta_{year\ i} + \beta_{cultivar\ i}
-\end{equation}
+%
+% model as random effects according to:
 
-Where $yield_i$ is the grain yield for plot $i$, $\alpha$ is the
-average yield for the RES across varieties and years (intercept),
-$\beta_{years\ since\ release\ i}$ is effect of $x_{years\ since\
-release\ i}$, the number of years $i$'s cultivar has been in the
-trials (negative for years prior to release, zero at the year of
-release), $\beta_{release\ year\ i}$ is the effect of $x_{release\
-year\ i}$, the year of release for $i$'s cultivar, $\beta_{year}$ is
-the random effect of year, and $\beta_{cultivar}$ is the random effect
-of cultivar.
+% \begin{equation}
+%  yield_i = \alpha + \beta_{years\ since\ release\ i}* x_{years\ since\
+%    release\ i} + \beta_{release\ year\ i}*x_{release\ year\ i} + \beta_{year\ i} + \beta_{cultivar\ i}
+% \end{equation}
+
+% Where $yield_i$ is the grain yield for plot $i$, $\alpha$ is the
+% average yield for the RES across varieties and years (intercept),
+% $\beta_{years\ since\ release\ i}$ is effect of $x_{years\ since\
+% release\ i}$, the number of years $i$'s cultivar has been in the
+% trials (negative for years prior to release, zero at the year of
+% release), $\beta_{release\ year\ i}$ is the effect of $x_{release\
+% year\ i}$, the year of release for $i$'s cultivar, $\beta_{year}$ is
+% the random effect of year, and $\beta_{cultivar}$ is the random effect
+% of cultivar.
 
 Data was processed and models were fit in R, an environment for
 statistical computing \citep{R}. Models were fit using the 'rstanarm'
@@ -352,14 +354,15 @@ text(x = plot_data$release_yr, y = plot_data$yield_kg + 0.15,
      labels = gsub("M", "M-", row.names(plot_data)),
      pos = 4, cex = 0.8)
 
-legend("bottomright", legend = c("w/ years since release",
-                                 "w/o years since release",
+legend("bottomright", legend = c("w/ years since release adj.",
+                                 "w/o years since release adj.",
                                  "90% Credible interval"),
        lty = c(1,2, NA),
        bty = "n",
        fill = c(NA,NA, "grey"),
        border = NA,
-       merge = TRUE)
+       merge = TRUE,
+       cex = 0.8)
 polygon(x = c(yrs, rev(yrs)),
         y = c(ints[1,],rev(ints[2,])),
         border = NA,
@@ -624,6 +627,22 @@ year difference in years since release between the cultivars.}
 \label{fig:compare_vars}
 \end{figure}
 
+\newpage
+
+<<echo=FALSE, results=tex>>=
+ids = aggregate(release_yr ~ id, data = mod_data, unique)
+colnames(ids) = c("Cultivar", "Release Year")
+ids = ids[order(ids[,2]),]
+ids[,2] = as.integer(ids[,2])
+ids[,1] = gsub("M", "M-", ids[,1])
+
+print(xtable(ids,
+             caption = "All named medium grain rice cultivars and their associated release year planted at the Rice Experiment Station (RES), Biggs, California from 1984 -- 2015.",
+             label = "tbl:ids"),
+      include.rownames = FALSE,
+      booktabs = TRUE,
+      caption.placement = "top")
+@ 
 % \begin{figure}[h]
 
 % <<label=plot1, fig=TRUE, echo=FALSE>>=
