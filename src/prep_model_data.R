@@ -1,5 +1,8 @@
 ## Prepares data for write-up
-load("../data/all_vt_weather.Rda")
+load("../data/all_w_2016.Rda")
+
+# Replace "-" in variety names
+all_vt_result$id = gsub("M-", "M", all_vt_result$id)
 
 ## Replace 08Y3269 with M209
 all_vt_result$id[all_vt_result$id == "08Y3269"] <- "M209"
@@ -10,21 +13,13 @@ source("../src/munge_pre95.R")
 ## Subset to medium grains
 vars <- grepl("^M[0-9]{3}$", all_data$id)
 
-## Do not include San Joaquin sites - known to hammer with cold and
-## Not managed similar to most of CA rice production
-no_sj <- all_data$county != "SAN JOAQUIN"
-mod_data <- all_data[(vars & no_sj),]
+mod_data <- all_data[vars,]
 
-## Exclude M-401/402 and Tucker site, per conversation with Bruce
-## 10 Feb 2017:
-## M-401 and M-402 are often mis-managed in trials, however they are also old varieties
-## Question if excluding them is not creating more issues
-## not4s <- !mod_data$id %in% c("M401","M402")
+# To simplify model interpretation, only analyze RES
+# since this is the best managed site
+# with the most data
 
-## Tucker was a problematic site with high variability and low yields
-notTuck <- mod_data$site != "TUCKER"
-
-mod_data <- mod_data[(notTuck),]
+mod_data = mod_data[mod_data$site == "RES",]
 
 ## Use officially published years instead of years in trial
 load("../data/yrTbl.Rda")
@@ -47,4 +42,5 @@ mod_data$yr_fact <- factor(mod_data$year)
 mod_data$yr_site_fact <- factor(paste(mod_data$year, mod_data$site))
 
 save(mod_data, scl, center, file = "../data/model_data.rda")
+
 ################################################################################

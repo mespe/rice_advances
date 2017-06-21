@@ -1,10 +1,15 @@
 ## Run model and save output as text files
 ##.args = list(commandArgs(trailingOnly=TRUE))
 
+# Set to TRUE to compare between models
+compare = TRUE
+
 library(rstan)
 library(rstanarm)
+
 # source("prep_model_data.R")
 load("../data/model_data.rda")
+
 ## mm <- stan_model(file = "yield_model.stan", verbose = TRUE)
 
 ## n.level <- function(x){
@@ -44,16 +49,24 @@ load("../data/model_data.rda")
 #                               (1|id) + (1|yr_site_fact) + release_yr_c,
 #                           data = mod_data, iter = 1000, cores = 2L)
 
-i <- mod_data$site == "RES"
-
-# RES_yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + yrs_in_trial,
-#                           data = mod_data[i,], iter = 1000, cores = 2L)
-
-# RES_rel_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c,
-#                           data = mod_data[i,], iter = 1000, cores = 2L)
 
 RES_full = stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c + yrs_in_trial,
-                          data = mod_data[i,], iter = 1000, cores = 2L)
+                      data = mod_data, iter = 2000, cores = 2L,
+                      seed = 789)
+
+if(compare){
+    RES_yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + yrs_in_trial,
+                              data = mod_data, iter = 2000, cores = 2L,
+                              seed = 789)
+
+    RES_rel_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c,
+                              data = mod_data, iter = 2000, cores = 2L,
+                              seed = 789)
+
+    library(loo)
+    compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit))
+    save(RES_yrs_fit, RES_rel_fit, file = "../output/bivar_fit.Rda")
+}
 
 
 save(RES_full, file = "../output/h1_fit.Rda")
