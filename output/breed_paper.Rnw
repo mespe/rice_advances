@@ -323,14 +323,22 @@ than average yield, though the CI overlaps with zero.
 
 \begin{figure}[H]
 
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width = 9, height = 6>>=
 yrs <- 1975:2025
+
+pp <- posterior_linpred(RES_rel_fit, re.form = NA,
+                        newdata = data.frame(release_yr_c = yrs - 2000,
+                                             yrs_in_trial = 0),
+                        prob = 0.5)
+pp <-  (pp * scl + center) / 1000
+ints1 = apply(pp, 2, quantile, p = c(0.05, 0.95))
+
 pp <- posterior_linpred(RES_full, re.form = NA,
                         newdata = data.frame(release_yr_c = yrs - 2000,
                                              yrs_in_trial = 0),
                         prob = 0.5)
 pp <-  (pp * scl + center) / 1000
-ints = apply(pp, 2, quantile, p = c(0.05, 0.95))
+ints2 = apply(pp, 2, quantile, p = c(0.05, 0.95))
 
 res = mod_data$site == "RES"
 comp_yrs = 2010:2015
@@ -344,55 +352,84 @@ plot_data$tmp = tapply(mod_data$release_yr[idx],
 
 colnames(plot_data) = c("yield_kg", "yield_se", "release_yr")
 
+
+# get corrected yield
+wo_erosion = expand.grid(id = row.names(plot_data),
+            year = comp_yrs,
+            release_yr_c = 0,
+            yrs_in_trial = 0)
+wo_erosion$corr_yield = colMeans(posterior_predict(RES_full,
+                               newdata = wo_erosion)) + center/1000
+plot_data2 = prep_plot_data(wo_erosion$corr_yield,
+                            wo_erosion$id)
+plot_data2$release_yr = plot_data$release_yr
+
+par(mfrow = c(1,2),
+    mar = c(4,0,2,0.75),
+    oma = c(4,4,0.5,0.5))
+
 plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
      xlab = "Release year",
-     ylab = expression("Grain yield ( Mg ha"^-1~")"),
+     ylab = "", 
      ylim = c(8, 12.5),
-     xlim = c(1980,2019))
-abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
-           (2000 * release_yr_coef)) / 1000,
-       b = release_yr_coef/1000)
-abline(lm(yield_kg/1000 ~ release_yr, data = mod_data[idx,]), lty = 2)
+     xaxt = "n",
+     xlim = c(1980,2020))
+axis(1, at = seq(1980, 2020, by = 10))
+mtext(text = expression("Grain yield ( Mg ha"^-1~")"), side = 2, line = 2.5)
+abline(a = ((fixef(RES_rel_fit)[1] * scl) + center) / 1000 -
+      (2000 * fixef(RES_rel_fit)[2]),
+       b = fixef(RES_rel_fit)[2],
+       lty = 2)
+polygon(x = c(yrs, rev(yrs)),
+        y = c(ints1[1,],rev(ints1[2,])),
+        border = NA,
+        col = rgb(0,0,0,0.1))
+
 with(plot_data, segments(x0 = release_yr, y0=yield_kg + yield_se,
                          y1 = yield_kg - yield_se))
 text(x = plot_data$release_yr-0.4, y = plot_data$yield_kg + 0.07,
      labels = gsub("M", "M-", row.names(plot_data)),
-     pos = 4, cex = 0.8)
+     pos = 4, cex = 0.75)
+text(x = 2000, y = 8, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~kg~ha^-1~yr^-1))
+mtext("a.", adj = 0)
 
-# legend("bottomright", legend = c("w/ years since release adj.",
-#                                  "w/o years since release adj.",
-#                                  "90% Credible interval"),
-#        lty = c(1,2, NA),
-#        bty = "n",
-#        fill = c(NA,NA, "grey"),
-#        border = NA,
-#        merge = TRUE,
-#        cex = 0.8)
+plot(mean ~ release_yr, data = plot_data2, pch = 16, #col = rgb(0,0,0,0.25),
+     xlab = "Release year",
+     ylab = "", #expression("Grain yield -corrected( Mg ha"^-1~")"),
+     yaxt = "n",
+     ylim = c(8, 12.5),
+     xaxt = "n",
+     xlim = c(1980,2020))
+axis(1, at = seq(1980, 2020, by = 10))
+abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
+           (2000 * release_yr_coef)) / 1000,
+       b = release_yr_coef/1000,
+       lty = 2)
+with(plot_data2, segments(x0 = release_yr, y0 = mean + se,
+                         y1 = mean - se))
+text(x = plot_data2$release_yr-0.4, y = plot_data2$mean + 0.07,
+     labels = gsub("M", "M-", row.names(plot_data2)),
+     pos = 4, cex = 0.75)
+text(x = 2000, y = 8, bquote(.(release_yr_coef)~kg~ha^-1~yr^-1))
+mtext("b.", adj = 0)
+polygon(x = c(yrs, rev(yrs)),
+        y = c(ints2[1,],rev(ints2[2,])),
+        border = NA,
+        col = rgb(0,0,0,0.1))
 
-legend("bottomright", legend = c("w/ years since release adj.",
-                                 "w/o years since release adj."),
-       lty = c(1,2),
-       bty = "n",
-       border = NA,
-       merge = TRUE,
-       cex = 0.8)
-# polygon(x = c(yrs, rev(yrs)),
-        # y = c(ints[1,],rev(ints[2,])),
-        # border = NA,
-        # col = rgb(0,0,0,0.1))
-
-# text(1990, 8.0, bquote(.(round(release_yr_coef))~kg~ha^-1~year^-1))
 @
 \caption{The average yield ($\bullet$) and standard error (|) of
-medium grain rice cultivars by year of release. For display purposes,
-only data for experimental plots planted at the California Cooperative
-Rice Research Foundation Rice Experiment Station (California, USA)
-over the years \Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)} are
-included. Ignoring difference in years since release (dashed line)
-suggests an increase in yield potential over time. However, correcting
-the comparison to account for yield erosion over time (solid line)
-suggests the apparent increase might be due to differences in years
-since release.}
+medium grain rice cultivars by year of release (a.) without correcting
+for yield erosion over time and (b.) accounting for yield erosion over
+time. The trend without correcting for yield erosion (a.) was estimated by
+omitting the year of each cultivar's release from the
+model. Yield erosion was corrected for by including the years since
+release (b.) in the model. predictions assuming no yield erosion
+were generated from the model which included both the year of release
+and the years since release. For display purposes, only data for
+experimental plots planted at the California Cooperative Rice Research
+Foundation Rice Experiment Station (California, USA) over the years
+\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)} are included.}
 \label{fig:release}
 \end{figure}
 
@@ -434,7 +471,7 @@ text(5, 8.0, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
   (RES), California, USA. The estimated erosion of yield over time
   (averaged over differences in cultivar and year) is
   estimated to be \Sexpr{yrs_coef} kg ha\tsups{-1}
-  year\tsups{-1}. Points ($bullet$) and bars (|) represent the mean and standard
+  year\tsups{-1}. Points ($\bullet$) and bars (|) represent the mean and standard
   error of the raw data, respectively. The
   shaded area is the 90\% credible interval.}
 \label{fig:RES_year}
