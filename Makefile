@@ -1,11 +1,11 @@
-output/breed_paper.pdf: output/breed_paper.tex
-	cd output && \
+output/breed_paper.pdf: output/breed_paper.Rnw
+	cd output && Rscript -e "Sweave('breed_paper.Rnw')" && \
 	pdflatex breed_paper.tex && \
 	bibtex breed_paper && \
 	pdflatex breed_paper.tex && \
 	pdflatex breed_paper.tex 
 
-output/breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
+output/breed_paper.Rnw: output/h1_fit.Rda
 	cd output && Rscript -e "Sweave('breed_paper.Rnw')"
 
 output/summary.pdf: output/summary.tex
@@ -25,3 +25,4 @@ data/yrTbl.Rda: data/var_list.txt src/getYears.R
 
 clean:
 	rm output/*.pdf
+	rm output/graphics/*

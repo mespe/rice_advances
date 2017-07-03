@@ -18,7 +18,6 @@ mod_data <- all_data[vars,]
 # To simplify model interpretation, only analyze RES
 # since this is the best managed site
 # with the most data
-
 mod_data = mod_data[mod_data$site == "RES",]
 
 ## Use officially published years instead of years in trial
@@ -29,6 +28,10 @@ mod_data$release_yr <- yrTbl$Year[i]
 mod_data$release_yr_c <- mod_data$release_yr - 2000
 
 mod_data$yrs_in_trial <- mod_data$year - mod_data$release_yr
+
+# Omit where the variety was present for more than 4 years before release
+tooOld = mod_data$yrs_in_trial < -4
+mod_data = mod_data[!tooOld,]
 
 # convert yield to kg/ha here once, rather than repeatedly in paper
 mod_data$yield_kg = mod_data$yield_lb * 1.12
