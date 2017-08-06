@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{longtable,booktabs}
+\usepackage{comment}
 \usepackage{graphicx,grffile, textcomp}
 \usepackage{setspace}
 \usepackage{etoolbox}
@@ -62,17 +63,20 @@ made in the genetic yield potential via plant breeding. Specifically,
 the hypothesis that a rice variety's yield erodes over time after the
 initial selection was tested as an explanation for how side-by-side
 comparisons show increased yield while no substantive increases have
-been seen in farmers' fields. We confirmed an apparent increase in
-yield in side-by-side comparisons between old and newer varieties when
-the yield erosion was not
-considered. However, we demonstrate this apparent increase in yield
-can be explained by the differences in the time since selection
+been seen in farmers' fields. Side-by-side comparisons under yield
+erosions will show ``false'' increases due to the older cultivar
+decreasing, not due to increased genetic yield potential by the newer
+cultivar. We confirmed an apparent increase in yield in side-by-side
+comparisons between old and newer varieties when the yield erosion was
+not considered. However, we demonstrate this apparent increase in
+yield can be explained by the differences in the time since selection
 between cultivars. The impact of yield erosion was estimated to be
-29.8 kg ha\tsups{-1} year\tsups{-1} after initial
-selection. Once this effect was considered, the apparent yield
-advantage of newer cultivars over old was uncertain. This underscores
-the importance of breeding to maintain yield and the challenges of
-increasing the genetic yield potential.
+29.3 kg ha\tsups{-1} year\tsups{-1} (90\% credible interal -4.4 to
+-53.3) after initial selection. Once this effect was considered, the
+apparent yield advantage of newer cultivars over old was uncertain
+(-3.3 kg ha\tsups{-1} year\tsups{-1}, 90\% credible interval -36.1 to
+31.5). This underscores the importance of breeding to maintain yield
+and the challenges of increasing the genetic yield potential.
 
 \end{abstract}
 
@@ -181,8 +185,9 @@ abiotic conditions. We sought to quantify this phenomenon to better
 understand how plant improvement and yield erosion are contributing to
 the slow yield improvement in farmers' fields over the last
 30 years in CA. Specifically, two competing hypotheses were
-tested: (1) the yield advantage of each newly developed cultivars is
-greater than previous cultivars, and (2) the erosion of yield over
+tested: (1) the genetic yield advantage has increased over the last
+30+ years, and (2) the genetic yield advantage has not increased over
+the last 30+ and the erosion of yield over
 time is creating the illusion of improved yields (i.e., the new
 cultivar is recovering the old benchmark as the older cultivar's yield
 erodes). 
@@ -205,7 +210,7 @@ plot(Value * 1.12 ~ Year, CA_data,
 
 @
 \caption{Average rice yields over the period \Sexpr{min(CA_data$Year)}
-  -- \Sexpr{max(CA_data$Year)} for California, USA, as reported by the
+  to \Sexpr{max(CA_data$Year)} for California, USA, as reported by the
   US Dept. of Agriculture National Agricultural Statistics
   Service. Rapid gains in grain yield were experienced from
   approximately 1950 -- 1990, but annual gains since 1990 have been
@@ -223,16 +228,16 @@ Biggs, CA (39.4648, -121.7342), and has been the central location for
 CCRRF's efforts to develop improved rice varieties adapted to CA since
 1969. The climate at the RES is Mediterranean, characterized by mild
 winters during which most of the annual precipitation occurs
-(\Sexpr{18*24.5} -- \Sexpr{25*24.5} mm annually) and warm summers
+(\Sexpr{18*24.5} to \Sexpr{25*24.5} mm annually) and warm summers
 largely free of precipitation events. Soils at the RES are classified
 as Esquon-Neerdobe clays with roughly 2\% SOM \citep{ssurgo} in the
 top 15cm. As the central location for the CCRRF breeding program, the RES is
 researcher-managed (as opposed to farmer-managed trials) and conducts
 the bulk of the trials for the Statewide Variety Trials (approximately
-3 -- 4 times the number of plots compared to any other location). For
+3 to 4 times the number of plots compared to any other location). For
 these reasons, we focused our investigation on the RES to avoid
 potential complications due to site, climate, and management
-differences at the other 6 -- 8 farmer-managed trials per year.
+differences at the other 6 to 8 farmer-managed trials per year.
 
 As part of the annual Statewide Variety Trials, newly developed
 entries are tested against named and released cultivars (checks) at
@@ -240,7 +245,7 @@ the RES in several trials spanning multiple planting dates per
 year. For the purposes of this study, we concentrated on released
 medium grain cultivars, as medium grain cultivars constitute roughly
 90\% of the planted area in CA. These cultivars are typcically planted
-in the Statewide Variety Trials for 2 -- 4 years prior to their
+in the Statewide Variety Trials for 2 to 4 years prior to their
 official release. For these cultivars planted in
 breeding trials at the RES from \Sexpr{min(mod_data[,'year'])} --
 \Sexpr{max(mod_data[,'year'])} plot level observations were
@@ -315,6 +320,230 @@ analysis is available at \url{github.com/mespe/rice_advances.git}.
 % Invert this section, then talk about yield improvement accounting
 % for yield erosion. 
 
+
+\begin{figure}[H]
+<<fig=TRUE, width = 8, height = 5, out.width = '85%', echo=FALSE>>=
+tars <- c("M202","M206")
+par(mfrow = c(1, length(tars)),
+    mar = c(4,0,2,0),
+    oma = c(4,4,0.5,0.5))
+
+plot_data = lapply(tars, function(x) {
+    dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
+    tmp = prep_plot_data(dd$yield_kg/1000 , dd$year)
+    tmp$year = as.numeric(row.names(tmp))
+    tmp
+    })
+
+invisible(sapply(1:2, function(i){
+    plot(mean ~ year,
+         data = plot_data[[i]],
+         xlim = c(1985, 2016), ylim = c(7.5,13.5),
+         pch = 16, main = gsub("M","M-", tars[i]),
+         ylab = "",
+         yaxt = "n",
+         xlab = "Year",
+         cex.axis = 0.8)
+    segments(x0 = plot_data[[i]]$year,
+             y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
+             y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
+    if(i == 1){
+        axis(2, cex.axis = 0.8,)
+        mtext(expression("Yield ( Mg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
+    }
+    # abline(a = ((fixef(RES_full)[1] * scl) + center) / 1000 -
+    #            (2000 * yrs_coef/1000),
+    #        b = yrs_coef/1000,
+    #        lty = 1)
+    lines(as.numeric(rownames(plot_data[[i]])),
+          11.2 + (1:nrow(plot_data[[i]])) * (yrs_coef/1000))
+    # abline(a = ((fixef(RES_full)[1] * scl) + center) / 1000,
+           # b = yrs_coef/1000)
+    
+    # abline(h = mean(mod_data$yield_kg[(mod_data$id == tars[i] &
+    #                                    mod_data$site == "RES")] ),
+    #        lty = 1, col = "grey50")
+    # mod = lm(mean ~ year, data = plot_data[[i]])
+    # tmp = predict(mod)
+    # if(i == 1){
+    #     abline(mod)
+    # }else{
+    #     lines(as.numeric(names(tmp)), tmp)
+    # }
+    abline(h = 11.2, lty = 2)
+    # text(2000, 7.5, bquote(.(round(coef(mod)[2] * 1000, 1))~kg~ha^-1~year^-1))
+}))
+
+@
+\caption{The performance of two major cultivars at the CA Rice
+Experiment Station (RES) over the period
+\Sexpr{min(mod_data[,'year'])} -- \Sexpr{max(mod_data[,'year'])}. The
+solid line is the estimated yield erosion (\Sexpr{yrs_coef} kg
+ha\tsups{-1} year\tsups{-1}), while the dashed line is the published
+3-year average yield of M-202 at its release (1982-1984). Both
+cultivars have a similar yield at their respective year of release,
+and similar decreases over time.}
+\label{fig:compare_yrs}
+\end{figure}
+
+\subsection{Genetic yield improvements}
+
+The full model which corrected for both the year of release and yield
+erosion was estimated to have better out-of-sample predictive accuracy
+compared to reduced models containing only one predictor. As estimated
+by the best model, there is no conclusive evidence that the yields of
+medium grain rice cultivars selected and released by CCRRF's breeding
+program have, on average, increased over the last 30 years. The
+estimated change in grain yield per year in the CCRRF's breeding
+trials at the RES was estimated to be a negligible
+\Sexpr{release_yr_coef} kg ha\tsups{-1} year\tsups{-1}, with both
+small positive and negative trends within the credible interval (90\%
+CI: \Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]})
+(Fig. \ref{fig:w_erosion}). Hence, the evidence here is consistent
+with little to no increase in yield potential over the study
+period. When yield erosion is not corrected for in the comparison
+(i.e., omitted from the model), there is an apparent small increase
+per year (approximately \Sexpr{only_release_coef} kg ha\tsups{-1}
+year\tsups{-1}; 90\% CI \Sexpr{only_release_CI[1]} to
+\Sexpr{only_release_CI[2]}) (Fig. \ref{fig:wo_erosion}), though this
+estimate ignores the confounding effect of yield erosion over time and
+performed worse in out-of-sample predictive accuracy.
+
+After correcting for the other variables, some cultivars are estimated
+to have greater yield compared to the overall average. The marginal
+estimate for the performance of a cultivar averaged over the
+uncertainty in the other parameters in the model (i.e., the random
+effect) shows three cultivars with higher than average yields:
+\Sexpr{paste(gsub('M','M-',rev(row.names(id_est))[c(1,2,4)]),collapse=',')}
+(Figs. \ref{fig:w_erosion} \& \ref{fig:ids_comp}). A fourth, M-209,
+might also have higher than average yield, though the CI for M-209
+overlaps with zero (Fig. \ref{fig:ids_comp}).
+
+\begin{comment}
+\begin{figure}[H]
+
+<<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
+yrs <- 1975:2025
+
+pp <- posterior_linpred(RES_rel_fit, re.form = NA,
+                        newdata = data.frame(release_yr_c = yrs - 2000,
+                                             yrs_in_trial = 0),
+                        prob = 0.5)
+pp <-  (pp * scl + center) / 1000
+ints1 = apply(pp, 2, quantile, p = c(0.05, 0.95))
+
+pp <- posterior_linpred(RES_full, re.form = NA,
+                        newdata = data.frame(release_yr_c = yrs - 2000,
+                                             yrs_in_trial = 0),
+                        prob = 0.5)
+pp <-  (pp * scl + center) / 1000
+ints2 = apply(pp, 2, quantile, p = c(0.05, 0.95))
+
+res = mod_data$site == "RES"
+comp_yrs = 2011:2016
+idx = mod_data$year %in% comp_yrs
+
+plot_data = prep_plot_data(mod_data$yield_kg[idx] / 1000 ,
+                           mod_data$id[idx])
+
+plot_data$tmp = tapply(mod_data$release_yr[idx],
+                       mod_data$id[idx], unique)
+
+colnames(plot_data) = c("yield_kg", "yield_se", "release_yr")
+
+
+# get corrected yield
+wo_erosion = expand.grid(id = row.names(plot_data),
+            year = comp_yrs,
+            release_yr_c = 0,
+            yrs_in_trial = 0)
+wo_erosion$corr_yield = colMeans(posterior_predict(RES_full,
+                               newdata = wo_erosion)) + center/1000
+plot_data2 = prep_plot_data(wo_erosion$corr_yield,
+                            wo_erosion$id)
+plot_data2$release_yr = plot_data$release_yr
+
+# par(mfrow = c(1,2),
+#     mar = c(4,0,2,0.75),
+#     oma = c(4,4,0.5,0.5))
+
+plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
+     xlab = "Release year",
+     ylab = "", 
+     ylim = c(8, 12.5),
+     xaxt = "n",
+     xlim = c(1980,2020))
+axis(1, at = seq(1980, 2020, by = 10))
+mtext(text = expression("Grain yield ( Mg ha"^-1~")"), side = 2, line = 2.5)
+abline(a = ((fixef(RES_rel_fit)[1] * scl) + center) / 1000 -
+      (2000 * fixef(RES_rel_fit)[2]),
+       b = fixef(RES_rel_fit)[2],
+       lty = 2)
+polygon(x = c(yrs, rev(yrs)),
+        y = c(ints1[1,],rev(ints1[2,])),
+        border = NA,
+        col = rgb(0,0,0,0.1))
+
+with(plot_data, segments(x0 = release_yr, y0=yield_kg + yield_se,
+                         y1 = yield_kg - yield_se))
+text(x = plot_data$release_yr-0.4, y = plot_data$yield_kg + 0.07,
+     labels = gsub("M", "M-", row.names(plot_data)),
+     pos = 4, cex = 0.75)
+text(x = 2000, y = 8, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~kg~ha^-1~yr^-1))
+mtext("Without adjusting for yield erosion", adj = 0)
+
+
+@
+\caption{The relationship between yield and the release year of medium
+grain rice cultivars developed by the California Cooperative Rice
+Research Foundation (California, USA), for the last 6 years
+(\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)}) as estimated without
+correcting for yield erosion over time.}
+\label{fig:wo_erosion}
+\end{figure}
+\end{comment}
+
+\begin{figure}[H]
+<<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
+
+plot(mean ~ release_yr, data = plot_data2, pch = 16, #col = rgb(0,0,0,0.25),
+     xlab = "Release year",
+     ylab = "", #expression("Grain yield -corrected( Mg ha"^-1~")"),
+     yaxt = "n",
+     ylim = c(8, 12.5),
+     xaxt = "n",
+     xlim = c(1980,2020))
+axis(1, at = seq(1980, 2020, by = 10))
+abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
+           (2000 * release_yr_coef)) / 1000,
+       b = release_yr_coef/1000,
+       lty = 2)
+with(plot_data2, segments(x0 = release_yr, y0 = mean + se,
+                         y1 = mean - se))
+text(x = plot_data2$release_yr-0.4, y = plot_data2$mean + 0.07,
+     labels = gsub("M", "M-", row.names(plot_data2)),
+     pos = 4, cex = 0.75)
+text(x = 2000, y = 8, bquote(.(release_yr_coef)~kg~ha^-1~yr^-1))
+mtext("Adjusting for yield erosion", adj = 0)
+polygon(x = c(yrs, rev(yrs)),
+        y = c(ints2[1,],rev(ints2[2,])),
+        border = NA,
+        col = rgb(0,0,0,0.1))
+
+@
+% Change from a./b. to accounting for erosion, More details about how
+% yield was corrected - 
+\caption{The relationship between yield and the release year of medium
+grain rice cultivars developed by the California Cooperative Rice
+Research Foundation (California, USA), for the last 6 years
+(\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)}) as estimated by 
+correcting for yield erosion over time. Yield erosion was corrected
+for by adjusting each observed yield by estimated amount lost 
+  (\Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} after release).}
+\label{fig:w_erosion}
+\end{figure}
+
+\subsection{Yield erosion}
 \begin{figure}[H]
   
 <<fig=TRUE, echo=FALSE>>=
@@ -357,11 +586,9 @@ text(5, 8.0, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
 \label{fig:RES_year}
 \end{figure}
 
-\subsection{Yield erosion}
-
 There is estimated to be an decrease of yield over time once a
 cultivar is selected (i.e., yield erosion) (\Sexpr{yrs_coef} kg
-ha\tsups{-1} year\tsups{-1}, 90\% CI: \Sexpr{RES_CI[2]} --
+ha\tsups{-1} year\tsups{-1}, 90\% CI: \Sexpr{RES_CI[2]} to
 \Sexpr{RES_CI[1]}). The oldest cultivar in the trials is estimated to
 have lost an average of \Sexpr{round(yrs_coef*-36/1000,1)} Mg
 ha\tsups{-1} since release. Comparing two dominate medium grain rice
@@ -373,264 +600,66 @@ cultivars experienced similar trends over time to each other
 medium grains (Table \ref{tbl:coef}). At the time of writing, an
 estimated \Sexpr{m202_v_206} kg ha\tsups{-1} yield advantage of M-206
 over M-202 can be attributed solely to the erosion of M-202's yield
-over time (Figs \ref{fig:release} \& \ref{fig:compare_vars}). Further
+over time (Figs \ref{fig:w_erosion} \& \ref{fig:compare_yrs}). Further
 supporting this estimate, both cultivars yielded similarly at their
 respective year of release (Fig. \ref{fig:compare_yrs}), despite the
 fact that M-202 was released 19 years prior to M-206
-(Fig. \ref{fig:release}, Table \ref{tbl:ids}).
-
-\begin{figure}[H]
-<<fig=TRUE, width = 8, height = 5, out.width = '85%', echo=FALSE>>=
-tars <- c("M202","M206")
-par(mfrow = c(1, length(tars)),
-    mar = c(4,0,2,0),
-    oma = c(4,4,0.5,0.5))
-
-plot_data = lapply(tars, function(x) {
-    dd = mod_data[mod_data$id == x & mod_data$site == "RES",]
-    tmp = prep_plot_data(dd$yield_kg/1000 , dd$year)
-    tmp$year = as.numeric(row.names(tmp))
-    tmp
-    })
-
-invisible(sapply(1:2, function(i){
-    plot(mean ~ year,
-         data = plot_data[[i]],
-         xlim = c(1985, 2016), ylim = c(7.5,13.5),
-         pch = 16, main = gsub("M","M-", tars[i]),
-         ylab = "",
-         yaxt = "n",
-         xlab = "Year",
-         cex.axis = 0.8)
-    segments(x0 = plot_data[[i]]$year,
-             y0 = plot_data[[i]]$mean + plot_data[[i]]$se,
-             y1 = plot_data[[i]]$mean - plot_data[[i]]$se)
-    if(i == 1){
-        axis(2, cex.axis = 0.8,)
-        mtext(expression("Yield ( Mg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
-    }
-
-    # abline(h = mean(mod_data$yield_kg[(mod_data$id == tars[i] &
-    #                                    mod_data$site == "RES")] ),
-    #        lty = 1, col = "grey50")
-    mod = lm(mean ~ year, data = plot_data[[i]])
-    tmp = predict(mod)
-    if(i == 1){
-        abline(mod)
-    }else{
-        lines(as.numeric(names(tmp)), tmp)
-    }
-    abline(h = 11.2, lty = 2)
-    text(2000, 7.5, bquote(.(round(coef(mod)[2] * 1000, 1))~kg~ha^-1~year^-1))
-}))
-
-@
-\caption{The performance of two major cultivars at the CA Rice
-  Experiment Station (RES) over the period
-  \Sexpr{min(mod_data[,'year'])} -- \Sexpr{max(mod_data[,'year'])}. The
-  solid line represents a simple linear regression of yield for each
-  cultivar over the period which it was planted at the RES (fit to only
-  that cultivar's data), while the dashed line is the published 3-year
-  average yield of M-202 at its release (1982-1984). Both cultivars have
-  a similar yield at their respective year of release, and similar
-  decreases over time. The slope for the individual regressions are
-  comparable to the slope estimated from all medium grain cultivars
-  (\Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1}).}
-\label{fig:compare_yrs}
-\end{figure}
-
-\subsection{Genetic yield improvements}
-
-The full model which corrected for both the year of release and yield
-erosion was estimated to have better out-of-sample predictive accuracy
-compared to reduced models containing only one predictor. As estimated
-by the best model, there is no conclusive evidence that the yields of
-medium grain rice cultivars selected and released by CCRRF's breeding
-program have, on average, increased over the last 30 years. The
-estimated change in grain yield per year in the CCRRF's breeding
-trials at the RES was estimated to be a negligible
-\Sexpr{release_yr_coef} kg ha\tsups{-1} year\tsups{-1}, with both
-small positive and negative trends within the credible interval (90\%
-CI: \Sexpr{rel_CI[1]} -- \Sexpr{rel_CI[2]})
-(Fig. \ref{fig:release}b.). Hence, the evidence here is consistent
-with little to no increase in yield potential over the study
-period. When yield erosion is not corrected for in the comparison
-(i.e., omitted from the model), there is an apparent small increase
-per year (approximately \Sexpr{only_release_coef} kg ha\tsups{-1}
-year\tsups{-1}; 90\% CI \Sexpr{only_release_CI[1]} --
-\Sexpr{only_release_CI[2]}) (Fig. \ref{fig:release}a.), though this
-estimate ignores the confounding effect of yield erosion over time and
-performed worse in out-of-sample predictive accuracy.
-
-After correcting for the other variables, some cultivars are estimated
-to have greater yield compared to the overall average. The marginal
-estimate for the performance of a cultivar averaged over the
-uncertainty in the other parameters in the model (i.e., the random
-effect) shows three cultivars with higher than average yields:
-\Sexpr{paste(gsub('M','M-',rev(row.names(id_est))[c(1,2,4)]),collapse=',')}
-(Figs. \ref{fig:release} \& \ref{fig:ids_comp}). A fourth, M-209,
-might also have higher than average yield, though the CI for M-209
-overlaps with zero (Fig. \ref{fig:ids_comp}).
-
-\begin{figure}[H]
-
-<<fig=TRUE, echo=FALSE, width = 9, height = 6>>=
-yrs <- 1975:2025
-
-pp <- posterior_linpred(RES_rel_fit, re.form = NA,
-                        newdata = data.frame(release_yr_c = yrs - 2000,
-                                             yrs_in_trial = 0),
-                        prob = 0.5)
-pp <-  (pp * scl + center) / 1000
-ints1 = apply(pp, 2, quantile, p = c(0.05, 0.95))
-
-pp <- posterior_linpred(RES_full, re.form = NA,
-                        newdata = data.frame(release_yr_c = yrs - 2000,
-                                             yrs_in_trial = 0),
-                        prob = 0.5)
-pp <-  (pp * scl + center) / 1000
-ints2 = apply(pp, 2, quantile, p = c(0.05, 0.95))
-
-res = mod_data$site == "RES"
-comp_yrs = 2011:2016
-idx = mod_data$year %in% comp_yrs
-
-plot_data = prep_plot_data(mod_data$yield_kg[idx] / 1000 ,
-                           mod_data$id[idx])
-
-plot_data$tmp = tapply(mod_data$release_yr[idx],
-                       mod_data$id[idx], unique)
-
-colnames(plot_data) = c("yield_kg", "yield_se", "release_yr")
-
-
-# get corrected yield
-wo_erosion = expand.grid(id = row.names(plot_data),
-            year = comp_yrs,
-            release_yr_c = 0,
-            yrs_in_trial = 0)
-wo_erosion$corr_yield = colMeans(posterior_predict(RES_full,
-                               newdata = wo_erosion)) + center/1000
-plot_data2 = prep_plot_data(wo_erosion$corr_yield,
-                            wo_erosion$id)
-plot_data2$release_yr = plot_data$release_yr
-
-par(mfrow = c(1,2),
-    mar = c(4,0,2,0.75),
-    oma = c(4,4,0.5,0.5))
-
-plot(yield_kg ~ release_yr, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25),
-     xlab = "Release year",
-     ylab = "", 
-     ylim = c(8, 12.5),
-     xaxt = "n",
-     xlim = c(1980,2020))
-axis(1, at = seq(1980, 2020, by = 10))
-mtext(text = expression("Grain yield ( Mg ha"^-1~")"), side = 2, line = 2.5)
-abline(a = ((fixef(RES_rel_fit)[1] * scl) + center) / 1000 -
-      (2000 * fixef(RES_rel_fit)[2]),
-       b = fixef(RES_rel_fit)[2],
-       lty = 2)
-polygon(x = c(yrs, rev(yrs)),
-        y = c(ints1[1,],rev(ints1[2,])),
-        border = NA,
-        col = rgb(0,0,0,0.1))
-
-with(plot_data, segments(x0 = release_yr, y0=yield_kg + yield_se,
-                         y1 = yield_kg - yield_se))
-text(x = plot_data$release_yr-0.4, y = plot_data$yield_kg + 0.07,
-     labels = gsub("M", "M-", row.names(plot_data)),
-     pos = 4, cex = 0.75)
-text(x = 2000, y = 8, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~kg~ha^-1~yr^-1))
-mtext("Without adjusting for yield erosion", adj = 0)
-
-plot(mean ~ release_yr, data = plot_data2, pch = 16, #col = rgb(0,0,0,0.25),
-     xlab = "Release year",
-     ylab = "", #expression("Grain yield -corrected( Mg ha"^-1~")"),
-     yaxt = "n",
-     ylim = c(8, 12.5),
-     xaxt = "n",
-     xlim = c(1980,2020))
-axis(1, at = seq(1980, 2020, by = 10))
-abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
-           (2000 * release_yr_coef)) / 1000,
-       b = release_yr_coef/1000,
-       lty = 2)
-with(plot_data2, segments(x0 = release_yr, y0 = mean + se,
-                         y1 = mean - se))
-text(x = plot_data2$release_yr-0.4, y = plot_data2$mean + 0.07,
-     labels = gsub("M", "M-", row.names(plot_data2)),
-     pos = 4, cex = 0.75)
-text(x = 2000, y = 8, bquote(.(release_yr_coef)~kg~ha^-1~yr^-1))
-mtext("Adjusting for yield erosion", adj = 0)
-polygon(x = c(yrs, rev(yrs)),
-        y = c(ints2[1,],rev(ints2[2,])),
-        border = NA,
-        col = rgb(0,0,0,0.1))
-
-@
-% Change from a./b. to accounting for erosion, More details about how
-% yield was corrected - 
-\caption{The relationship between yield and the release year of medium
-  grain rice cultivars developed by the California Cooperative Rice
-  Research Foundation (California, USA), for the last 6 years (\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)}) as estimated by two methods;
-  without correcting for yield erosion over time (left) and 
-  correcting for yield erosion over time (right). The trend without correcting
-  for yield erosion (left) was estimated by omitting the year of each
-  cultivar's release from the model. Yield erosion was corrected for by
-  including the years since release (right) in the model.}
-\label{fig:release}
-\end{figure}
+(Fig. \ref{fig:compare_yrs}, Table \ref{tbl:ids}).
 
 \section{Discussion}
 
-We conclude that yield erosion has decreased the yield of cultivars
-released by the CCRRF over the last 30+ years. Biotic and abiotic
-forces have been speculated to be responsible for this
-yield erosion since the cultivar's genetics remain
-``frozen'' at the time of selection but the conditions the cultivar
-may experience over time are continuously changing \citep{Peng1998,
-Peng2000, Peng2010}. The trend observed here is consistent with
-previous reports of the erosion of genetic gains of cultivar IR8 at
-IRRI \citep{Peng1998, Peng2000}, suggesting the
-erosion of yield over time is a phenomenon that widely affects rice
-breeding programs. This highlights both the need for maintenance
-breeding and the difficulty of increasing genetic yield potential,
-especially in systems such as CA where yield is approaching the
-physiological limit \citep{espe16a}. Without maintenance breeding
-continuously selecting cultivars well adapted to current conditions,
-CA rice production systems are predicted to have lost an estimated
-\Sexpr{round(yrs_coef * (-36/1000), 1)} Mg ha\tsups{-1} grain yield
-over the study period.
+We estimate that yield erosion has decreased the yield of medium
+grain rice cultivars released by the CCRRF over the last 30+ years by
+an average of \Sexpr{yrs_coef} Mg ha\tsups{-1},
+potentially offsetting any gains made by the breeding program. Biotic
+and abiotic forces have previously been speculated to be responsible
+for yield erosion, since the cultivar's genetics remain stable from the
+time of selection but the conditions the cultivar may experience over
+time are continuously changing \citep{Peng1998, Peng2000,
+Peng2010}. The trend observed here is consistent with previous reports
+of the erosion of genetic gains of cultivar IR8 at IRRI
+\citep{Peng1998, Peng2000}, suggesting the erosion of yield over time
+is a phenomenon that widely affects rice breeding programs. This
+highlights both the need for maintenance breeding and the difficulty
+of increasing genetic yield potential, especially in systems such as
+CA where yield is approaching the physiological limit
+\citep{espe16a}. Without maintenance breeding continuously selecting
+cultivars well adapted to current conditions, CA rice production
+systems are predicted to have lost an estimated
+\Sexpr{round(yrs_coef*(-36/1000),1)} Mg ha\tsups{-1} grain yield over
+the study period.
 
 Overall, we do not find conclusive evidence of increased genetic yield
 potential in medium grain rice cultivars released by CCRRF's breeding
 improvement program over the period \Sexpr{min(mod_data[,'year'])} to
 \Sexpr{max(mod_data[,'year'])}. After correcting yield comparisons for
 yield erosion over time, the estimated yield improvement spans from
-\Sexpr{rel_CI[1]} -- \Sexpr{rel_CI[2]} kg ha\tsups{-1} year\tsups{-1}.
-Even when the comparison is not corrected for yield erosion, the
-estimated improvements over time (\Sexpr{only_release_coef} kg
-ha\tsups{-1} year\tsups{-1}; Fig. \ref{fig:release}a.) are still much
-less than previous estimates of 37 -- 60 kg ha\tsups{-1}
-year\tsups{-1} \citep{Omar2014}. We conclude that the breeding program
-has likely been maintaining but not substantially improving yield
-potential in the face of changing biotic and abiotic pressures.
+\Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]} kg ha\tsups{-1}
+year\tsups{-1}. This suggests that both increases and decreases in the
+genetic yield potential over the study period. However, even when the
+comparison is not corrected for yield erosion, the estimated
+improvements over time (\Sexpr{only_release_coef} kg ha\tsups{-1}
+year\tsups{-1}; Fig. \ref{fig:wo_erosion}) are still much less than
+previous estimates of 37 to 60 kg ha\tsups{-1} year\tsups{-1}
+\citep{Omar2014}. We conclude that the breeding program has likely
+been maintaining but not substantially improving yield potential in
+the face of changing biotic and abiotic pressures.
 
-However, the goal of a breeding program is to not only maintain the
-benchmark yield of the previous ``standard'' but to surpass it. Given
-the estimated yield decreases over time, to hit an ambitious target of
-0.5 Mg ha\tsups{-1} (approximately 5\%) increase in yield per release
-(with roughly 4 -- 5 years between releases), a new cultivar needs to
-yield an additional \Sexpr{round(yrs_coef*-4,-1)} --
-\Sexpr{round(yrs_coef*-5,-1)} kg ha\tsups{-1} in side-by-side
-comparison on top of the 0.5 Mg ha\tsups{-1} target improvement. Often
-realized side-by-side yield improvements are closer to 2 -- 3\% per
-release, in which case no absolute improvements are made beyond
-maintenance. The evidence here is consistent with the latter situation
-occurring in CA, further suggesting that the genetic yield potential
-has not increased substantially in the last 30+ years
-(Fig. \ref{fig:release}).  
+However, a goal of many breeding programs is to not only maintain the
+benchmark yield of the previous ``standard'' but to surpass it,
+especially if we are to meet the target of 50\% increased food
+production by 2050 \citep{Foley2011a}. Given the estimated yield
+erosion, to hit an ambitious target of 0.5 Mg ha\tsups{-1}
+(approximately 5\%) increase in yield per release (with roughly 4 to 5
+years between releases), a new cultivar needs to yield an additional
+\Sexpr{round(yrs_coef*-4,-1)} to \Sexpr{round(yrs_coef*-5,-1)} kg
+ha\tsups{-1} in side-by-side comparison on top of the 0.5 Mg
+ha\tsups{-1} target improvement. Often realized side-by-side yield
+improvements are closer to 2 to 3\% per release, in which case no
+absolute improvements are made beyond maintenance. The evidence here
+is consistent with the latter situation occurring in CA, further
+suggesting that the genetic yield potential has not increased
+substantially in the last 30+ years (Fig. \ref{fig:w_erosion}).
 
 \begin{figure}[H]
 <<fig = TRUE, echo = FALSE, width=5, height=5>>=
@@ -654,12 +683,13 @@ text(25, 9.35, "(2) no maintenance breeding", cex = 0.8,
      srt = -18)
 
 @ 
-\caption{A conceptual diagram highlighting three scenarios:
-  (1) maintenance breeding, where losses over time are offset by
-  improvements via plant improvement, (2) no maintenance breeding,
-  where grain yield slowly erodes over time, and (3) absolute
-  improvement in grain yield, where gains in grain yield exceed the
-  losses over time.}
+\caption{A conceptual diagram highlighting three scenarios: (1)
+maintenance breeding, where losses over time are offset by
+improvements via plant improvement, (2) no maintenance breeding, where
+grain yield slowly erodes over time (as estimated from this study),
+and (3) absolute improvement in grain yield (based on ``typical''
+yield goals of 3\% increase per release), where gains in grain yield
+exceed the losses over time.}
 \label{fig:theory}
 \end{figure}
 
@@ -671,8 +701,8 @@ other than increased genetic yield potential are responsible for these gains
 including more efficient nutrient management \citep{Lundy2012,
 Lundy2015, linquist2009}, weed management \citep{Saito2008,
 Pittelkow2012, linquist2008}, etc. may all be contributing to
-increases in the state average yield. However, these gains are less
-than those experienced during the ``Green revolution'', and by their
+increases in the state average yield. However, these gains are far less
+than those experienced during the preceeding era, and by their
 nature agronomic gains cannot surpass the genetic yield potential
 \citep{Fischer2015}. Judging from yields achieved at the RES
 (Figs. \ref{fig:RES_year} \& \ref{fig:compare_yrs}), a
@@ -691,21 +721,22 @@ of the attainable yield gap in CA rice production systems
 There are several cultivars that were estimated to have better than
 average yields, even after correcting for yield erosion. However,
 these cultivars (M-201, M-204, M-205, and possibly M-209;
-Fig. \ref{fig:comp_ids})) may not be widely adapted. It is known that
+Fig. \ref{fig:ids_comp})) may not be widely adapted. It is known that
 cool temperatures during the booting stage can have a large impact on
 grain yields \citep{espe2017}, and it is also known that the RES
 experiences warmer temperatures than many other rice growing areas in
-CA \citep{espe2017}. These cultivars may perform well at the RES but not widely in
-CA. Therefore, it should be noted that while our investigation has
-been concerned about increasing yield potential, the estimates here
-might not capture yield stability. Yield stability is notoriously
-difficult to quantify (CITE), hence further investigation is needed to
-explore how yield stability has changed over the study period.
+CA \citep{espe2017}. These cultivars may perform well at the RES but
+not widely in CA. Therefore, it should be noted that while our
+investigation has been concerned about increasing yield potential, the
+estimates here might not capture yield stability. Yield stability is
+notoriously difficult to quantify \citep[e.g.,][]{lobell2011}, hence
+further investigation is needed to explore how yield stability has
+changed over the study period.
 
 To be clear, our investigation here is narrowly focused on the
 rough-rice/field grain yield. Other advancements due to plant
 improvement, including increased quality \citep{mckenzie1993} and
-milling yield \citep{mckenzie1994} have been made over the study
+milling yield \citep{mckenzie1994}, have been made over the study
 period and are no less important. However, planning to meet future
 demand necessitates increases in grain yield \citep{Godfray2010,
 Foley2011a, Mueller2012}. Meeting the challenge to produce more grain
@@ -749,7 +780,7 @@ med_eff = fixef(RES_full) * scl
 med_eff[1] = round((med_eff[1] + center)/1000, 1)
 med_eff = round(med_eff, 1)
 
-RES_coef = cbind(med_eff, paste(CIs[,1],CIs[,2], sep = " -- "))
+RES_coef = cbind(med_eff, paste(CIs[,1],CIs[,2], sep = " to "))
 rownames(RES_coef) = c("Intercept (Mg ha\\tsups{-1})",
                        "Release year (kg ha\\tsups{-1} year\\tsups{-1})",
                        "Yield erosion (kg ha\\tsups{-1} year\\tsups{-1})")
@@ -850,26 +881,26 @@ legend("topright", legend = gsub("M","M-", tars),
 
 \newpage
 
-\begin{figure}[H]
-<<fig=TRUE, echo=FALSE>>=
-tars <- c("M202","M206")
-comp_yrs = 2004:2005
+% \begin{figure}[H]
+% <<fig=TRUE, echo=FALSE>>=
+% tars <- c("M202","M206")
+% comp_yrs = 2004:2005
 
-boxplot(yield_kg/1000 ~ id, data = mod_data[(mod_data$id %in% tars) &
-                                            (mod_data$year %in% comp_yrs),],
-        ylab = expression("Grain yield ( Mg ha"^-1~")"))
+% boxplot(yield_kg/1000 ~ id, data = mod_data[(mod_data$id %in% tars) &
+%                                             (mod_data$year %in% comp_yrs),],
+%         ylab = expression("Grain yield ( Mg ha"^-1~")"))
 
-@
-\caption{An example of a typical side-by-side comparison between a older (M-202)
-  and newer (M-206) cultivar. Shown is the performance of these cultivars at the CA Rice
-  Experiment Station (RES) over the period \Sexpr{min(comp_yrs)} --
-  \Sexpr{max(comp_yrs)}. The newer
-  cultivar, M-206, appears to have a yield advantage over the older
-  cultivar, M-202, though this comparison does not account for the 10
-  year difference in years since release between the cultivars.}
-\label{fig:compare_vars}
-\end{figure}
-\newpage
+% @
+% \caption{An example of a typical side-by-side comparison between a older (M-202)
+%   and newer (M-206) cultivar. Shown is the performance of these cultivars at the CA Rice
+%   Experiment Station (RES) over the period \Sexpr{min(comp_yrs)} --
+%   \Sexpr{max(comp_yrs)}. The newer
+%   cultivar, M-206, appears to have a yield advantage over the older
+%   cultivar, M-202, though this comparison does not account for the 10
+%   year difference in years since release between the cultivars.}
+% \label{fig:compare_vars}
+% \end{figure}
+% \newpage
 
 \begin{figure}[H]
 <<echo = FALSE, fig = TRUE, width = 7, height = 6>>=
