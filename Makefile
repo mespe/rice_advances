@@ -23,6 +23,9 @@ data/model_data.rda: data/all_vt_weather.Rda src/prep_model_data.R src/yield_mod
 data/yrTbl.Rda: data/var_list.txt src/getYears.R
 	cd src && Rscript getYears.R
 
+output/summary2.pdf: output/summary2.Rmd
+	cd output && Rscript -e "library(knitr); knit('summary2.Rmd')" && pandoc summary2.md -o summary2.pdf
+
 clean:
 	rm output/*.pdf
 	rm output/graphics/*
