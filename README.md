@@ -1,4 +1,4 @@
-# "Rice yield improvements through plant breeding"
+# Rice yield improvements through plant breeding
 
 This is the data, code, and manscript for "Rice yield improvements
 through plant breeding are offset by inherent yield declines over
