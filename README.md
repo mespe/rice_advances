@@ -1,4 +1,7 @@
-##Repo for analysis of breeding efforts over time in CA Rice
+# "Rice yield improvements through plant breeding"
 
-Matt Espe
-\today
+This is the data, code, and manscript for "Rice yield improvements
+through plant breeding are offset by inherent yield declines over
+time" (Espe et al., 2017).
+
+

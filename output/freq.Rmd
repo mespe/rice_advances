@@ -1,0 +1,43 @@
+---
+output: pdf_document
+title: "Supplemental material"
+date: "Oct. 1, 2017"
+geometry: margin=1in
+---
+
+
+```{r setup, echo = FALSE}
+load("../data/model_data.rda")
+library(lme4)
+
+```
+
+This document replicates the analysis in "Rice yield improvements
+through plant breeding are offset by inherent yield declines over
+time" (Espe et al, 2017) using classical/frequentist statistics to
+verify the results are consistent regardless of statistical method.
+
+The complete data, code, and manuscript is available from \url{https://github.com/mespe/rice_advances}.
+
+# Model excluding yield erosion
+
+```{r}
+no_erosion = lmer(yield_kg ~ release_yr +
+                      (1|id) + (1|year), data = mod_data)
+
+summary(no_erosion)
+confint(no_erosion, parm = c("release_yr"),
+        method = "boot", level = 0.9)
+```
+
+# Model including yield erosion
+
+```{r}
+erosion = lmer(yield_kg ~ release_yr + yrs_in_trial +
+                   (1|id) + (1|year), data = mod_data)
+
+summary(erosion)
+confint(erosion, parm = c("release_yr","yrs_in_trial"),
+        method = "boot", level = 0.9)
+```
+

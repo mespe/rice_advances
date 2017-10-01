@@ -51,6 +51,9 @@ Davis, Davis CA 95616, USA}
 \address[ucce]{University of California Cooperative Extension,
 Oroville, CA 95965, USA}
 
+\address[ucce]{University of California Cooperative Extension,
+Colusa, CA 95932, USA}
+
 \address[ucce2]{University of California Cooperative Extension,
 Stockton, CA 95206, USA}
 
@@ -167,36 +170,40 @@ understand why the rate of increase in grain yields has declined or
 leveled off in intensified production systems.
 
 California (CA) rice production represents one such production
-system. Rice yields in CA during the period from 1920 -- 1990
-increased rapidly (Fig. \ref{fig:state_yield}), in part due to
-improvements in rice genetics (i.e., the ``Green Revolution'') through
-the efforts of the California Cooperative Rice Research Foundation
+system. Production in CA is predominately focused on premium quality
+medium grain \textit{japonica} cultivars (e.g., CalRose rice), and
+rice from CA is recognized globally for its quality. Rice yields in CA
+increased rapidly during the period from 1920 -- 1990
+(Fig. \ref{fig:state_yield}), in part due to improvements in rice
+genetics (i.e., the ``Green Revolution''). Most cultivars in use in CA
+are developed by the California Cooperative Rice Research Foundation
 (CCRRF; a collaboration between the University of California, the
 USDA-Agricultural Research Service, and farmer-funded
-research). However, since 1990 the rate of increase has slowed
-(Fig. \ref{fig:state_yield}) despite continuous crop improvement
-\citep{ccrrf}. For the past 30 years, each newly developed cultivar
-has demonstrated a yield advantage over the previous cultivars in the
-Statewide Variety Trials (an annual multi-site variety trial program
-that compares experimental entries side-by-side with ``check''
-cultivars). However, in a seeming contradiction these same reports
-show stagnant yields across release announcements (i.e., reports
-accompanying the official public release) from the previous years. For
-example, when cultivar M-202 was released in 1985, it was reported to
-yield an average of 11 Mg ha\tsups{-1} \citep[14\% moisture content
-(MC);][]{m202}. In 2015, the reported average yield of the newest
-released cultivar M-209 was 10.8 Mg ha\tsups{-1} \citep]14\%
-MC;][]{m209}. In other rice systems, a decrease in a cultivar's yield
-performance over time has been observed \citep{Peng1998, Peng2010,
-Peng2000, Datta1995}, often termed yield erosion \citep{Peng1998}. It
-has been speculated that this yield erosion is due to the inability of
-a cultivar to adapt to changing biotic and abiotic conditions. To
-better understand how plant improvement and yield erosion are
-contributing to the improvement of rice yield in farmers' fields, we
-teseted the hypotheses: either (1) the genetic yield advantage
-increased over the last 30+ years, or (2) the genetic yield advantage
-has not increased over the last 30+ because the erosion of yield over
-time creates an illusion of improved yields.
+research). Although grain quality has been maintained or even improved, rate of yield
+increase has slowed since the 1990s (Fig. \ref{fig:state_yield})
+despite continuous crop improvement \citep{ccrrf}. For the past 30
+years, each newly developed cultivar has demonstrated a yield
+advantage over the previous cultivars in the Statewide Variety Trials
+(an annual multi-site variety trial program that compares experimental
+entries side-by-side with ``check'' cultivars). However, in a seeming
+contradiction these same reports show stagnant yields across release
+announcements (i.e., reports accompanying the official public release)
+from the previous years. For example, when cultivar M-202 was released
+in 1985, it was reported to yield an average of 11 Mg ha\tsups{-1}
+\citep[14\% moisture content (MC);][]{m202}. In 2015, the reported
+average yield of the newest released cultivar M-209 was 10.8 Mg
+ha\tsups{-1} \citep]14\% MC;][]{m209}. In other rice systems, a
+decrease in a cultivar's yield performance over time has been observed
+\citep{Peng1998, Peng2010, Peng2000, Datta1995}, often termed yield
+erosion \citep{Peng1998}. It has been speculated that this yield
+erosion is due to the inability of a cultivar to adapt to changing
+biotic and abiotic conditions. To better understand how plant
+improvement and yield erosion are contributing to the improvement of
+rice yield in farmers' fields, we teseted the hypotheses: either (1)
+the genetic yield advantage increased over the last 30+ years, or (2)
+the genetic yield advantage has not increased over the last 30+
+because the erosion of yield over time creates an illusion of improved
+yields.
 
 \begin{figure}[H]
 <<fig=TRUE, echo=FALSE>>=
@@ -229,7 +236,7 @@ but annual gains since 1990 have been slower.}
 
 The CCRRF Rice Experiment Station (RES) is located north-west of
 Biggs, CA (39.4648, -121.7342), and has been the central location for
-CCRRF's efforts to develop improved rice varieties adapted to CA since
+CCRRF's efforts to develop improved rice cultivars adapted to CA since
 1969. The climate at the RES is Mediterranean, characterized by mild
 winters during which most of the annual precipitation occurs
 (\Sexpr{18*24.5} to \Sexpr{25*24.5} mm annually) and warm summers
@@ -257,7 +264,7 @@ at the RES from \Sexpr{min(mod_data[,'year'])} --
 3--4 times in a CRB design) were collected leading to a final data set
 of \Sexpr{format(nrow(mod_data), big.mark = ',')} observations
 representing \Sexpr{length(unique(mod_data[,'id']))} cultivars,
-including every publicly released medium grain variety developed by
+including every publicly released medium grain cultivar developed by
 the CCRRF from \Sexpr{min(mod_data[,'release_yr'])} --
 \Sexpr{max(mod_data[,'release_yr'])}. For each cultivar, the official
 year of public release and the time elapsed (in years) since release was
@@ -276,7 +283,7 @@ moisture content prior to reporting.
 
 To test each hypothesis, the influence of breeding and yield erosion
 were quantified on yield over time. Yield was modeled as a response to
-the number of years since the variety was officially released and the
+the number of years since the cultivar was officially released and the
 year of release using a mixed-effects linear regression. To account
 for similarities between years and between cultivars, year and
 cultivar were included in the model as random effects.
@@ -290,7 +297,7 @@ cultivar were included in the model as random effects.
 \end{equation}
 
 Where $yield_i$ is the grain yield for plot $i$, the Intercept is the
-average yield for the RES across varieties and years, $Rate_{yield\
+average yield for the RES across cultivars and years, $Rate_{yield\
 erosion\ i}$ is rate of yield erosion per ${years\ since\ release\ i}$
 (negative for years prior to release, zero at the year of release),
 $Rate_{yield\ improvement\ i}$ is the rate of yield improvement per
@@ -386,7 +393,7 @@ polygon(x = c(yrs, rev(yrs)),
 
 @
 
-\caption{The experimental yield of medium grain rice varieties for the
+\caption{The experimental yield of medium grain rice cultivars for the
   two years prior to each cultivar's public release. Points
 ($\bullet$) and bars (|) represent the mean and standard error of the
 raw data, respectively. The dashed line and shaded area are the
@@ -585,7 +592,7 @@ text(5, 8.0, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
 
 @
 \caption{The relationship between yield and the years since release
-  for medium grain rice varieties. The estimated erosion of yield over time
+  for medium grain rice cultivars. The estimated erosion of yield over time
   (averaged over differences in cultivar and year) is estimated to be
   \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1}. Points ($\bullet$)
   and bars (|) represent the mean and standard error of the raw data,
@@ -810,11 +817,11 @@ improvement, including increased quality \citep{mckenzie1993} and
 milling yield \citep{mckenzie1994}, have been made over the study
 period and are important. Also, crop duration has been reduced. For
 example, during this study period, M-202 and M-206 have been the
-predominate varieties grown in CA, and while their yield potentials
+predominate cultivars grown in CA, and while their yield potentials
 were similar at the time of release (Fig. 5), M-206 matures about 6
 days earlier than M-202 (Table 2). Shorter duration is very important
 in CA due to an already short growing season and water limitations
-(shorter duration varieties would presumably require less irrigation
+(shorter duration cultivars would presumably require less irrigation
 water). 
 
 Planning to meet future
