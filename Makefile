@@ -1,9 +1,12 @@
-output/breed_paper.pdf: output/breed_paper.Rnw
-	cd output && Rscript -e "Sweave('breed_paper.Rnw')" && \
+SWEAVE = Rscript -e "Sweave('$<')"
+
+Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw
+	cd output && $(SWEAVE) && \
 	pdflatex breed_paper.tex && \
 	bibtex breed_paper && \
 	pdflatex breed_paper.tex && \
-	pdflatex breed_paper.tex 
+	pdflatex breed_paper.tex && \
+	cp breed_paper.pdf ../Espe_rice_yield_improvement.pdf
 
 output/breed_paper.Rnw: output/h1_fit.Rda
 	cd output && Rscript -e "Sweave('breed_paper.Rnw')"

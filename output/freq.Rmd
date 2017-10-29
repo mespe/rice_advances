@@ -41,3 +41,9 @@ confint(erosion, parm = c("release_yr","yrs_in_trial"),
         method = "boot", level = 0.9)
 ```
 
+# Compare models
+
+```{r}
+anova(erosion, no_erosion)
+
+```
