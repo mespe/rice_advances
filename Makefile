@@ -1,7 +1,7 @@
 SWEAVE = Rscript -e "Sweave('$<')"
 
-Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw
-	cd output && $(SWEAVE) && \
+Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
+	cd output && Rscript -e "Sweave('breed_paper.Rnw')" && \
 	pdflatex breed_paper.tex && \
 	bibtex breed_paper && \
 	pdflatex breed_paper.tex && \
@@ -32,3 +32,4 @@ output/summary2.pdf: output/summary2.Rmd
 clean:
 	rm output/*.pdf
 	rm output/graphics/*
+	rm output *.aux *.blg *.bbl *.log *.aux
