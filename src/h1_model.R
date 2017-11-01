@@ -66,6 +66,15 @@ if(compare){
     library(loo)
     compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit))
     save(RES_yrs_fit, RES_rel_fit, file = "../output/bivar_fit.Rda")
+    # Add random slopes for ID
+    RES_fuller = stan_glmer(yield_cs ~ (1|year) + (1 + yrs_in_trial|id) +
+                                release_yr_c + yrs_in_trial,
+                      data = mod_data, iter = 2000, cores = 2L,
+                      seed = 789)
+
+    compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit), loo(RES_fuller))
+    
+
 }
 
 

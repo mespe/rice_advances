@@ -730,7 +730,7 @@ and M-105). Yields of these cultivars at time of release have all
 yielded between
 \Sexpr{tmp=mod_data[mod_data[,"yrs_in_trial"]<=0&mod_data[,"id"]%in%c("M202","M206","M105"),];round(min(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
 and
-\Sexpr{round(min(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
+\Sexpr{round(max(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
 Mg ha\tsups{-1} with no indication of yields increasing
 (Fig. \ref{fig:first_yrs}). While these yields have not increased,
 M-205 did have higher yield potential; however, this cultivar is not
