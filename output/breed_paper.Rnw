@@ -36,11 +36,11 @@
   inherent yield declines over time}
 \author[ucd]{Matthew B. Espe\corref{corresauthor}}
 \cortext[corresauthor]{Corresponding author} \ead{mespe@ucdavis.edu}
-\author[ucd]{David Mackill}
 \author[ucd]{Jim E. Hill}
 \author[ucce2]{Michelle Leinfelder-Miles}
 \author[ucce]{Luis A. Espino}
 \author[ucce]{Randall Mutters}
+\author[ucd]{David Mackill}
 \author[ucd]{Chris van Kessel}
 \author[ucd]{Bruce A. Linquist}
 
@@ -434,9 +434,9 @@ material. Comparing the cultivars' yield during each's initial time
 released showed that across cultivars, yields ranged from
 \Sexpr{round(plot_data["M207", "mean"], 2)} (M-207) to
 \Sexpr{round(plot_data["M205", "mean"], 2)} Mg ha\tsups{-1} (M-205)
-(Fig \ref{fig:RES_year}. Evaluating these initial yields over time
+(Fig \ref{fig:first_yrs}. Evaluating these initial yields over time
 indicates there was no evidence of genetic yield improvements during
-the 30-year study period (Fig. \ref{fig:RES_year}). Individual exceptions to this were
+the 30+ year study period (Fig. \ref{fig:RES_year}). Individual exceptions to this were
 two cultivars (M-204 and M-205) that had higher yields than the
 others.
 

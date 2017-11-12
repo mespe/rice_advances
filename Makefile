@@ -8,6 +8,10 @@ Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
 	pdflatex breed_paper.tex && \
 	cp breed_paper.pdf ../Espe_rice_yield_improvement.pdf
 
+output/freq.pdf: output/freq.Rmd
+	cd output && Rscript -e "knitr::knit('freq.Rmd')" && \
+	pandoc freq.md -o freq.pdf
+
 output/breed_paper.Rnw: output/h1_fit.Rda
 	cd output && Rscript -e "Sweave('breed_paper.Rnw')"
 
