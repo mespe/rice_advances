@@ -20,7 +20,7 @@ through plant breeding are offset by inherent yield declines over
 time" (Espe et al, 2017) using classical/frequentist mixed-effects
 models. The purpose of this document to verify the results are
 consistent regardless of statistical method used (i.e., a "sanity
-check"). As the table below show, the estimates are indeed similar. As
+check"). As the tables below show, the estimates are indeed similar. As
 such, please refer to the main manuscript for discussion of the model
 estimates.
 
