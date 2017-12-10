@@ -64,7 +64,7 @@ such as rice. Yet many high-yielding, intensive production systems
 have experienced slow rates of yield improvement in recent years
 despite a demonstrated increase in the yield potential of new crop
 cultivars. We analyzed experimental data from one such cropping
-system, i.e., California (CA) rice, in order to quantify improvements
+system, California (CA) rice, in order to quantify improvements
 made in the genetic yield potential obtained through plant
 breeding. California rice systems are among the highest in the world
 and close to maximum yield potential. Specifically, the hypothesis was
@@ -172,7 +172,7 @@ systems.
 
 California (CA) rice represents one such production system. Rice is
 grown primarily in the Sacramento Valley, which is characterized by
-having a Mediterranean climate with long days, a dry growing season
+having a Mediterranean climate with long days and a dry growing season
 relatively free of pests and diseases. These conditions lead to some
 of the highest yields in the world~\citep{FAO2016}. Production in CA
 is predominately focused on premium quality medium grain
@@ -303,7 +303,7 @@ models. First, yield was modeled as a response to the number of years since
 the cultivar was officially released and the year of release using a
 mixed-effects linear regression. To account for similarities between
 years and between cultivars, year and cultivar were included in the
-model as random effects.
+model as random effects (Model 1):
 
 \begin{equation}
 \begin{split}
@@ -418,8 +418,8 @@ initial time (average 3 years) in the experimental trials just before
 being released showed that across cultivars, yields ranged from
 \Sexpr{round(plot_data["M207", "mean"], 2)} (M-207) to
 \Sexpr{round(plot_data["M205", "mean"], 2)} Mg ha\tsups{-1} (M-205)
-(Fig \ref{fig:first_yrs}. Comparing the yields from only the first few
-years for each cultivar over the study period does not provide
+(Fig \ref{fig:first_yrs}. Comparing these yields from the time of
+release for each cultivar does not provide
 evidence of genetic yield improvements during the 33-year study
 period. Individual exceptions to this were two cultivars (M-204 and
 M-205) that had higher yields than the others.
@@ -461,34 +461,32 @@ mtext("Adjusting for yield erosion", adj = 0)
   for medium grain rice cultivars. Negative values on the X axis
   indicate experimental yields prior to the official release. The
   estimated erosion of yield over time (averaged over differences in
-  cultivar and year) is estimated to be \Sexpr{yrs_coef} kg ha\tsups{-1}
-  year\tsups{-1}. Points ($\bullet$) and bars (|) represent the mean and
-  standard error of the raw data, respectively. The shaded area is the
-  90\% credible interval.}
+  cultivar and year) is estimated by a mixed-effects model to be
+  \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1}. Points ($\bullet$)
+  and bars (|) represent the mean and standard error of the raw data,
+  respectively. The shaded area is the 90\% credible interval.}
 \label{fig:RES_year}
 \end{figure}
 
 There was no evidence of consistent differences between cultivars in
-the rate of yield erosion (Model 3), hence the model excluding varying
-rates of erosion by cultivar (Model 2) is presented here. The yields
-of each cultivar over time were evaluated relative to when the
-cultivar was released using the full model which accounts for both
-yield erosion and yield improvements over time. The average decrease
-in yield over time (i.e., yield erosion) once a cultivar was selected
-was estimated at \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} (90\%
-CI: \Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig \ref{fig:RES_year};
-Table \ref{tbl:coef}). The oldest cultivar in the trials
-(\Sexpr{gsub("M","M-",unique(mod_data[which.min(mod_data[,"release_yr"]),"id"]))})
-is estimated to have lost an average of
-\Sexpr{round(yrs_coef*-36/1000,1)} Mg ha\tsups{-1} since its
-release. Likewise, an estimated 560 kg ha\tsups{-1} yield
-advantage of M-206 over M-202 (the current and former predominant
-cultivars, respectively), can be attributed solely to the erosion
-of M-202's yield over time (Figs \ref{fig:first_yrs} \&
+the rate of yield erosion (Model 3); although visual evidence suggest
+otherwise (Fig. \ref{fig:all_cult}), more data is needed. Based on
+this, the models excluding varying rates of erosion by cultivar (i.e.,
+Models 1 \& 2) are presented here. The yields of each cultivar over time were
+evaluated relative to when the cultivar was released using the full
+model (Model 1) which accounts for both yield erosion and yield improvements
+over time. The average decrease in yield over time (i.e., yield
+erosion) once a cultivar was selected was estimated at
+\Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} (90\% CI:
+\Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig \ref{fig:RES_year}; Table
+\ref{tbl:coef}). The estimated 560 kg ha\tsups{-1} yield advantage of
+M-206 over M-202 (the current and former predominant cultivars,
+respectively), can be attributed solely to the erosion of M-202's
+yield over time (Fig. \ref{fig:first_yrs} \&
 \ref{fig:compare_yrs}). Further supporting this estimate of yield
 erosion, both cultivars yielded similarly at their respective year of
 release (Fig. \ref{fig:compare_yrs}), despite the fact that M-202 was
-released 19 years prior to M-206 (Fig. \ref{fig:compare_yrs}; Table
+released 19 years prior to M-206 (Table
 \ref{tbl:ids}).
 
 \begin{figure}[h]
@@ -537,19 +535,22 @@ text(5, 6.7, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
 \subsection{Yield gains}
 
 When yield erosion is not accounted for in the analysis (Model 2),
-there is estimated to be an increase per year of approximately
+there is estimated to be a yield increase of approximately
 \Sexpr{only_release_coef} kg ha\tsups{-1} year\tsups{-1} (90\% CI
 \Sexpr{only_release_CI[1]} to \Sexpr{only_release_CI[2]})
-(Fig. \ref{fig:wo_erosion}). However, the full model (Model 1) which
-accounts for both the year of release and yield erosion indicates that
-the estimated change in grain yield per year in the CCRRF's breeding
-trials at the RES was \Sexpr{release_yr_coef} kg ha\tsups{-1}
-year\tsups{-1}, with both small positive and negative trends within
-the credible interval (90\% CI: \Sexpr{rel_CI[1]} to
-\Sexpr{rel_CI[2]}) (Fig. \ref{fig:first_yrs}). According to model
-comparison metrics (PS-LOO, WAIC), the full model (Model 1) is
-estimated to have superior predictive accuracy compared to the model
-which does not account for yield erosion (Model 2)
+(Fig. \ref{fig:wo_erosion}). This analysis is functionally similar to evaluating
+cultivars in side-by-side yield tests, as the differences in years
+since release is between cultivars is not accounted for. However, the
+full model (Model 1) which accounts for both the year of release and
+yield erosion indicates that the estimated change in grain yield per
+year in the CCRRF's breeding trials at the RES was
+\Sexpr{release_yr_coef} kg ha\tsups{-1} year\tsups{-1}, with both
+small positive and negative trends within the credible interval (90\%
+CI: \Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]})
+(Fig. \ref{fig:first_yrs}). According to model comparison metrics
+(PS-LOO, WAIC), the full model (Model 1) is estimated to have superior
+predictive accuracy compared to the model which does not account for
+yield erosion (Model 2)
 
 After correcting for yield erosion, some cultivars were higher
 yielding compared to the overall average (as estimated via the random
@@ -683,9 +684,9 @@ higher degree of cold tolerance, high yield potential, and relatively
 short duration and are thus broadly grown with over 70\% of the area
 in these cultivars at any given time during the study
 period~\citep{ucce}. There are several cultivars that were found to
-have better than average yields, even after correcting for yield
+have higher than average yields, even after correcting for yield
 erosion. However, these cultivars (M-201, M-204, M-205, and possibly
-M-209; Fig. \ref{fig:ids_comp})) are not widely adopted. Importantly,
+M-209; Fig. \ref{fig:ids_comp}) are not widely adopted. Importantly,
 not all medium grain cultivars that were released were purported to
 have higher yields than previous cultivars. Some cultivars had special
 traits, but upon release had similar yields to more broadly adapted
@@ -711,7 +712,7 @@ ha\tsups{-1}. Since the estimated yield improvement spans from
 \Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]} kg ha\tsups{-1} year\tsups{-1}
 (Fig. \ref{fig:RES_year}; Table \ref{tbl:coef}), both increases and
 decreases in the genetic yield potential over the study period are
-plausible. This analysis suggests that the CCRRF breeding program has
+plausible. This analysis suggests that the breeding program has
 maintained but not substantially improved the yield
 potential in the face of changing biotic and abiotic pressures. This
 conclusion holds true even when evaluating the cultivars which have
@@ -724,7 +725,7 @@ and
 Mg ha\tsups{-1} with no indication of yields increasing
 (Fig. \ref{fig:first_yrs}).
 
-Yields of a particular cultivar may decline overtime for a number of
+Yields of a particular cultivar may decline over time for a number of
 reasons. First, ~\citet{Nie2009} reported yield declines in rice due
 to continuously flooded conditions over a long time period which could
 be overcome with improved N management. This is likely not the case
@@ -757,7 +758,7 @@ over roughly 30 years). This suggests the mechanisms responsible could
 potentially be endemic to all rice production systems. While efforts
 should be made to identify the cause of erosion, this study highlights
 both the need for maintenance of plant breeding and the difficulty of
-increasing genetic yield ~\citep{espe2017} potential, especially in
+increasing genetic yield potential~\citep{espe2017}, especially in
 systems such as CA where yield is approaching the physiological limit
 \citep{espe16a}.
 
@@ -828,14 +829,14 @@ increase yield potential and its adoption (although limited) in the
 northern and warmer part of CA may contribute to some yield gains
 reported at the state level. Other factors include improvement in
 agronomic management, including more efficient nutrient
-management~\citep{Lundy2012, Lundy2015, linquist2009}, and weed
-management~\citep{Saito2008, Pittelkow2012, linquist2008}. However,
+management~\citep{Lundy2012, linquist2009}, and weed
+management~\citep{Pittelkow2012, linquist2008}. However,
 recent rates of state-wide yield gains are far less than those of the
 preceding era, consistent with a system near the yield
 ceiling~\citep{Grassini2013}.
 
 It should be noted that while our investigation has been concerned
-about increasing yield potential, the estimates here might not capture
+with increasing yield potential, the estimates here might not capture
 yield stability (how consistent grain yields are from year to year). The
 occurrence of stress events (e.g., extreme temperatures) are
 unpredictable across years and are not well captured by the analysis
@@ -1071,9 +1072,9 @@ dotchart(id_est[,1],
 segments(x0 = id_est[,2], x1 = id_est[,3], y0 = 1:nrow(id_est))
 abline(v = 0, lty = 2)
 @
-\caption{The marginal estimates for the difference between cultivars,
-  averaged over the uncertainty in the fixed effect parameters (i.e.,
-  yield erosion and annual yield gains).}
+\caption{The marginal estimates (i.e., random effects) for the
+  difference between cultivars, averaged over the uncertainty in the
+  fixed effect parameters (i.e., yield erosion and annual yield gains).}
 \label{fig:ids_comp}
 \end{figure}
 
