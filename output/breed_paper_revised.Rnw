@@ -74,7 +74,7 @@ comparison tests will not reflect increases in yield potential. This
 hypothesis was tested using 33 years of experimental yield data from
 the California Cooperative Rice Research Foundation Rice Experiment
 Station. Based on side-by-side comparisons of old and new rice
-cultivars which do not consider yield erosion, there was an apparent
+cultivars which do not consider yield decline over time, there was an apparent
 increase in yield. However, the yields of older cultivars eroded at an
 estimated rate of 29.3 kg ha\tsups{-1} year\tsups{-1} (90\% credible
 interval -4.4 to -53.3) after initial selection. Once this effect was
@@ -209,8 +209,8 @@ announcements, data based on yield performance in side-by-side cultivar
 trials show that new cultivars usually out yield the older
 cultivars. In other rice systems, a decrease in a cultivar's yield
 performance over time has been observed~\citep{Peng1998, Peng2010,
-Peng2000, Datta1995}, often termed yield erosion~\citep{Peng1998}. It
-has been speculated that this yield erosion is due to the inability of
+Peng2000, Datta1995}, sometimes termed ``yield erosion''~\citep{Peng1998}. It
+has been speculated that this yield decline over time is due to the inability of
 a cultivar to adapt to changing biotic and abiotic
 conditions~\citep{Peng1998, Peng2010, Peng2000, Datta1995}. Yield
 erosion may explain the apparent contradiction above, in which
@@ -276,7 +276,7 @@ typically evaluated in these trials for 3 to 5 years prior to their
 official release. For these cultivars planted in breeding trials at
 the RES from \Sexpr{min(mod_data[,'year'])} --
 \Sexpr{max(mod_data[,'year'])} plot level observations (replicated 3
-to 4 times in a CRB design) were collected leading to a final data set
+to 4 times in a RCB design) were collected leading to a final data set
 of \Sexpr{format(nrow(mod_data), big.mark = ',')} observations
 representing \Sexpr{length(unique(mod_data[,'id']))} cultivars and
 included every publicly released medium grain cultivar developed by
@@ -297,7 +297,7 @@ reporting.
 
 \subsection{Statistical analysis}
 
-To test the hypothesis, the influence of breeding and yield erosion
+To test the hypothesis, the influence of breeding and yield decline over time
 were quantified on yield over time using three nested Bayesian hierarchical
 models. First, yield was modeled as a response to the number of years since
 the cultivar was officially released and the year of release using a
@@ -315,17 +315,17 @@ model as random effects.
 
 Where $yield_i$ is the grain yield for plot $i$, the Intercept is the
 average yield for the RES across cultivars and years, $Rate_{yield\
-erosion\ i}$ is rate of yield erosion per ${years\ since\ release\ i}$
+erosion\ i}$ is rate of yield decline per ${years\ since\ release\ i}$
 (negative for years prior to release, zero at the year of release),
 $Rate_{yield\ improvement\ i}$ is the rate of yield improvement per
 year (${release\ year\ i}$), $\beta_{year}$ is the random effect of
 year, and $\beta_{cultivar}$ is the random effect of cultivar. This
 full model was modified to further explore yield dynamics over
-time. For comparison to estimates where yield erosion is not taken
+time. For comparison to estimates where yield decline over time is not taken
 into account, the model was used as described above except omitting
 the $Rate_{yield\ erosion\ i}$ term (Model 2). Lastly, a model was fit
 to estimate if there were differences between cultivars in the rate of
-yield erosion by adding a random slope by cultivar (Model 3).
+yield decline over time by adding a random slope by cultivar (Model 3).
 
 Data were processed and models fit in R, an environment for
 statistical computing~\citep{R}. Models were fit using the `rstanarm'
@@ -424,7 +424,7 @@ evidence of genetic yield improvements during the 33-year study
 period. Individual exceptions to this were two cultivars (M-204 and
 M-205) that had higher yields than the others.
 
-\subsection{Yield erosion}
+\subsection{yield decline over time}
 \begin{figure}[H]
   
 <<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
@@ -454,7 +454,7 @@ polygon(x = c(yrs_in, rev(yrs_in)),
         border = NA,
         col = rgb(0,0,0,0.1))
 text(5, 8.0, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
-mtext("Adjusting for yield erosion", adj = 0)
+mtext("Adjusting for yield decline over time", adj = 0)
 
 @
 \caption{The relationship between yield and the years since release
@@ -469,12 +469,12 @@ mtext("Adjusting for yield erosion", adj = 0)
 \end{figure}
 
 There was no evidence of consistent differences between cultivars in
-the rate of yield erosion (Model 3), hence the model excluding varying
+the rate of yield decline over time (Model 3), hence the model excluding varying
 rates of erosion by cultivar (Model 2) is presented here. The yields
 of each cultivar over time were evaluated relative to when the
 cultivar was released using the full model which accounts for both
-yield erosion and yield improvements over time. The average decrease
-in yield over time (i.e., yield erosion) once a cultivar was selected
+yield decline over time and yield improvements over time. The average decrease
+in yield over time once a cultivar was selected
 was estimated at \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} (90\%
 CI: \Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig \ref{fig:RES_year};
 Table \ref{tbl:coef}). The oldest cultivar in the trials
@@ -528,7 +528,7 @@ text(5, 6.7, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
 
 @
 \caption{The performance of two popular cultivars over time. The
-  dashed line is the estimated yield erosion as estimated by the full
+  dashed line is the estimated yield decline over time as estimated by the full
   model. Points ($\bullet$) represent the mean, and bars (|) the standard
   error of the observed data.}
 \label{fig:compare_yrs}
@@ -536,12 +536,12 @@ text(5, 6.7, bquote(.(yrs_coef)~kg~ha^-1~year^-1))
 
 \subsection{Yield gains}
 
-When yield erosion is not accounted for in the analysis (Model 2),
+When yield decline over time is not accounted for in the analysis (Model 2),
 there is estimated to be an increase per year of approximately
 \Sexpr{only_release_coef} kg ha\tsups{-1} year\tsups{-1} (90\% CI
 \Sexpr{only_release_CI[1]} to \Sexpr{only_release_CI[2]})
 (Fig. \ref{fig:wo_erosion}). However, the full model (Model 1) which
-accounts for both the year of release and yield erosion indicates that
+accounts for both the year of release and yield decline over time indicates that
 the estimated change in grain yield per year in the CCRRF's breeding
 trials at the RES was \Sexpr{release_yr_coef} kg ha\tsups{-1}
 year\tsups{-1}, with both small positive and negative trends within
@@ -549,9 +549,9 @@ the credible interval (90\% CI: \Sexpr{rel_CI[1]} to
 \Sexpr{rel_CI[2]}) (Fig. \ref{fig:first_yrs}). According to model
 comparison metrics (PS-LOO, WAIC), the full model (Model 1) is
 estimated to have superior predictive accuracy compared to the model
-which does not account for yield erosion (Model 2)
+which does not account for yield decline over time (Model 2)
 
-After correcting for yield erosion, some cultivars were higher
+After correcting for yield decline over time, some cultivars were higher
 yielding compared to the overall average (as estimated via the random
 intercept term in the model). The marginal estimate for the
 performance of a cultivar averaged over the uncertainty in the other
@@ -620,14 +620,14 @@ text(x = plot_data$release_yr-0.4, y = plot_data$yield_kg + 0.07,
      labels = gsub("M", "M-", row.names(plot_data)),
      pos = 4, cex = 0.75)
 text(x = 2000, y = 8, bquote(.(round(fixef(RES_rel_fit)[2] * scl, 1))~kg~ha^-1~yr^-1))
-mtext("Without adjusting for yield erosion", adj = 0)
+mtext("Without adjusting for yield decline over time", adj = 0)
 
 
 @
 \caption{The relationship between yield and the release year of medium
 grain rice cultivars for the last 6 years
 (\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)}) as estimated without
-correcting for yield erosion over time.}
+correcting for yield decline over time.}
 \label{fig:wo_erosion}
 \end{figure}
 
@@ -653,7 +653,7 @@ text(x = plot_data2$release_yr-0.4, y = plot_data2$mean + 0.07,
      labels = gsub("M", "M-", row.names(plot_data2)),
      pos = 4, cex = 0.75)
 text(x = 2000, y = 8, bquote(.(release_yr_coef)~kg~ha^-1~yr^-1))
-mtext("Adjusting for yield erosion", adj = 0)
+mtext("Adjusting for yield decline over time", adj = 0)
 
 polygon(x = c(yrs, rev(yrs)),
         y = c(ints2[1,],rev(ints2[2,])),
@@ -664,7 +664,7 @@ polygon(x = c(yrs, rev(yrs)),
 \caption{The relationship between yield and the release year of medium
   grain rice cultivars for the last 6 years
   (\Sexpr{min(comp_yrs)} -- \Sexpr{max(comp_yrs)}) as estimated by 
-  correcting for yield erosion over time. Yield erosion was corrected
+  correcting for yield decline over time. yield decline over time was corrected
   for by adjusting each observed yield by estimated amount lost 
   (\Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} after release).}
 \label{fig:w_erosion}
@@ -696,11 +696,11 @@ while high yielding, do not have the cold tolerance of the other
 cultivars and are thus only recommended for the northern portion of
 the Sacramento Valley.
 
-Not accounting for yield erosion, the estimated yield improvement of
+Not accounting for yield decline over time, the estimated yield improvement of
 \Sexpr{only_release_coef} kg ha\tsups{-1} year\tsups{-1}
 (Fig. \ref{fig:wo_erosion}) is lower than the 37 to 60 kg ha\tsups{-1}
 year\tsups{-1} estimated by~\citet{Omar2014} in side-by-side
-comparisons. However, when accounting for yield erosion and looking
+comparisons. However, when accounting for yield decline over time and looking
 across all cultivars, there is no conclusive evidence of increased
 genetic yield potential in medium grain rice cultivars released by
 CCRRF's breeding improvement program over the period
@@ -738,20 +738,20 @@ in this situation as ~\citet{espe2017} found no significant changes in
 growing season temperatures (either high, low, or average temps) the
 Sacramento Valley during the study period. Thirdly, small changes in
 biotic and abiotic forces have previously been speculated as the cause
-for yield erosion of the cultivar IR8 at IRRI~\citep{Peng1998,
+for yield decline over time of the cultivar IR8 at IRRI~\citep{Peng1998,
 Peng2000, Peng2010}. Since the cultivar's genetics remain stable from
 the time of selection but the conditions the cultivar experiences over
 time are continuously changing, accumulated changes too small to
 reliably measure could plausibly lead to yield
 erosion~\citep{Peng1998, Peng2000, Peng2010}. However, it is not clear
-if this mechanism is responsible for the yield erosion of
+if this mechanism is responsible for the yield decline over time of
 \Sexpr{yrs_coef} Mg ha\tsups{-1} year\tsups{-1} found in this
 analysis. Biotic stressors such as pests and diseases are low in this
 Mediterranean climate. Furthermore, these fields are fallowed every
 other year and the residues are burned, further lowering the potential
 for pest and disease pressure.
 
-It is striking that the estimated yield erosion is similar to that
+It is striking that the estimated yield decline over time is similar to that
 reported by \citet{Peng2010} over a similar time span (15\% decline
 over roughly 30 years). This suggests the mechanisms responsible could
 potentially be endemic to all rice production systems. While efforts
@@ -764,7 +764,7 @@ systems such as CA where yield is approaching the physiological limit
 A goal of many breeding programs is to not only maintain the benchmark
 yield of the previous ``standard'' but to surpass it, especially if we
 are to meet the target of 50\% increased food production by 2050
-\citep{Foley2011a}. Given the estimated yield erosion, to hit an
+\citep{Foley2011a}. Given the estimated yield decline over time, to hit an
 ambitious target of 500 kg ha\tsups{-1} (approximately 5\%) increase
 in yield per release (with roughly 4 years between releases), a new
 cultivar needs to yield an additional \Sexpr{round(yrs_coef*-4,-1)} kg
@@ -900,7 +900,7 @@ med_eff = round(med_eff, 1)
 RES_coef = cbind(med_eff, paste(CIs[,1],CIs[,2], sep = " to "))
 rownames(RES_coef) = c("Intercept (Mg ha\\tsups{-1})",
                        "Yield improvement (kg ha\\tsups{-1} year\\tsups{-1})",
-                       "Yield erosion (kg ha\\tsups{-1} year\\tsups{-1})")
+                       "Yield decline (kg ha\\tsups{-1} year\\tsups{-1})")
 colnames(RES_coef) = c("Median", "90\\% Credible interval")
 
 print(xtable(RES_coef,
@@ -1008,7 +1008,7 @@ invisible(sapply(1:2, function(i){
 @
 \caption{The performance of two major cultivars over the period
 \Sexpr{min(mod_data[,'year'])} -- \Sexpr{max(mod_data[,'year'])}. The
-solid line is the estimated yield erosion (\Sexpr{yrs_coef} kg
+solid line is the estimated yield decline over time (\Sexpr{yrs_coef} kg
 ha\tsups{-1} year\tsups{-1}), while the dashed line is the published
 3-year average yield of M-202 at its release (1982-1984). Both
 cultivars have a similar yield at their respective year of release,
@@ -1073,7 +1073,7 @@ abline(v = 0, lty = 2)
 @
 \caption{The marginal estimates for the difference between cultivars,
   averaged over the uncertainty in the fixed effect parameters (i.e.,
-  yield erosion and annual yield gains).}
+  yield decline over time and annual yield gains).}
 \label{fig:ids_comp}
 \end{figure}
 
