@@ -1,12 +1,12 @@
 SWEAVE = Rscript -e "Sweave('$<')"
 
-Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
-	cd output && Rscript -e "Sweave('breed_paper.Rnw')" && \
-	pdflatex breed_paper.tex && \
-	bibtex breed_paper && \
-	pdflatex breed_paper.tex && \
-	pdflatex breed_paper.tex && \
-	cp breed_paper.pdf ../Espe_rice_yield_improvement.pdf
+Espe_rice_yield_improvement.pdf: output/breed_paper_revised.Rnw output/breeding.bib
+	cd output && Rscript -e "Sweave('breed_paper_revised.Rnw')" && \
+	pdflatex breed_paper_revised.tex && \
+	bibtex breed_paper_revised && \
+	pdflatex breed_paper_revised.tex && \
+	pdflatex breed_paper_revised.tex && \
+	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement.pdf
 
 output/supp_analysis.pdf: output/freq.Rmd
 	cd output && Rscript -e "knitr::knit('freq.Rmd')" && \

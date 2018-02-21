@@ -50,11 +50,17 @@ load("../data/model_data.rda")
 #                           data = mod_data, iter = 1000, cores = 2L)
 
 
-RES_full = stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c + yrs_in_trial,
-                      data = mod_data, iter = 2000, cores = 2L,
-                      seed = 789)
+RES_fullest = stan_glmer(yield_cs ~ (1|year) + (1|id) +
+                             (1|id:year)+ release_yr_c + yrs_in_trial,
+                         data = mod_data, iter = 2000, cores = 2L,
+                         seed = 789)
 
 if(compare){
+
+    RES_full = stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c + yrs_in_trial,
+                          data = mod_data, iter = 2000, cores = 2L,
+                          seed = 789)
+    
     RES_yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + yrs_in_trial,
                               data = mod_data, iter = 2000, cores = 2L,
                               seed = 789)
@@ -73,9 +79,14 @@ if(compare){
                       seed = 789)
 
     compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit), loo(RES_fuller))
-    
 
+    RES_fullest = stan_glmer(yield_cs ~ (1|year) + (1|id) +
+                                 (1|id:year)+ release_yr_c + yrs_in_trial,
+                      data = mod_data, iter = 2000, cores = 2L,
+                      seed = 789)
+
+    compare(loo(RES_full), loo(RES_fullest))
 }
 
 
-save(RES_full, file = "../output/h1_fit.Rda")
+save(RES_fullest, file = "../output/h1_fit.Rda")

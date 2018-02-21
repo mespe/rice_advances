@@ -131,19 +131,19 @@ prep_plot_data = function(x, idx)
     })))
 }
 
-release_yr_coef = round(fixef(RES_full)[2] * scl, 1)
-yrs_coef = round(fixef(RES_full)[3] * scl, 1)
+release_yr_coef = round(fixef(RES_fullest)[2] * scl, 1)
+yrs_coef = round(fixef(RES_fullest)[3] * scl, 1)
 only_release_coef = round(fixef(RES_rel_fit)[2]*scl, 1)
 
-RES_CI <- round(posterior_interval(RES_full, pars = "yrs_in_trial") * scl, 1)
-rel_CI = round(posterior_interval(RES_full, pars = "release_yr_c") * scl, 1)
+RES_CI <- round(posterior_interval(RES_fullest, pars = "yrs_in_trial") * scl, 1)
+rel_CI = round(posterior_interval(RES_fullest, pars = "release_yr_c") * scl, 1)
 only_release_CI = round(posterior_interval(RES_rel_fit, pars = "release_yr_c") * scl, 1)
 
 m202_v_206 = round(yrs_coef * -19, -1)
 
 
-id_est = ranef(RES_full)$id
-id_est = cbind(id_est, posterior_interval(RES_full, regex_pars = "id:M"))
+id_est = ranef(RES_fullest)$id
+id_est = cbind(id_est, posterior_interval(RES_fullest, regex_pars = "id:M"))
 idx = order(id_est[,1], decreasing = FALSE)
 id_est = id_est[idx,]
 
@@ -221,29 +221,6 @@ yields erode over time then apparent yield increases in side-by-side
 yield comparison tests will not reflect the true magnitude of yield
 changes over time.
 
-\begin{figure}[H]
-<<fig=TRUE, echo=FALSE>>=
-CA_data = read.csv("../data/CA_rice_yield.csv", stringsAsFactors = FALSE)
-CA_data$Value = as.numeric(gsub(",", "", CA_data$Value))/1000
-CA_data = CA_data[order(CA_data$Year),]
-plot(Value * 1.12 ~ Year, CA_data,
-     # type = "l",
-     pch = 16,
-     xlab = "Year",
-     ylab = expression("State avg. grain yield ( Mg ha"^-1~")"))
-# mv_avg = filter(c(rep(mean(CA_data$Value[1:10] * 1.12), 5),
-#                   CA_data$Value * 1.12,
-#                   rep(mean(CA_data$Value[(nrow(CA_data) - 10):nrow(CA_data)] * 1.12), 5)),
-#                 rep(1/11,11))
-# lines(x = c(1907:1911, CA_data$Year, 2017:2021), y = mv_avg)
-
-@
-\caption{Average rice yields over the period \Sexpr{min(CA_data$Year)}
-to \Sexpr{max(CA_data$Year)} for California, USA (US Dept. of
-Agriculture National Agricultural Statistics Service, 2017).}
-\label{fig:state_yield}
-\end{figure}
-
 \section{Methods}\label{methods}
 
 \subsection{Site and data description}
@@ -276,7 +253,7 @@ typically evaluated in these trials for 3 to 5 years prior to their
 official release. For these cultivars planted in breeding trials at
 the RES from \Sexpr{min(mod_data[,'year'])} --
 \Sexpr{max(mod_data[,'year'])} plot level observations (replicated 3
-to 4 times in a RCB design) were collected leading to a final data set
+to 4 times in a completely randomized design) were collected leading to a final data set
 of \Sexpr{format(nrow(mod_data), big.mark = ',')} observations
 representing \Sexpr{length(unique(mod_data[,'id']))} cultivars and
 included every publicly released medium grain cultivar developed by
@@ -307,17 +284,18 @@ model as random effects.
 
 \begin{equation}
 \begin{split}
- yield_i = Intercept + (Rate_{yield\ erosion\ i}* {years\ since\
-   release\ i}) \\+ (Rate_{yield\ improvement\ i}* {release\ year\ i}) 
- + \beta_{year\ i} + \beta_{cultivar\ i} \\
+ yield_{ijk} = Intercept + (Rate_{yield\ erosion}* {years\ since\
+   release\ ik}) \\+ (Rate_{yield\ improvement}* {release\ year\ ik}) 
+ + \beta_{year\ ij} + \beta_{cultivar\ ik} + \epsilon \\
 \end{split}
 \end{equation}
 
-Where $yield_i$ is the grain yield for plot $i$, the Intercept is the
-average yield for the RES across cultivars and years, $Rate_{yield\
-erosion\ i}$ is rate of yield decline per ${years\ since\ release\ i}$
-(negative for years prior to release, zero at the year of release),
-$Rate_{yield\ improvement\ i}$ is the rate of yield improvement per
+Where $yield_i$ is the grain yield for cultivar $k$ in plot $i$ for
+year $j$,
+the Intercept is the average yield for the RES across cultivars and years, $Rate_{yield\
+erosion}$ is rate of yield decline per ${years\ since\ release\ i}$
+(mean-centered, i.e., negative for years prior to release, zero at the year of release),
+$Rate_{yield\ improvement}$ is the rate of yield improvement per
 year (${release\ year\ i}$), $\beta_{year}$ is the random effect of
 year, and $\beta_{cultivar}$ is the random effect of cultivar. This
 full model was modified to further explore yield dynamics over
@@ -380,14 +358,14 @@ text(x = aa$x, y = aa$y,
 #### Polygons
 yrs <- 1975:2025
 
-pp <- posterior_linpred(RES_full, re.form = NA,
+pp <- posterior_linpred(RES_fullest, re.form = NA,
                         newdata = data.frame(release_yr_c = yrs - 2000,
                                              yrs_in_trial = 0),
                         prob = 0.5)
 pp <-  (pp * scl + center) / 1000
 ints2 = apply(pp, 2, quantile, p = c(0.05, 0.95))
 
-abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
+abline(a = ((((fixef(RES_fullest)[1] * scl) + center) ) -
            (2000 * release_yr_coef)) / 1000,
        b = release_yr_coef/1000,
        lty = 2)
@@ -424,12 +402,35 @@ evidence of genetic yield improvements during the 33-year study
 period. Individual exceptions to this were two cultivars (M-204 and
 M-205) that had higher yields than the others.
 
-\subsection{yield decline over time}
+\subsection{Yield decline over time}
+
+
+\begin{figure}[H]
+<<echo = FALSE, fig = TRUE, width = 7, height = 6>>=
+library(ggplot2)
+library(ggthemes)
+ggplot(mod_data, aes(x = year, y = yield_kg/1000)) +
+    geom_point(size = 0.5, alpha = 0.5) +
+    geom_smooth(method = "lm", color = "black") +
+    theme_few() +
+    xlab("Year") +
+    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
+    facet_wrap(~id, ncol = 4)
+
+@
+\caption{The yield of all medium grain released cultivars at the
+  California Cooperative Rice Research Foundation Rice Experiment
+  Station over the period \Sexpr{min(mod_data[,'year'])} --
+  \Sexpr{max(mod_data[,'year'])}.}
+\label{fig:all_cult}
+\end{figure}
+
+
 \begin{figure}[H]
   
 <<fig=TRUE, echo=FALSE, width = 6, height = 5>>=
 yrs_in <- -10:40
-pp <- posterior_linpred(RES_full, re.form = NA,
+pp <- posterior_linpred(RES_fullest, re.form = NA,
                         newdata = data.frame(yrs_in_trial = yrs_in,
                                              release_yr_c = 0))
 pp <-  (pp * scl + center) / 1000 
@@ -447,7 +448,7 @@ plot(yield_kg ~ yrs_in_trial, data = plot_data, pch = 16, #col = rgb(0,0,0,0.25)
      ylim = c(8.0, 12.5))
 with(plot_data, segments(x0 = yrs_in_trial, y0=yield_kg + yield_se,
                          y1 = yield_kg - yield_se))
-abline(a = ((fixef(RES_full)[1] * scl) + center) / 1000 ,
+abline(a = ((fixef(RES_fullest)[1] * scl) + center) / 1000 ,
        b = yrs_coef/1000)
 polygon(x = c(yrs_in, rev(yrs_in)),
         y = c(ints[1,],rev(ints[2,])),
@@ -591,7 +592,7 @@ wo_erosion = expand.grid(id = row.names(plot_data),
             year = comp_yrs,
             release_yr_c = 0,
             yrs_in_trial = 0)
-wo_erosion$corr_yield = colMeans(posterior_predict(RES_full,
+wo_erosion$corr_yield = colMeans(posterior_predict(RES_fullest,
                                newdata = wo_erosion)) + center/1000
 plot_data2 = prep_plot_data(wo_erosion$corr_yield,
                             wo_erosion$id)
@@ -643,7 +644,7 @@ plot(mean ~ release_yr, data = plot_data2, pch = 16, #col = rgb(0,0,0,0.25),
      xaxt = "n",
      xlim = c(1980,2020))
 axis(1, at = seq(1980, 2020, by = 10))
-abline(a = ((((fixef(RES_full)[1] * scl) + center) ) -
+abline(a = ((((fixef(RES_fullest)[1] * scl) + center) ) -
            (2000 * release_yr_coef)) / 1000,
        b = release_yr_coef/1000,
        lty = 2)
@@ -786,12 +787,12 @@ plot(1, type = "n",
      xaxs = "i")
 
 # arrows(12, 8.2, 27, 8.2, xpd = TRUE, lwd = 2)
-abline(a = 10, b = fixef(RES_full)[3], lty = 2, lwd = 2)
+abline(a = 10, b = fixef(RES_fullest)[3], lty = 2, lwd = 2)
 text(25, 10.85, "(3) target above maintenance", cex = 0.8,
-     srt = 18)#((atan(fixef(RES_full)[3] + 0.06) * 180))/pi)
+     srt = 18)#((atan(fixef(RES_fullest)[3] + 0.06) * 180))/pi)
 abline(h = 10, lty = 3, lwd = 2)
 text(25, 10.1, "(1) current situation", cex = 0.8)
-abline(a = 10, b = fixef(RES_full)[3] + 0.06, lty = 4, lwd = 2)
+abline(a = 10, b = fixef(RES_fullest)[3] + 0.06, lty = 4, lwd = 2)
 text(25, 9.35, "(2) no maintenance breeding", cex = 0.8,
      srt = -18)
 
@@ -890,10 +891,10 @@ gains being made.
 
 <<echo=FALSE, results=tex>>=
 
-CIs = posterior_interval(RES_full)[1:3,] * scl
+CIs = posterior_interval(RES_fullest)[1:3,] * scl
 CIs[1,] = round((CIs[1,] + center)/1000, 1)
 CIs = round(CIs, 1)
-med_eff = fixef(RES_full) * scl
+med_eff = fixef(RES_fullest) * scl
 med_eff[1] = round((med_eff[1] + center)/1000, 1)
 med_eff = round(med_eff, 1)
 
@@ -951,6 +952,33 @@ print(xtable(ids,
 figures}\label{supplemental-tables-and-figures}
 
 \beginsupplement
+
+
+\begin{figure}[H]
+<<fig=TRUE, echo=FALSE>>=
+CA_data = read.csv("../data/CA_rice_yield.csv", stringsAsFactors = FALSE)
+CA_data$Value = as.numeric(gsub(",", "", CA_data$Value))/1000
+CA_data = CA_data[order(CA_data$Year),]
+plot(Value * 1.12 ~ Year, CA_data,
+     # type = "l",
+     pch = 16,
+     xlab = "Year",
+     ylab = expression("State avg. grain yield ( Mg ha"^-1~")"))
+# mv_avg = filter(c(rep(mean(CA_data$Value[1:10] * 1.12), 5),
+#                   CA_data$Value * 1.12,
+#                   rep(mean(CA_data$Value[(nrow(CA_data) - 10):nrow(CA_data)] * 1.12), 5)),
+#                 rep(1/11,11))
+# lines(x = c(1907:1911, CA_data$Year, 2017:2021), y = mv_avg)
+
+@
+\caption{Average rice yields over the period \Sexpr{min(CA_data$Year)}
+to \Sexpr{max(CA_data$Year)} for California, USA (US Dept. of
+Agriculture National Agricultural Statistics Service, 2017).}
+\label{fig:state_yield}
+\end{figure}
+
+\newpage
+
 \begin{comment}
 \begin{figure}[H]
 <<fig=TRUE, width = 8, height = 5, out.width = '85%', echo=FALSE>>=
@@ -982,13 +1010,13 @@ invisible(sapply(1:2, function(i){
         axis(2, cex.axis = 0.8,)
         mtext(expression("Yield ( Mg ha"^-1~")"), 2, line = 2.25, cex.lab = 0.6)
     }
-    # abline(a = ((fixef(RES_full)[1] * scl) + center) / 1000 -
+    # abline(a = ((fixef(RES_fullest)[1] * scl) + center) / 1000 -
     #            (2000 * yrs_coef/1000),
     #        b = yrs_coef/1000,
     #        lty = 1)
     lines(as.numeric(rownames(plot_data[[i]])),
           11.2 + (1:nrow(plot_data[[i]])) * (yrs_coef/1000))
-    # abline(a = ((fixef(RES_full)[1] * scl) + center) / 1000,
+    # abline(a = ((fixef(RES_fullest)[1] * scl) + center) / 1000,
            # b = yrs_coef/1000)
     
     # abline(h = mean(mod_data$yield_kg[(mod_data$id == tars[i] &
@@ -1016,50 +1044,30 @@ and similar decreases over time.}
 \label{fig:compare_yrs2}
 \end{figure}
 \newpage
-\end{comment}
-
-% \begin{figure}[H]
-% <<fig=TRUE, echo=FALSE>>=
-% tars <- c("M202","M206")
-% comp_yrs = 2004:2005
-
-% boxplot(yield_kg/1000 ~ id, data = mod_data[(mod_data$id %in% tars) &
-%                                             (mod_data$year %in% comp_yrs),],
-%         ylab = expression("Grain yield ( Mg ha"^-1~")"))
-
-% @
-% \caption{An example of a typical side-by-side comparison between a older (M-202)
-%   and newer (M-206) cultivar. Shown is the performance of these cultivars at the CA Rice
-%   Experiment Station (RES) over the period \Sexpr{min(comp_yrs)} --
-%   \Sexpr{max(comp_yrs)}. The newer
-%   cultivar, M-206, appears to have a yield advantage over the older
-%   cultivar, M-202, though this comparison does not account for the 10
-%   year difference in years since release between the cultivars.}
-% \label{fig:compare_vars}
-% \end{figure}
-% \newpage
 
 \begin{figure}[H]
-<<echo = FALSE, fig = TRUE, width = 7, height = 6>>=
-library(ggplot2)
-library(ggthemes)
-ggplot(mod_data, aes(x = year, y = yield_kg/1000)) +
-    geom_point(size = 0.5, alpha = 0.5) +
-    geom_smooth(method = "lm", color = "black") +
-    theme_few() +
-    xlab("Year") +
-    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
-    facet_wrap(~id, ncol = 4)
+<<fig=TRUE, echo=FALSE>>=
+tars <- c("M202","M206")
+comp_yrs = 2004:2005
+
+boxplot(yield_kg/1000 ~ id, data = mod_data[(mod_data$id %in% tars) &
+                                            (mod_data$year %in% comp_yrs),],
+        ylab = expression("Grain yield ( Mg ha"^-1~")"))
 
 @
-\caption{The yield of all medium grain released cultivars at the
-  California Cooperative Rice Research Foundation Rice Experiment
-  Station over the period \Sexpr{min(mod_data[,'year'])} --
-  \Sexpr{max(mod_data[,'year'])}.}
-\label{fig:all_cult}
+\caption{An example of a typical side-by-side comparison between a older (M-202)
+  and newer (M-206) cultivar. Shown is the performance of these cultivars at the CA Rice
+  Experiment Station (RES) over the period \Sexpr{min(comp_yrs)} --
+  \Sexpr{max(comp_yrs)}. The newer
+  cultivar, M-206, appears to have a yield advantage over the older
+  cultivar, M-202, though this comparison does not account for the 10
+  year difference in years since release between the cultivars.}
+\label{fig:compare_vars}
 \end{figure}
+%% \newpage
 
-\newpage
+\end{comment}
+
 \begin{figure}[ht]
 <<echo=FALSE, fig = TRUE>>=
 
