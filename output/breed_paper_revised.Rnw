@@ -147,6 +147,7 @@ id_est = cbind(id_est, posterior_interval(RES_fullest, regex_pars = "id:M"))
 idx = order(id_est[,1], decreasing = FALSE)
 id_est = id_est[idx,]
 
+raw_samples = as.data.frame(RES_fullest)
 @
 
 \section{Introduction}\label{intro}
@@ -164,7 +165,7 @@ crops. However, many production systems are experiencing plateaus in
 grain yield~\citep{Grassini2013}. If this trend continues,
 improvements per unit land area are no longer possible, and an
 increase in the area under cultivation will be needed to meet food
-demand, which carries with it undesirable ecological
+demand, which carries undesirable ecological
 implications~\citep{Foley2011a, tilman1999}. Therefore, it is of
 critical importance to better understand why the rate of increase in
 grain yields has declined or leveled off in intensified production
@@ -192,7 +193,7 @@ potential~\citep{espe16a}. In highly intensive systems such as this,
 \citet{grassini2011} have shown that farmers are capable of attaining
 85\% of the maximum yield potential. Thus, given that farmers are near
 the attainable yield potential, increases in yield are likely to be
-slow and \citet{espe16a} reported that indeed this was the case
+relatively slow and \citet{espe16a} reported that indeed this was the case
 with yields on average increasing by about 50 to 62 kg ha\tsups{-1}
 year\tsups{-1} between 1999 and 2014.
 
@@ -228,7 +229,7 @@ changes over time.
 The CCRRF Rice Experiment Station (RES) is located near Biggs, CA
 (39.4648, -121.7342), and has been the central location for CCRRF's
 efforts to develop improved rice cultivars adapted to CA since
-1969. The California Statewide Variety Trails evaluate current and
+1969. The California Statewide Variety Trials evaluate current and
 promising cultivars at the RES and six to eight on-farm trials around
 the state each year. To avoid potential complications due to site,
 climate, and management differences at the farmer-managed trials
@@ -839,27 +840,35 @@ ceiling~\citep{Grassini2013}.
 during a similar time period using similar data as these here, but
 concluded that genetic rice yield potential has increased over this
 time period at a rate of 25 kg\tsups{-1} ha\tsups{-1}
-year\tsups{-1}. There are several explanations for how this could
-be. First, \citet{mckenzie2014} did not account for yield decreases
-over time. As shown here, when these decreases are not taken into about, the
-estimated increase in yield over time is estimated to be approximately
-the same as that found by \citet{mckenzie2014}. Second,
-\citet{mckenzie2014} concluded that there was no trend in the yield
-of the major cultivars over time, yet this interpretation of the
-results of a statistical test is flawed. Failing to reject the
-hypothesis that of a trend in yield does not equate to there being no
-trend. Third, it is not surprising that no trend in yield over time
-was detected. \citet{mckenzie2014} used data from several locations, yet analyzed
-those data using a simple t-test. By using this simple analysis,
-\citet{mckenzie2014} ignore systematic errors related to differences between
-observations, including different management systems, growing
-environments, and crop timing between locations. By contrast, this
-investigation used a single, well managed system and analyzed the data
-using a mixed effects model which fully accounts for non-independence
-between similar observations. In doing this, the analysis presented
-here makes fewer assumptions and more fully captures the structure of
-the data. Hence, the estimates presented here are likely more
-reliable. 
+year\tsups{-1}. Yet the CI estimated from these data using the best
+model suggests that there is only a
+\Sexpr{round(sum((raw_samples$release_yr_c*scl)>=25)/nrow(raw_samples)*100,1)}\%
+probability of the rate of yield increase is equal to or greater than
+25 kg\tsups{-1} ha\tsups{-1} year\tsups{-1}. There are several
+explanations for how this could be. 1) \citet{mckenzie2014} did not
+account for yield decreases over time in their analysis. As shown
+here, when these decreases are not taken into about, the estimated
+increase in yield over time is estimated to be approximately the same
+as that found by \citet{mckenzie2014}. 2) These yield decreases over time
+were not taken into account possibly because \citet{mckenzie2014}
+concluded that there was no trend in the yield of the major cultivars
+over time. However this conclusion is based on a flawed interpretation
+of the results of their statistical test. Failing to reject the
+hypothesis that the trend in yield equals zero does not equate to the
+confirmation of no trend. Instead, failing to reject the hypothesis
+could suggest the analysis lacks the statistical power to detect the trend. 3) It
+is not surprising that no trend in yield over time was detected given
+that \citet{mckenzie2014} used data from several locations, yet
+analyzed those data using a simple t-test. By using this simple
+analysis, \citet{mckenzie2014} ignore systematic errors related to
+differences between observations from different locations, including
+different management systems, growing environments, and crop
+timing. By contrast, this investigation presented here used a single,
+well managed system and analyzed the data using a mixed effects model
+which fully accounts for non-independence between similar
+observations. In doing this, the analysis makes fewer assumptions and
+more fully captures the structural relationships in the data. Hence,
+the estimates presented here are likely more reliable.
 
 It should be noted that while our investigation has been concerned
 about increasing yield potential, the estimates here might not capture
