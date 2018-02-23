@@ -835,6 +835,32 @@ recent rates of state-wide yield gains are far less than those of the
 preceding era, consistent with a system near the yield
 ceiling~\citep{Grassini2013}.
 
+\citet{mckenzie2014} explored the yield of rice in this same system
+during a similar time period using similar data as these here, but
+concluded that genetic rice yield potential has increased over this
+time period at a rate of 25 kg\tsups{-1} ha\tsups{-1}
+year\tsups{-1}. There are several explanations for how this could
+be. First, \citet{mckenzie2014} did not account for yield decreases
+over time. As shown here, when these decreases are not taken into about, the
+estimated increase in yield over time is estimated to be approximately
+the same as that found by \citet{mckenzie2014}. Second,
+\citet{mckenzie2014} concluded that there was no trend in the yield
+of the major cultivars over time, yet this interpretation of the
+results of a statistical test is flawed. Failing to reject the
+hypothesis that of a trend in yield does not equate to there being no
+trend. Third, it is not surprising that no trend in yield over time
+was detected. \citet{mckenzie2014} used data from several locations, yet analyzed
+those data using a simple t-test. By using this simple analysis,
+\citet{mckenzie2014} ignore systematic errors related to differences between
+observations, including different management systems, growing
+environments, and crop timing between locations. By contrast, this
+investigation used a single, well managed system and analyzed the data
+using a mixed effects model which fully accounts for non-independence
+between similar observations. In doing this, the analysis presented
+here makes fewer assumptions and more fully captures the structure of
+the data. Hence, the estimates presented here are likely more
+reliable. 
+
 It should be noted that while our investigation has been concerned
 about increasing yield potential, the estimates here might not capture
 yield stability (how consistent grain yields are from year to year). The
