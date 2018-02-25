@@ -415,7 +415,7 @@ ggplot(mod_data, aes(x = year, y = yield_kg/1000)) +
     geom_smooth(method = "lm", color = "black") +
     theme_few() +
     xlab("Year") +
-    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
+i    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
     facet_wrap(~id, ncol = 4)
 
 @

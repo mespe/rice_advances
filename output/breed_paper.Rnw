@@ -25,7 +25,7 @@
 
 \newcommand{\tsups}{\textsuperscript}
 \usepackage{Sweave}
-\SweaveOpts{prefix.string=graphics/report, png=TRUE}
+\SweaveOpts{prefix.string=graphics/report, png=FALSE}
 
 
 \begin{document}
