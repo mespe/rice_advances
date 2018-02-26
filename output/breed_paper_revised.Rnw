@@ -120,7 +120,7 @@ library(lme4)
 library(xtable)
 
 load("../data/model_data.rda")
-load("h1_fit.Rda")
+load("h1_fit_revised.Rda")
 load("bivar_fit.Rda")
 load("../data/all_vt_weather.Rda")
 
@@ -148,6 +148,9 @@ idx = order(id_est[,1], decreasing = FALSE)
 id_est = id_est[idx,]
 
 raw_samples = as.data.frame(RES_fullest)
+
+# Fix ID names once
+mod_data$id_fact = factor(gsub("^M", "M-", mod_data$id))
 @
 
 \section{Introduction}\label{intro}
@@ -286,8 +289,9 @@ model as random effects.
 \begin{equation}
 \begin{split}
  yield_{ijk} = Intercept + (Rate_{yield\ erosion}* {years\ since\
-   release\ ik}) \\+ (Rate_{yield\ improvement}* {release\ year\ ik}) 
- + \beta_{year\ ij} + \beta_{cultivar\ ik} + \epsilon \\
+   release\ ik}) \\+ (Rate_{yield\ improvement}* {release\ year\ ik})\\ 
+ + \beta_{year\ ij} + \beta_{cultivar\ ik} +
+ \beta_{cultivar\ ik:year\ ij} + \epsilon \\
 \end{split}
 \end{equation}
 
@@ -415,8 +419,8 @@ ggplot(mod_data, aes(x = year, y = yield_kg/1000)) +
     geom_smooth(method = "lm", color = "black") +
     theme_few() +
     xlab("Year") +
-i    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
-    facet_wrap(~id, ncol = 4)
+    ylab(expression("Grain yield ( Mg ha"^-1~")")) + 
+    facet_wrap(~id_fact, ncol = 4)
 
 @
 \caption{The yield of all medium grain released cultivars at the
@@ -675,15 +679,15 @@ polygon(x = c(yrs, rev(yrs)),
 
 \section{Discussion}
 
-In CA, the cultivars with broad adaptation and adoption over the 33
-year period of this study are M-202, M-206, and M-105. Cold tolerance
-is a major problem for much of the California rice producing region
-~\citep{espe2017}, although it is a bigger problem in the southern
-portion of the Sacramento Valley due to the influence of the ocean
-winds through the Delta ~\citep{espe16a}. These three cultivars have a
-higher degree of cold tolerance, high yield potential, and relatively
-short duration and are thus broadly grown with over 70\% of the area
-in these cultivars at any given time during the study
+In CA, the cultivars with broad adaptation and adoption over the
+33-year period of this study are M-202, M-206, and M-105. Cold
+tolerance is a major problem for much of the California rice producing
+region ~\citep{espe2017}, although it is a bigger problem in the
+southern portion of the Sacramento Valley due to the influence of the
+ocean winds through the Delta ~\citep{espe16a}. These three cultivars
+have a higher degree of cold tolerance, high yield potential, and
+relatively short duration and are thus broadly grown with over 70\% of
+the area in these cultivars at any given time during the study
 period~\citep{ucce}. There are several cultivars that were found to
 have better than average yields, even after correcting for yield
 erosion. However, these cultivars (M-201, M-204, M-205, and possibly
@@ -698,33 +702,40 @@ while high yielding, do not have the cold tolerance of the other
 cultivars and are thus only recommended for the northern portion of
 the Sacramento Valley.
 
-Not accounting for yield decline over time, the estimated yield improvement of
-\Sexpr{only_release_coef} kg ha\tsups{-1} year\tsups{-1}
-(Fig. \ref{fig:wo_erosion}) is lower than the 37 to 60 kg ha\tsups{-1}
-year\tsups{-1} estimated by~\citet{Omar2014} in side-by-side
-comparisons. However, when accounting for yield decline over time and looking
-across all cultivars, there is no conclusive evidence of increased
-genetic yield potential in medium grain rice cultivars released by
-CCRRF's breeding improvement program over the period
-\Sexpr{min(mod_data[,'year'])} to \Sexpr{max(mod_data[,'year'])}. 
-Grain yield over this period has stayed relatively constant at an average
-\Sexpr{round(mean(mod_data[,"yield_kg"])/1000, 1)} Mg
+Not accounting for yield decline over time, the estimated yield
+improvement of \Sexpr{only_release_coef} kg ha\tsups{-1}
+year\tsups{-1} (Fig. \ref{fig:wo_erosion}) is lower than the 37 to 60
+kg ha\tsups{-1} year\tsups{-1} estimated by~\citet{Omar2014} in
+side-by-side comparisons. ~\citet{vanIttersum2013} defined potential
+yield as the yield of optimum management and cultivars given
+environmental limitations. Under this definition, potential yield
+could be reasonably estimated from the yields of 'M-202' and 'M-206'
+in experimental plots at the RES in the years 1984 and 2015,
+respectively. Given these criteria, it is clear that potential yield
+has changed little over the study period
+(Fig. \ref{fig:first_yrs}). When accounting for yield decline over
+time across all cultivars, there is no conclusive evidence of
+increased genetic yield potential in medium grain rice cultivars
+released by CCRRF's breeding improvement program over the period
+\Sexpr{min(mod_data[,'year'])} to \Sexpr{max(mod_data[,'year'])}.
+Grain yield over this period has stayed relatively constant at an
+average \Sexpr{round(mean(mod_data[,"yield_kg"])/1000, 1)} Mg
 ha\tsups{-1}. Since the estimated yield improvement spans from
 \Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]} kg ha\tsups{-1} year\tsups{-1}
 (Fig. \ref{fig:RES_year}; Table \ref{tbl:coef}), both increases and
 decreases in the genetic yield potential over the study period are
 plausible. This analysis suggests that the CCRRF breeding program has
-maintained but not substantially improved the yield
-potential in the face of changing biotic and abiotic pressures. This
-conclusion holds true even when evaluating the cultivars which have
-been breed for broad adaption and high yield potential (M-202, M-206
-and M-105). Yields of these cultivars at time of release have all
-yielded between
+maintained but not substantially improved the yield potential in the
+face of changing biotic and abiotic pressures. This conclusion holds
+true even when evaluating the cultivars which have been breed for
+broad adaption and high yield potential (M-202, M-206 and
+M-105). Yields of these cultivars at time of release have all yielded
+between
 \Sexpr{tmp=mod_data[mod_data[,"yrs_in_trial"]<=0&mod_data[,"id"]%in%c("M202","M206","M105"),];round(min(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
-and
-\Sexpr{round(max(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
-Mg ha\tsups{-1} with no indication of yields increasing
-(Fig. \ref{fig:first_yrs}).
+    and
+    \Sexpr{round(max(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
+    Mg ha\tsups{-1} with no indication of yields increasing
+    (Fig. \ref{fig:first_yrs}).
 
 Yields of a particular cultivar may decline overtime for a number of
 reasons. First, ~\citet{Nie2009} reported yield declines in rice due
@@ -736,7 +747,7 @@ at this location and unlike most CA rice fields, the fields are left
 fallow every other year. Second, changing climate may influence yields
 with either warmer~\citep{van2013} or cooler~\citep{espe2017}
 temperatures reducing yields. Again, this is unlikely to be the case
-in this situation as ~\citet{espe2017} found no significant changes in
+in this situation as ~\citet{espe2017} found no substantial changes in
 growing season temperatures (either high, low, or average temps) the
 Sacramento Valley during the study period. Thirdly, small changes in
 biotic and abiotic forces have previously been speculated as the cause
@@ -745,13 +756,15 @@ Peng2000, Peng2010}. Since the cultivar's genetics remain stable from
 the time of selection but the conditions the cultivar experiences over
 time are continuously changing, accumulated changes too small to
 reliably measure could plausibly lead to yield
-erosion~\citep{Peng1998, Peng2000, Peng2010}. However, it is not clear
+erosion~\citep{Peng1998, Peng2000, Peng2010, Mackay2011}. However, it is not clear
 if this mechanism is responsible for the yield decline over time of
 \Sexpr{yrs_coef} Mg ha\tsups{-1} year\tsups{-1} found in this
 analysis. Biotic stressors such as pests and diseases are low in this
 Mediterranean climate. Furthermore, these fields are fallowed every
 other year and the residues are burned, further lowering the potential
-for pest and disease pressure.
+for pest and disease pressure. More data is needed to further explore
+the exact cause of the yield declines observed here, as well to
+determine if different cultivars have differential declines over time.
 
 It is striking that the estimated yield decline over time is similar to that
 reported by \citet{Peng2010} over a similar time span (15\% decline
@@ -818,7 +831,9 @@ M-206 had similar yield potentials at the time of release (Fig. 5),
 M-206 matures about 6 days earlier than M-202 (Table
 \ref{tbl:ids}). Shorter duration is very important in CA due to an
 already short growing season and water limitations (shorter duration
-cultivars would presumably require less irrigation water).
+cultivars would presumably require less irrigation water). For a
+detailed discussion of cultivars' agronomic and grain quality
+characteristics, refer to \url{http://rice.ucanr.edu/Reports-Publications/Rice_Production_Workshop_Manual/}.
 
 California state average yields have increased slowly during the study
 period (Fig. \ref{fig:state_yield}) \citep{espe16a}. What are the
@@ -925,6 +940,25 @@ gains being made.
 \section{Tables}
 
 <<echo=FALSE, results=tex>>=
+ids = aggregate(release_yr ~ id, data = mod_data, unique)
+ids$dth = as.integer(round(aggregate(dth ~ id, data = mod_data, mean, na.rm = TRUE)$dth, 0))
+colnames(ids) = c("Cultivar", "Release Year", "Days to 50% Heading")
+ids = ids[order(ids[,2]),]
+ids[,2] = as.integer(ids[,2])
+ids[,1] = gsub("M", "M-", ids[,1])
+
+print(xtable(ids,
+             caption = "All named medium grain rice cultivars and their associated release year (from 1984 -- 2015) planted at the Rice Experiment Station (RES), Biggs, California.",
+             label = "tbl:ids"),
+      include.rownames = FALSE,
+      booktabs = TRUE,
+      caption.placement = "top")
+
+@ 
+
+\newpage
+
+<<echo=FALSE, results=tex>>=
 
 CIs = posterior_interval(RES_fullest)[1:3,] * scl
 CIs[1,] = round((CIs[1,] + center)/1000, 1)
@@ -948,29 +982,6 @@ print(xtable(RES_coef,
       sanitize.colnames.function = function(x){x},
       sanitize.rownames.function = function(x){x})
 @
-\newpage
-
-
-<<echo=FALSE, results=tex>>=
-ids = aggregate(release_yr ~ id, data = mod_data, unique)
-ids$dth = as.integer(round(aggregate(dth ~ id, data = mod_data, mean, na.rm = TRUE)$dth, 0))
-colnames(ids) = c("Cultivar", "Release Year", "Days to 50% Heading")
-ids = ids[order(ids[,2]),]
-ids[,2] = as.integer(ids[,2])
-ids[,1] = gsub("M", "M-", ids[,1])
-
-print(xtable(ids,
-             caption = "All named medium grain rice cultivars and their associated release year (from 1984 -- 2015) planted at the Rice Experiment Station (RES), Biggs, California.",
-             label = "tbl:ids"),
-      include.rownames = FALSE,
-      booktabs = TRUE,
-      caption.placement = "top")
-
-@ 
-
-% Notes: Duration has gotten shorter. Etc. Rearrange - End
-% introduction with evidence of erosion, quatify the effect on yield
-% increases. 
 
 \newpage
 

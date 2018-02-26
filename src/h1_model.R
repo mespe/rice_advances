@@ -88,5 +88,5 @@ if(compare){
     compare(loo(RES_full), loo(RES_fullest))
 }
 
-
-save(RES_fullest, file = "../output/h1_fit.Rda")
+save(RES_full, file = "../output/h1_fit.Rda")
+save(RES_fullest, file = "../output/h1_fit_revised.Rda")

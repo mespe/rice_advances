@@ -1,19 +1,33 @@
-SWEAVE = Rscript -e "Sweave('$<')"
+SWEAVE = Rscript -e "Sweave('$(notdir $<)')"
 
-Espe_rice_yield_improvement.pdf: output/breed_paper_revised.Rnw output/breeding.bib
-	cd output && Rscript -e "Sweave('breed_paper_revised.Rnw')" && \
-	pdflatex breed_paper_revised.tex && \
-	bibtex breed_paper_revised && \
-	pdflatex breed_paper_revised.tex && \
-	pdflatex breed_paper_revised.tex && \
-	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement.pdf
+PDF_COMPILE = pdflatex $(notdir $<) && bibtex $(basename $(notdir $<)) && pdflatex $(notdir $<) && pdflatex $(notdir $<)
+
+Espe_rice_yield_improvement_revised.pdf: output/breed_paper_revised.tex output/breeding.bib
+	cd output && \
+	$(PDF_COMPILE) && \
+	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement_revised.pdf
+
+breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda
+	cd output && \
+	$(SWEAVE)
+
+breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
+	cd output && \
+	$(SWEAVE)
+
+Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
+	cd output && \
+	$(PDF_COMPILE) && \
+	cp breed_paper.pdf ../Espe_rice_yield_improvement.pdf
+
+diffs.pdf: output/breed_paper.tex output/breed_paper_revised.tex
+	cd output && \
+	latexdiff breed_paper.tex breed_paper_revised.tex > diffs.tex && \
+	pdflatex diffs.tex && bibtex diffs && pdflatex diffs.tex && pdflatex diffs.tex
 
 output/supp_analysis.pdf: output/freq.Rmd
 	cd output && Rscript -e "knitr::knit('freq.Rmd')" && \
 	pandoc freq.md -o supp_analysis.pdf
-
-output/breed_paper.Rnw: output/h1_fit.Rda
-	cd output && Rscript -e "Sweave('breed_paper.Rnw')"
 
 output/summary.pdf: output/summary.tex
 	cd output && pdflatex summary.tex
@@ -21,7 +35,10 @@ output/summary.pdf: output/summary.tex
 output/summary.tex: output/summary.Rnw data/all_vt_weather.Rda src/prep_model_data.R output/h1_fit.Rda
 	cd output && R CMD Sweave summary.Rnw
 
-output/h1_fit.Rda: src/h1_model.R data/model_data.rda 
+h1_fit.Rda: src/h1_model.R data/model_data.rda 
+	cd src && Rscript h1_model.R
+
+h1_fit_revised.Rda: src/h1_model.R data/model_data.rda 
 	cd src && Rscript h1_model.R
 
 data/model_data.rda: data/all_vt_weather.Rda src/prep_model_data.R src/yield_model.stan data/yrTbl.Rda src/munge_pre95.R
