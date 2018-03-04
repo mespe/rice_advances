@@ -271,7 +271,7 @@ California Cooperative Extension prescribed best management practice
 for land preparation, fertility rates, and pest and disease
 control~\citep{ucce}. As is typical for water-seeded systems, the
 plots were planted by pre-germinating rice seed prior to
-direct-seeding into pre-flooded fields. Plots were either 14.0 or 18.5
+direct-seeding into pre-flooded fields. Plots were rectangular and either 14.0 or 18.5
 m\tsups{2}, and were harvested after physiological maturity using a
 small-plot combine. All yields were converted to 14\% MC prior to
 reporting.
@@ -564,7 +564,7 @@ performance of a cultivar averaged over the uncertainty in the other
 parameters in the model (i.e., the random effect) shows three
 cultivars with higher than average yields:
 \Sexpr{paste(gsub('M','M-',rev(row.names(id_est))[c(1,2,4)]),colla=', ')}
-(Figs. \ref{fig:first_yrs} \& \ref{fig:ids_comp}).
+(Fig. \ref{fig:ids_comp}).
 
 \begin{figure}[h]
 
@@ -860,25 +860,26 @@ model suggests that there is only a
 \Sexpr{round(sum((raw_samples$release_yr_c*scl)>=25)/nrow(raw_samples)*100,1)}\%
 probability of the rate of yield increase is equal to or greater than
 25 kg\tsups{-1} ha\tsups{-1} year\tsups{-1}. There are several
-explanations for how this could be. 1) \citet{mckenzie2014} did not
+explanations for this discrepancy in conclusions. First, \citet{mckenzie2014} did not
 account for yield decreases over time in their analysis. As shown
 here, when these decreases are not taken into about, the estimated
 increase in yield over time is estimated to be approximately the same
-as that found by \citet{mckenzie2014}. 2) These yield decreases over time
+as that found by \citet{mckenzie2014}. Second, these yield decreases over time
 were not taken into account possibly because \citet{mckenzie2014}
 concluded that there was no trend in the yield of the major cultivars
 over time. However this conclusion is based on a flawed interpretation
 of the results of their statistical test. Failing to reject the
 hypothesis that the trend in yield equals zero does not equate to the
 confirmation of no trend. Instead, failing to reject the hypothesis
-could suggest the analysis lacks the statistical power to detect the trend. 3) It
+could suggest the analysis lacks the statistical power to detect the
+trend. Third, it
 is not surprising that no trend in yield over time was detected given
 that \citet{mckenzie2014} used data from several locations, yet
 analyzed those data using a simple t-test. By using this simple
 analysis, \citet{mckenzie2014} ignore systematic errors related to
 differences between observations from different locations, including
 different management systems, growing environments, and crop
-timing. By contrast, this investigation presented here used a single,
+timing. By contrast, the investigation presented here used a single,
 well managed system and analyzed the data using a mixed effects model
 which fully accounts for non-independence between similar
 observations. In doing this, the analysis makes fewer assumptions and
