@@ -6,7 +6,7 @@ PDF_COMPILE = pdflatex $(notdir $<) && bibtex $(basename $(notdir $<)) && pdflat
 all_responses.pdf: output/review_responses.pdf output/diffs.pdf output/breed_paper_revised.pdf
 	pdfunite $^ $@
 
-review_responses.pdf: output/review_responses.tex output/response_letter.pdf
+output/review_responses.pdf: output/review_responses.tex output/response_letter.pdf
 	cd output && pdflatex $(notdir $<)
 
 response_letter.pdf: output/response_letter.tex
@@ -17,11 +17,11 @@ Espe_rice_yield_improvement_revised.pdf: output/breed_paper_revised.tex output/b
 	$(PDF_COMPILE) && \
 	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement_revised.pdf
 
-breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda
+output/breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda
 	cd output && \
 	$(SWEAVE)
 
-breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
+output/breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
 	cd output && \
 	$(SWEAVE)
 
