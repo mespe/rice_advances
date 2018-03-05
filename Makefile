@@ -24,15 +24,16 @@ output/breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_rev
 output/breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
 	cd output && \
 	$(SWEAVE)
+
 output/map.pdf: src/maps.R
 	cd src && Rscript maps.R
 
-Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
+Espe_rice_yield_improvement.pdf: output/breed_paper.tex output/breeding.bib
 	cd output && \
 	$(PDF_COMPILE) && \
 	cp breed_paper.pdf ../Espe_rice_yield_improvement.pdf
 
-diffs.pdf: output/breed_paper.tex output/breed_paper_revised.tex
+output/diffs.pdf: output/breed_paper.tex output/breed_paper_revised.tex
 	cd output && \
 	latexdiff breed_paper.tex breed_paper_revised.tex > diffs.tex && \
 	pdflatex diffs.tex && bibtex diffs && pdflatex diffs.tex && pdflatex diffs.tex

@@ -12,6 +12,7 @@
 \doublespacing
 \usepackage{lineno}
 \usepackage{lscape} %% Harvard
+%% \usepackage[shortcuts]{extdash}
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \pagenumbering{gobble}
 %% For figure numbers in supplementary info

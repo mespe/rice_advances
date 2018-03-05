@@ -12,7 +12,7 @@
 \doublespacing
 \usepackage{lineno}
 \usepackage{lscape} %% Harvard
-\usepackage[shortcuts]{extdash}
+%% \usepackage[shortcuts]{extdash}
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \pagenumbering{gobble}
 %% For figure numbers in supplementary info
@@ -212,7 +212,7 @@ released cultivar M-209 was 10.8 Mg ha\tsups{-1}~\citep[14\%
 MC;][]{m209}. However, in annual breeding reports and cultivar release
 announcements, data based on yield performance in side-by-side cultivar
 trials show that new cultivars usually out yield the older
-cultivars. In other rice systems, a decrease in a cultivar's yield
+cultivars, typically by 3--5\% (e.g., M-209 release description at \url{http://www.crrf.org/linked/2015annualreport.pdf}). In other rice systems, a decrease in a cultivar's yield
 performance over time has been observed~\citep{Peng1998, Peng2010,
 Peng2000, Datta1995}, sometimes termed ``yield erosion''~\citep{Peng1998}. It
 has been speculated that this yield decline over time is due to the inability of
@@ -231,7 +231,7 @@ changes over time.
 \subsection{Site and data description}
 
 The CCRRF Rice Experiment Station (RES) is located near Biggs, CA
-(39.4648, \==121.7342; Fig. \ref{fig:map}), and has been the central location for CCRRF's
+(39.4648, -121.7342; Fig. \ref{fig:map}), and has been the central location for CCRRF's
 efforts to develop improved rice cultivars adapted to CA since
 1969. The California Statewide Variety Trials evaluate current and
 promising cultivars at the RES and six to eight on-farm trials around
