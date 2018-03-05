@@ -17,13 +17,15 @@ Espe_rice_yield_improvement_revised.pdf: output/breed_paper_revised.tex output/b
 	$(PDF_COMPILE) && \
 	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement_revised.pdf
 
-output/breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda
+output/breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda output/map.pdf
 	cd output && \
 	$(SWEAVE)
 
 output/breed_paper.tex: output/breed_paper.Rnw output/h1_fit.Rda
 	cd output && \
 	$(SWEAVE)
+output/map.pdf: src/maps.R
+	cd src && Rscript maps.R
 
 Espe_rice_yield_improvement.pdf: output/breed_paper.Rnw output/breeding.bib
 	cd output && \

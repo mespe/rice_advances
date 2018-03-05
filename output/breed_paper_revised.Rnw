@@ -12,6 +12,7 @@
 \doublespacing
 \usepackage{lineno}
 \usepackage{lscape} %% Harvard
+\usepackage[shortcuts]{extdash}
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \pagenumbering{gobble}
 %% For figure numbers in supplementary info
@@ -230,7 +231,7 @@ changes over time.
 \subsection{Site and data description}
 
 The CCRRF Rice Experiment Station (RES) is located near Biggs, CA
-(39.4648, -121.7342), and has been the central location for CCRRF's
+(39.4648, \==121.7342; Fig. \ref{fig:map}), and has been the central location for CCRRF's
 efforts to develop improved rice cultivars adapted to CA since
 1969. The California Statewide Variety Trials evaluate current and
 promising cultivars at the RES and six to eight on-farm trials around
@@ -999,6 +1000,15 @@ print(xtable(RES_coef,
 figures}\label{supplemental-tables-and-figures}
 
 \beginsupplement
+
+\begin{figure}[H]
+  \includegraphics[]{map.pdf}
+  \caption{The locations of the Rice Experiment Station relative to
+    rice harvested area in California, USA.}
+  \label{fig:map}
+\end{figure}
+
+\newpage
 
 
 \begin{figure}[H]
