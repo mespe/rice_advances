@@ -12,7 +12,7 @@
 \doublespacing
 \usepackage{lineno}
 \usepackage{lscape} %% Harvard
-%% \usepackage[shortcuts]{extdash}
+\usepackage[shortcuts]{extdash} %% Avoid breaking on M--20X
 \bibliographystyle{model2-names}\biboptions{authoryear}
 \pagenumbering{gobble}
 %% For figure numbers in supplementary info
@@ -201,10 +201,10 @@ Certainly one question in looking at this situation is, ``do new
 cultivars have increased yield potential''?  Like many breeding
 programs, one of the goals of the CCRRF is to increase yields through
 breeding cultivars with increased yield potential. However, when the
-popular cultivar M-202 was released in 1985, it was reported to yield
+popular cultivar M\=/202 was released in 1985, it was reported to yield
 an average of 11 Mg ha\tsups{-1}~\citep[14\% moisture content
 (MC);][]{m202}. In 2015, the reported average yield of the newest
-released cultivar M-209 was 10.8 Mg ha\tsups{-1}~\citep[14\%
+released cultivar M\=/209 was 10.8 Mg ha\tsups{-1}~\citep[14\%
 MC;][]{m209}. However, in annual breeding reports and cultivar release
 announcements, data based on yield performance in side-by-side cultivar
 trials show that new cultivars usually out yield the older
@@ -417,13 +417,13 @@ inference, though the classical estimates can be found in the
 supplemental material. Comparing the cultivars' yield during each's
 initial time (average 3 years) in the experimental trials just before
 being released showed that across cultivars, yields ranged from
-\Sexpr{round(plot_data["M207", "mean"], 2)} (M-207) to
-\Sexpr{round(plot_data["M205", "mean"], 2)} Mg ha\tsups{-1} (M-205)
+\Sexpr{round(plot_data["M207", "mean"], 2)} (M\=/207) to
+\Sexpr{round(plot_data["M205", "mean"], 2)} Mg ha\tsups{-1} (M\=/205)
 (Fig \ref{fig:first_yrs}. Comparing these yields from the time of
 release for each cultivar does not provide
 evidence of genetic yield improvements during the 33-year study
-period. Individual exceptions to this were two cultivars (M-204 and
-M-205) that had higher yields than the others.
+period. Individual exceptions to this were two cultivars (M\=/204 and
+M\=/205) that had higher yields than the others.
 
 \subsection{Yield erosion}
 \begin{figure}[H]
@@ -481,13 +481,13 @@ erosion) once a cultivar was selected was estimated at
 \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} (90\% CI:
 \Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig \ref{fig:RES_year}; Table
 \ref{tbl:coef}). The estimated 560 kg ha\tsups{-1} yield advantage of
-M-206 over M-202 (the current and former predominant cultivars,
-respectively), can be attributed solely to the erosion of M-202's
+M\=/206 over M\=/202 (the current and former predominant cultivars,
+respectively), can be attributed solely to the erosion of M\=/202's
 yield over time (Fig. \ref{fig:first_yrs} \&
 \ref{fig:compare_yrs}). Further supporting this estimate of yield
 erosion, both cultivars yielded similarly at their respective year of
-release (Fig. \ref{fig:compare_yrs}), despite the fact that M-202 was
-released 19 years prior to M-206 (Table
+release (Fig. \ref{fig:compare_yrs}), despite the fact that M\=/202 was
+released 19 years prior to M\=/206 (Table
 \ref{tbl:ids}).
 
 \begin{figure}[h]
@@ -676,7 +676,7 @@ polygon(x = c(yrs, rev(yrs)),
 \section{Discussion}
 
 In CA, the cultivars with broad adaptation and adoption over the 33
-year period of this study are M-202, M-206, and M-105. Cold tolerance
+year period of this study are M\=/202, M\=/206, and M\=/105. Cold tolerance
 is a major problem for much of the California rice producing region
 ~\citep{espe2017}, although it is a bigger problem in the southern
 portion of the Sacramento Valley due to the influence of the ocean
@@ -686,14 +686,14 @@ short duration and are thus broadly grown with over 70\% of the area
 in these cultivars at any given time during the study
 period~\citep{ucce}. There are several cultivars that were found to
 have higher than average yields, even after correcting for yield
-erosion. However, these cultivars (M-201, M-204, M-205, and possibly
-M-209; Fig. \ref{fig:ids_comp}) are not widely adopted. Importantly,
+erosion. However, these cultivars (M\=/201, M\=/204, M\=/205, and possibly
+M\=/209; Fig. \ref{fig:ids_comp}) are not widely adopted. Importantly,
 not all medium grain cultivars that were released were purported to
 have higher yields than previous cultivars. Some cultivars had special
 traits, but upon release had similar yields to more broadly adapted
-cultivars. Examples of this include M-208, which had resistance to
-blast disease (\textit{Magnaporthe grisea}) and M-402 which is a
-premium quality cultivar. Other cultivars such as M-205 and M-209,
+cultivars. Examples of this include M\=/208, which had resistance to
+blast disease (\textit{Magnaporthe grisea}) and M\=/402 which is a
+premium quality cultivar. Other cultivars such as M\=/205 and M\=/209,
 while high yielding, do not have the cold tolerance of the other
 cultivars and are thus only recommended for the northern portion of
 the Sacramento Valley.
@@ -717,8 +717,8 @@ plausible. This analysis suggests that the breeding program has
 maintained but not substantially improved the yield
 potential in the face of changing biotic and abiotic pressures. This
 conclusion holds true even when evaluating the cultivars which have
-been breed for broad adaption and high yield potential (M-202, M-206
-and M-105). Yields of these cultivars at time of release have all
+been breed for broad adaption and high yield potential (M\=/202, M\=/206
+and M\=/105). Yields of these cultivars at time of release have all
 yielded between
 \Sexpr{tmp=mod_data[mod_data[,"yrs_in_trial"]<=0&mod_data[,"id"]%in%c("M202","M206","M105"),];round(min(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
 and
@@ -813,9 +813,9 @@ grain yield. Other advancements due to plant improvement, including
 increased quality~\citep{mckenzie1993} and milling
 yield~\citep{mckenzie1994}, have been made over the study period and
 are important. Additionally, crop duration has been reduced in CA rice
-cultivars. For example, while the predominate cultivars M-202 and
-M-206 had similar yield potentials at the time of release (Fig. 5),
-M-206 matures about 6 days earlier than M-202 (Table
+cultivars. For example, while the predominate cultivars M\=/202 and
+M\=/206 had similar yield potentials at the time of release (Fig. 5),
+M\=/206 matures about 6 days earlier than M\=/202 (Table
 \ref{tbl:ids}). Shorter duration is very important in CA due to an
 already short growing season and water limitations (shorter duration
 cultivars would presumably require less irrigation water).
@@ -823,9 +823,9 @@ cultivars would presumably require less irrigation water).
 California state average yields have increased slowly during the study
 period (Fig. \ref{fig:state_yield}) \citep{espe16a}. What are the
 potential causes?  It is not due to the adoption of the broadly
-adapted cultivars (M-202, M-206, and M-105) as there is no evidence of
+adapted cultivars (M\=/202, M\=/206, and M\=/105) as there is no evidence of
 increased yield potential among these (Fig. \ref{fig:first_yrs} \&
-\ref{fig:compare_yrs}). Although M-205 is not broadly adapted, it has
+\ref{fig:compare_yrs}). Although M\=/205 is not broadly adapted, it has
 increase yield potential and its adoption (although limited) in the
 northern and warmer part of CA may contribute to some yield gains
 reported at the state level. Other factors include improvement in
@@ -1012,7 +1012,7 @@ invisible(sapply(1:2, function(i){
 \Sexpr{min(mod_data[,'year'])} -- \Sexpr{max(mod_data[,'year'])}. The
 solid line is the estimated yield erosion (\Sexpr{yrs_coef} kg
 ha\tsups{-1} year\tsups{-1}), while the dashed line is the published
-3-year average yield of M-202 at its release (1982-1984). Both
+3-year average yield of M\=/202 at its release (1982-1984). Both
 cultivars have a similar yield at their respective year of release,
 and similar decreases over time.}
 \label{fig:compare_yrs2}
