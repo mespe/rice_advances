@@ -76,18 +76,18 @@ reflect increases in yield potential. This hypothesis was tested using
 Rice Research Foundation Rice Experiment Station. Based on
 side-by-side comparisons of old and new rice cultivars which do not
 consider yield decline over time, there was an apparent increase in
-yield. However, the yields of older cultivars declined at an estimated
-rate of 29.3 kg ha\tsups{-1} year\tsups{-1} (90\% credible interval
--4.4 to -53.3) after initial selection. Once this effect was
-considered, the yield advantage of newer cultivars over old was
-uncertain (-3.3 kg ha\tsups{-1} year\tsups{-1}, 90\% credible interval
--36.1 to 31.5). These results highlight 1) the importance of
-continuous crop improvement and deployment of new cultivars simply to
-maintain existing yields, and 2) to increase the genetic yield
-potential, higher yield targets are needed. Importantly, when breeding
-near the yield potential, despite the limited yield gains, significant
-advances in improving quality and reducing crop duration have been
-made.
+yield. However, the yields of
+older cultivars were found to decline at an estimated rate of 29.3 kg ha\tsups{-1}
+year\tsups{-1} (90\% credible interval -4.4 to -53.3) after initial
+selection. Once this effect was considered, the yield advantage of
+newer cultivars over old was uncertain (-3.3 kg ha\tsups{-1}
+year\tsups{-1}, 90\% credible interval -36.1 to 31.5). These results
+highlight 1) the importance of continuous crop improvement and
+deployment of new cultivars simply to maintain existing yields, and 2)
+to increase the genetic yield potential, higher yield targets are
+needed. Importantly, when breeding near the yield potential, despite
+the limited yield gains, significant advances in improving quality and
+reducing crop duration have been made.
 
 \end{abstract}
 
@@ -214,7 +214,7 @@ announcements, data based on yield performance in side-by-side cultivar
 trials show that new cultivars usually out yield the older
 cultivars, typically by 3--5\% (e.g., M-209 release description at \url{http://www.crrf.org/linked/2015annualreport.pdf}). In other rice systems, a decrease in a cultivar's yield
 performance over time has been observed~\citep{Peng1998, Peng2010,
-Peng2000, Datta1995}, sometimes termed ``yield erosion''~\citep{Peng1998}. It
+Peng2000, Datta1995}. It
 has been speculated that this yield decline over time is due to the inability of
 a cultivar to adapt to changing biotic and abiotic
 conditions~\citep{Peng1998, Peng2010, Peng2000, Datta1995}. Yield
@@ -289,27 +289,32 @@ model as random effects.
 
 \begin{equation}
 \begin{split}
- yield_{ijk} = Intercept + (Rate_{yield\ decline}* {years\ since\
-   release\ ik}) \\+ (Rate_{yield\ improvement}* {release\ year\ ik})\\ 
- + \beta_{year\ ij} + \beta_{cultivar\ ik} +
- \beta_{cultivar\ ik:year\ ij} + \epsilon \\
+  yield_{ijk} = Intercept + (Rate_{yield\ decline}* {years\ since\ release_{ik}}) \\
+  + (Rate_{yield\ improvement}* {release\ year_{k}}) \\
+  + \beta_{year_j} + \beta_{cultivar_k} + \beta_{cultivar_k:year_j} + \epsilon \\
 \end{split}
 \end{equation}
 
-Where $yield_i$ is the grain yield for cultivar $k$ in plot $i$ for
+Where $yield_i$ is the grain yield for cultivar $k$ in plot $i$ during
 year $j$,
 the Intercept is the average yield for the RES across cultivars and years, $Rate_{yield\
-decline}$ is rate of yield decline per ${years\ since\ release\ i}$
+decline}$ is the rate of yield decline per
+${years\ since\ release_{ki}}$ for cultivar $k$ in plot $i$
 (mean-centered, i.e., negative for years prior to release, zero at the year of release),
 $Rate_{yield\ improvement}$ is the rate of yield improvement per
-year (${release\ year\ i}$), $\beta_{year}$ is the random effect of
-year, and $\beta_{cultivar}$ is the random effect of cultivar. This
+year (${release\ year_{ik}}$), $\beta_{year_j}$ is the random effect of
+year $j$, and $\beta_{cultivar_k}$ is the random effect of cultivar
+$k$, and lastly $\beta_{cultivar_k:year_j}$ is the interaction term
+for cultivar $k$ in year $j$. This
 full model was modified to further explore yield dynamics over
 time. For comparison to estimates where yield decline over time is not taken
 into account, the model was used as described above except omitting
-the $Rate_{yield\ decline\ i}$ term (Model 2). Lastly, a model was fit
+the $Rate_{yield\ decline}$ term (Model 2). Lastly, a model was fit
 to estimate if there were differences between cultivars in the rate of
-yield decline over time by adding a random slope by cultivar (Model 3).
+yield decline over time by adding allowing the rate of decline to vary
+by cultivar (i.e., adding
+a $Rate_{yield\ decline_k} * years\ since\ release_{ki}$ term to the
+model for the rate of yield decline for cultivar $k$) (Model 3).
 
 Data were processed and models fit in R, an environment for
 statistical computing~\citep{R}. Models were fit using the `rstanarm'
@@ -417,7 +422,7 @@ M-205) that had higher yields than the others.
 library(ggplot2)
 library(ggthemes)
 ggplot(mod_data, aes(x = year, y = yield_kg/1000)) +
-    geom_point(size = 0.5, alpha = 0.5) +
+    geom_point(size = 0.5) +
     geom_smooth(method = "lm", color = "black") +
     theme_few() +
     xlab("Year") +
@@ -697,7 +702,7 @@ the area in these cultivars at any given time during the study
 period~\citep{ucce}. There are several cultivars that were found to
 have better than average yields, even after correcting for yield
 declines over time. However, these cultivars (M-201, M-204, M-205, and possibly
-M-209; Fig. \ref{fig:ids_comp})) are not widely adopted. Importantly,
+M-209; Fig. \ref{fig:ids_comp}) are not widely adopted. Importantly,
 not all medium grain cultivars that were released were purported to
 have higher yields than previous cultivars. Some cultivars had special
 traits, but upon release had similar yields to more broadly adapted
@@ -711,20 +716,20 @@ the Sacramento Valley.
 \subsection{Yield changes over time}
 
 The high yielding variety M-202 was released in 1985 and became the
-most widely planted cultivar for two decades~\citep{mkenzie2014}. At
+most widely planted cultivar for two decades~\citep{mckenzie2014}. At
 the time of release, M-202 yields were reported at 11.0 Mg
 ha\tsups{-1}~\citep{m202} which is almost identical to what we . This
 value of 11.0 Mg ha\tsups{-1} is what we also found in this analysis
 based on the average experimental yields prior to public release
 (Fig. \ref{fig:first_yrs}). Since the release of M-202, the rice
 yields of newly released varieties cultivars have remained between
-10.8 and 11.5 Mg ha\tsups{-1} (Fig. \ref{first_yrs}), with the
+10.8 and 11.5 Mg ha\tsups{-1} (Fig. \ref{fig:first_yrs}), with the
 exception of M-204 and M-205 (M-204 is no longer grown and M-205 has
 limited adoaptation range so is only grown in a limited area). The
 variety cultivar M-206 was released in 2004 and is currently still the
 most widely grown rice varietycultivar in California. At the time of
-its release, M-206 was reported to yield \Sexpr{round(9350*1.12,1)} Mg
-ha\tsups{-1} -- also similar to what we found based on our analysis
+its release, M-206 was reported to yield \Sexpr{round(9350*1.12/1000,1)} Mg
+ha\tsups{-1} -- similar to what we found based on our analysis
 (Fig. \ref{fig:first_yrs}). Based on this premise, it is clear that
 improvements in yield potential have not been made over the 33-yr
 period of this study. In contrast, both~\citet{Omar2014} and
@@ -734,44 +739,47 @@ had higher yields than previously released cultivars. Based on their
 analyses,~\citet{Omar2014} reported yield gains from the rice breeding
 program of 37 to 60 kg ha\tsups{-1} yr\tsups{-1} and
 ~\citet{mckenzie2014} a yield increase of 25 kg ha\tsups{-1}
-yr\tsups{-1}. Using a similar approach to~\citet{Omar2014} and
-~\citet{mckenzie2014}, when the compared average yields for the period
-2011--2016 of varieties cultivars released since 1982 (and still in
-the variety trials from 2011-- 2016) was compared without accounting
-for yield declines over time, yields were estimated to increase by
+yr\tsups{-1}. The simpliest model (Model 2) in this study is similar
+to the analyses of~\citet{Omar2014} and ~\citet{mckenzie2014}, and
+results in similar findings; yields were estimated to increase by
 \Sexpr{only_release_coef} kg ha\tsups{-1} yr\tsups{-1}
-(Fig. \ref{fig:wo_erosion}), almost identical to what
+(Fig. \ref{fig:wo_erosion}), almost identical to estimates by
 ~\citet{mckenzie2014}.
 
-The only way to reconcile the two apparently contradictory findings,
-is that the yield of potential of varieties cultivars decline over
-time such that when newly released varieties cultivars are compared
-with the older variety cultivar (as shown by ~\citet{Omar2014},
+The only way to reconcile the two apparently contradictory findings above
+is that the yield of potential of cultivars decline over
+time such that when newly released cultivars are compared
+with the older cultivar (as shown by ~\citet{Omar2014},
 ~\citet{mckenzie2014}, and Fig. \ref{fig:wo_erosion}), yields of the
-new cultivar variety are higher. Here we provide evidence that
-cultivar varietal yield does decline - on average at a rate of
+new cultivar are higher. Here we provide evidence that
+cultivar yield does decline - on average at a rate of
 \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1}
-(Fig. \ref{w_erosion}). ~\citet{Peng2010} also found that a cultivar’s
-varieties yield potential declines over time and reported a 15\%
+(Fig. \ref{RES_year}). ~\citet{Peng2010} also found that a cultivar's
+yield potential declines over time and reported a 15\%
 decline over a 30 yr period.  In this study, over a 30 year period and
 a \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1} yield decline rate,
 the yield decline would be approximately
-\Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg), 3)*100}\%.
+\Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg), 3)*100}\%. Given
+the estimates here using the model which accounts for these declines
+suggests that there is only a
+\Sexpr{round(sum((raw_samples$release_yr_c*scl)>=25)/nrow(raw_samples)*100,1)}\%
+probability of the rate of yield increase is equal to or greater than
+25 kg\tsups{-1} ha\tsups{-1} year\tsups{-1}.
 
 This analysis suggests that the CCRRF breeding program has
 maintained but not substantially improved the yield potential in the
 face of changing biotic and abiotic pressures over the 33 year time
 frame of this study. This conclusion holds
 true even when evaluating the cultivars which have been breed for
-broad adaption and high yield potential (M-202, M-206 and
+broad adaption and high yield potential (M-202, M-206, and
 M-105).
 
 \subsection{Causes of declining yields}
 
-Yields of a particular cultivar may decline overtime for a number of
+Yields of a particular cultivar may decline over time for a number of
 reasons. First, ~\citet{Nie2009} reported yield declines in rice due
 to continuously flooded conditions over a long time period which could
-be overcome with improved N management. This is likely not the case
+be overcome with improved N management. This is not likely the case
 here as the fields used in this study grow rice only one season a year
 and tend to be non-flooded for the remainder of the year. Furthermore,
 at this location and unlike most CA rice fields, the fields are left
@@ -797,9 +805,9 @@ environment \citep{vanIttersum2013}. However, ~\citet{espe2017} found
 no substantial trends in growing season temperatures (either high,
 low, or average temps) in the Sacramento Valley during the study
 period, suggesting that older cultivars do not have lower yield
-potential due to changing climatic factors. While our analysis
-indicates that there is no interaction between cultivar and year (CI
-includes zero), visual examination suggests that cultivars may be
+potential due to changing climatic factors. Our analysis
+offers inconclusive evidence of an interaction between cultivar and
+year (i.e., the CI for the interactions overlapped with each other and zero), visual examination suggests that cultivars may be
 different in terms of rates of yield decline
 (Fig. \ref{fig:all_cult}); however, we do not have sufficient data nor
 the proper controls in the existing data set to fully test this
@@ -808,7 +816,7 @@ the yield declines observed here, as well to determine if different
 cultivars have differential declines over time.
 
 \subsection{Causes for statewide increases over time}
-
+ 
 \begin{comment}
 It is striking that the estimated yield decline over time is similar
 to that reported by \citet{Peng2010} over a similar time span (15\%

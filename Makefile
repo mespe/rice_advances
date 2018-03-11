@@ -9,12 +9,15 @@ all_responses.pdf: output/review_responses.pdf output/diffs.pdf output/breed_pap
 output/review_responses.pdf: output/review_responses.tex output/response_letter.pdf
 	cd output && pdflatex $(notdir $<)
 
-response_letter.pdf: output/response_letter.tex
+output/response_letter.pdf: output/response_letter.tex
 	cd output && pdflatex $(notdir $<)
 
-Espe_rice_yield_improvement_revised.pdf: output/breed_paper_revised.tex output/breeding.bib
+output/breed_paper_revised.pdf: output/breed_paper_revised.tex output/breeding.bib
 	cd output && \
-	$(PDF_COMPILE) && \
+	$(PDF_COMPILE)
+
+Espe_rice_yield_improvement_revised.pdf: output/breed_paper_revised.pdf output/breeding.bib
+	cd output && \
 	cp breed_paper_revised.pdf ../Espe_rice_yield_improvement_revised.pdf
 
 output/breed_paper_revised.tex: output/breed_paper_revised.Rnw output/h1_fit_revised.Rda output/map.pdf
