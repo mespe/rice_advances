@@ -286,7 +286,7 @@ models. First, yield was modeled as a response to the number of years since
 the cultivar was officially released and the year of release using a
 mixed-effects linear regression. To account for similarities between
 years and between cultivars, year and cultivar were included in the
-model as random effects.
+model as random effects (Model 1).
 
 \begin{equation}
 \begin{split}
@@ -305,9 +305,10 @@ ${years\ since\ release_{ki}}$ for cultivar $k$ in plot $i$
 $Rate_{yield\ improvement}$ is the rate of yield improvement per
 year (${release\ year_{ik}}$), $\beta_{year_j}$ is the random effect of
 year $j$, and $\beta_{cultivar_k}$ is the random effect of cultivar
-$k$, and lastly $\beta_{cultivar_k:year_j}$ is the interaction term
-for cultivar $k$ in year $j$. This
-full model was modified to further explore yield dynamics over
+$k$, and lastly $\beta_{cultivar_k:year_j}$ is the a random effect for
+the interaction term
+for cultivar $k$ in year $j$. Two variations of this
+full model were used to further explore yield dynamics over
 time. For comparison to estimates where yield decline over time is not taken
 into account, the model was used as described above except omitting
 the $Rate_{yield\ decline}$ term (Model 2). Lastly, a model was fit
@@ -413,10 +414,10 @@ estimated to be slightly negative (\Sexpr{release_yr_coef}
 kg ha\tsups{-1} yr\tsups{-1}) and does not provide
 evidence of genetic yield improvements during this
 period. Individual exceptions to this were two cultivars (M\=/204 and
-M\=/205) that had higher yields than the others.
+M\=/205) which were observed to have higher yields than the others in
+the raw data (Fig. \ref{fig:RES_year}).
 
 \subsection{Yield decline over time}
-
 
 \begin{figure}[H]
 <<echo = FALSE, fig = TRUE, width = 7, height = 6>>=
@@ -484,7 +485,7 @@ mtext("Adjusting for yield decline over time", adj = 0)
 
 Based on Model 3, there was no evidence of consistent differences between cultivars in
 the rate of yield decline over time (i.e., all cultivar specific rates
-of decline overlapped). Differences between cultivars in the decline
+of decline overlapped with eachother and zero). Differences between cultivars in the decline
 of yield over time, seen in the raw data (Fig. \ref{fig:all_cult}),
 are therefore likely small and uncertain. Given this, the model excluding varying
 rates of decline by cultivar (Model 2) is presented here. The yields
@@ -493,7 +494,7 @@ cultivar was released using the full model which accounts for both
 yield decline over time and yield improvements over time (Model 2). The average decrease
 in yield over time following a cultivar's release
 was estimated at \Sexpr{yrs_coef} kg ha\tsups{-1} year\tsups{-1} (90\%
-CI: \Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig \ref{fig:RES_year};
+CI: \Sexpr{RES_CI[2]} to \Sexpr{RES_CI[1]}) (Fig. \ref{fig:RES_year};
 Table \ref{tbl:coef}). The oldest cultivar in the trials
 (\Sexpr{gsub("M","M-",unique(mod_data[which.min(mod_data[,"release_yr"]),"id"]))})
 is estimated to have lost an average of
@@ -501,7 +502,7 @@ is estimated to have lost an average of
 release. Likewise, an estimated 560 kg ha\tsups{-1} yield
 advantage of M\=/206 over M\=/202 (the current and former predominant
 cultivars, respectively), can be attributed solely to the decline
-of M\=/202's yield over time (Figs \ref{fig:first_yrs} \&
+of M\=/202's yield over time (Figs. \ref{fig:first_yrs} \&
 \ref{fig:compare_yrs}). Further supporting this estimate of yield
 decline, both M\=/202 and M\=/205 yielded similarly at their respective year of
 release (Fig. \ref{fig:compare_yrs}), despite the fact that M\=/202 was
@@ -696,7 +697,9 @@ In CA, the cultivars with broad adaptation and adoption over the
 tolerance is a major problem for much of the California rice producing
 region ~\citep{espe2017}, although it is a bigger problem in the
 southern portion of the Sacramento Valley due to the influence of the
-ocean winds through the Delta ~\citep{espe16a}. These three cultivars
+ocean winds through the San Francisco Bay ~\citep{espe16a} (see Fig. \ref{fig:map}
+for the geographic orientation of the rice growing area relative to the
+San Francisco Bay). These three cultivars
 have a higher degree of cold tolerance, high yield potential, and
 relatively short duration and are thus broadly grown with over 70\% of
 the area in these cultivars at any given time during the study
@@ -741,9 +744,9 @@ analyses,~\citet{Omar2014} reported yield gains from the rice breeding
 program of 37 to 60 kg ha\tsups{-1} yr\tsups{-1} and
 ~\citet{mckenzie2014} a yield increase of 25 kg ha\tsups{-1}
 yr\tsups{-1}. The simplest model (Model 2) in this study is similar
-to the analyses of~\citet{Omar2014} and ~\citet{mckenzie2014}, and
+to the procedures used by~\citet{Omar2014} and ~\citet{mckenzie2014}, and
 results in similar findings; yields were estimated to increase by
-\Sexpr{only_release_coef} kg ha\tsups{-1} yr\tsups{-1}
+an average of \Sexpr{only_release_coef} kg ha\tsups{-1} yr\tsups{-1}
 (Fig. \ref{fig:wo_erosion}), almost identical to estimates by
 ~\citet{mckenzie2014}.
 
@@ -751,19 +754,20 @@ The only way to reconcile the two apparently contradictory findings
 above is that the yield of potential of cultivars decline over time
 such that when newly released cultivars are compared with the older
 cultivar (as shown by ~\citet{Omar2014}, ~\citet{mckenzie2014}, and
-Fig. \ref{fig:wo_erosion}), yields of the new cultivar are
-higher. Here we provide evidence that cultivar yield does decline - on
-average at a rate of \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1}
-(Fig. \ref{fig:RES_year}). When these declines are taken into account,
-there is only a
+Fig. \ref{fig:wo_erosion}), yields of the new cultivar are greater
+than those of the older cultivar. Here we provide evidence that
+cultivar yield does decline - on average at a rate of \Sexpr{yrs_coef}
+kg ha\tsups{-1} yr\tsups{-1} (Fig. \ref{fig:RES_year}). When these
+declines are taken into account, it becomes clear that substantial
+increases in yield over the study period are unlikely; there is only a
 \Sexpr{round(sum((raw_samples$release_yr_c*scl)>=25)/nrow(raw_samples)*100,1)}\%
-probability of a rate of yield increase equal to or greater than 25
-kg ha\tsups{-1} yr\tsups{-1} during the study
-period. ~\citet{Peng2010} also found that a cultivar's yield potential
-declines over time and reported a 15\% decline over a 30 yr period.
-In this study, over a 30-year period and a \Sexpr{yrs_coef*-1} kg
-ha\tsups{-1} yr\tsups{-1} rate, the yield decline would be
-approximately \Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg),2)*100}\%.
+probability of a rate of yield increase equal to or greater than 25 kg
+ha\tsups{-1} yr\tsups{-1} during the study period. ~\citet{Peng2010}
+also found that a cultivar's yield potential declines over time and
+reported a 15\% decline over a 30 yr period.  In this study, over a
+30-year period and a \Sexpr{yrs_coef*-1} kg ha\tsups{-1} yr\tsups{-1}
+rate, the yield decline would be approximately
+\Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg),2)*100}\%.
 
 This analysis suggests that the CCRRF breeding program has
 maintained but not substantially improved the yield potential in the
@@ -798,13 +802,14 @@ other year and the residues are burned, further lowering the potential
 for pest and disease pressure. Thirdly, changing climate may influence
 yield potential with either warmer~\citep{van2013} or
 cooler~\citep{espe2017} temperatures reducing
-yields. Yield potential can be defined as the yield of optimum
+yields, in effect decreasing the evironmental conditions required for
+higher yield potential. Yield potential can be defined as the yield of optimum
 cultivar in the absence of biotic and abiotic stresses in a given
 environment \citep{vanIttersum2013}. However, ~\citet{espe2017} found
-no substantial trends in growing season temperatures (either high,
-low, or average temps) in the Sacramento Valley during the study
-period, suggesting that older cultivars do not have lower yield
-potential due to changing climatic factors. While our analysis offers
+no evidence of sustained trends in growing season temperatures (either high,
+low, or average temperatures) in the Sacramento Valley during the study
+period, which does not support this theory that new cultivars have higher yield
+potential in the face of declining environmental conditions. While our analysis offers
 inconclusive evidence of differences between cultivars in rate of
 yield decline (i.e., the CIs for the interactions overlapped with
 each other and zero), visual examination suggests that cultivars may
@@ -822,12 +827,12 @@ period (Fig. \ref{fig:state_yield}) \citep{espe16a}. What are the
 potential causes?  It is not due to the adoption of the broadly
 adapted cultivars (M\=/206 and M\=/105) as there is no evidence of
 increased yield potential among these (Fig. \ref{fig:first_yrs} \&
-\ref{fig:compare_yrs}) compared to M\=/202 released at the start of this
-period. Although M\=/205 is not broadly adapted, it has
-increase yield potential (Fig. \ref{fig:first_yrs}) and its adoption (although limited) in the
-northern and warmer part of CA may contribute to some yield gains
-reported at the state level. Other factors include improvement in
-agronomic management, including more efficient nutrient
+\ref{fig:compare_yrs}) compared to M\=/202 released at the start of
+this period. Although M\=/205 is not broadly adapted, it has increase
+yield potential (Fig. \ref{fig:first_yrs}) and its adoption (although
+limited) in the northern and warmer part of CA may contribute to some
+yield gains reported at the state level. Other factors include
+improvement in agronomic management, including more efficient nutrient
 management~\citep{Lundy2012, Lundy2015, linquist2009}, and weed
 management~\citep{deforest2017, Pittelkow2012, caton2002}. However,
 recent rates of state-wide yield gains are far less than those of the
@@ -835,40 +840,41 @@ preceding era, consistent with a system near the yield
 ceiling~\citep{Grassini2013}.
 
 \begin{comment}
+  
 \citet{mckenzie2014} explored the yield of rice in this same system
 during a similar time period using similar data as these here, but
 concluded that genetic rice yield potential has increased over this
-time period at a rate of 25 kg ha\tsups{-1}
-yr\tsups{-1}. Yet the CI estimated from these data using the best
-model suggests that there is only a
+time period at a rate of 25 kg ha\tsups{-1} yr\tsups{-1}. Yet the CI
+estimated from these data using the best model suggests that there is
+only a
 \Sexpr{round(sum((raw_samples$release_yr_c*scl)>=25)/nrow(raw_samples)*100,1)}\%
 probability of the rate of yield increase is equal to or greater than
-25 kg ha\tsups{-1} yr\tsups{-1}. There are several
-explanations for this discrepancy in conclusions. First, \citet{mckenzie2014} did not
+25 kg ha\tsups{-1} yr\tsups{-1}. There are several explanations for
+this discrepancy in conclusions. First, \citet{mckenzie2014} did not
 account for yield decreases over time in their analysis. As shown
 here, when these decreases are not taken into about, the estimated
 increase in yield over time is estimated to be approximately the same
-as that found by \citet{mckenzie2014}. Second, these yield decreases over time
-were not taken into account possibly because \citet{mckenzie2014}
-concluded that there was no trend in the yield of the major cultivars
-over time. However this conclusion is based on a flawed interpretation
-of the results of their statistical test. Failing to reject the
-hypothesis that the trend in yield equals zero does not equate to the
-confirmation of no trend. Instead, failing to reject the hypothesis
-could suggest the analysis lacks the statistical power to detect the
-trend. Third, it
-is not surprising that no trend in yield over time was detected given
-that \citet{mckenzie2014} used data from several locations, yet
-analyzed those data using a simple t-test. By using this simple
-analysis, \citet{mckenzie2014} ignore systematic errors related to
-differences between observations from different locations, including
-different management systems, growing environments, and crop
-timing. By contrast, the investigation presented here used a single,
-well managed system and analyzed the data using a mixed effects model
-which fully accounts for non-independence between similar
-observations. In doing this, the analysis makes fewer assumptions and
-more fully captures the structural relationships in the data. Hence,
-the estimates presented here are likely more reliable.
+as that found by \citet{mckenzie2014}. Second, these yield decreases
+over time were not taken into account possibly because
+\citet{mckenzie2014} concluded that there was no trend in the yield of
+the major cultivars over time. However this conclusion is based on a
+flawed interpretation of the results of their statistical
+test. Failing to reject the hypothesis that the trend in yield equals
+zero does not equate to the confirmation of no trend. Instead, failing
+to reject the hypothesis could suggest the analysis lacks the
+statistical power to detect the trend. Third, it is not surprising
+that no trend in yield over time was detected given that
+\citet{mckenzie2014} used data from several locations, yet analyzed
+those data using a simple t-test. By using this simple analysis,
+\citet{mckenzie2014} ignore systematic errors related to differences
+between observations from different locations, including different
+management systems, growing environments, and crop timing. By
+contrast, the investigation presented here used a single, well managed
+system and analyzed the data using a mixed effects model which fully
+accounts for non-independence between similar observations. In doing
+this, the analysis makes fewer assumptions and more fully captures the
+structural relationships in the data. Hence, the estimates presented
+here are likely more reliable.
 \end{comment}
 
 It should be noted that while our investigation has been concerned
