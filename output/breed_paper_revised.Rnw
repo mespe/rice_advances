@@ -984,30 +984,6 @@ consideration. We suggest here that historical benchmarks be used in
 to evaluate promising rice cultivars in addition to side-by-side
 comparisons to maintain perspective of the absolute yield gains being
 made.
-
-Here we show that side-by-side cultivar comparisons do not necessarily
-indicate gains in yield potential as they do not account for yield
-declines over time. Quantifying changes in yield potential requires also
-examining historical benchmarks. Improvement in grain yield is
-essential to meeting the challenges of feeding a growing population in
-a changing world. To achieve these improvements, we discuss here that
-(1) continuous maintenance via plant improvement is required, without
-which yields would decrease over time, (2) the challenge of improving
-genetic yield potential is substantial, since absolute gains require
-improvement in yield in excess of the maintenance threshold, and (3)
-increasing yield through improved management (agronomy) cannot exceed
-the ceiling of genetic yield potential. Taken together, these
-conclusions underscore both the necessity and substantial challenges
-facing rice breeding. Maintaining high quality is imperative for
-a breeding program and it is not uncommon in a breeding program
-for higher yielding cultivars to be eliminated due to concerns about
-quality. However, the goal of increasing yield may require the yield
-performance of cultivars to be assessed earlier in the selection
-process to avoid discarding these higher yielding entries without full
-consideration. We suggest here that historical benchmarks be
-used in to evaluate promising rice cultivars in addition to
-side-by-side comparisons to maintain perspective of the absolute yield
-gains being made.
   
 \newpage
 
