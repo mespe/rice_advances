@@ -61,24 +61,33 @@ if(compare){
                           data = mod_data, iter = 2000, cores = 2L,
                           seed = 789)
     
-    RES_yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + yrs_in_trial,
+    RES_yrs_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) +  (1|id:year) + yrs_in_trial,
                               data = mod_data, iter = 2000, cores = 2L,
                               seed = 789)
 
-    RES_rel_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) + release_yr_c,
+    RES_rel_fit <- stan_glmer(yield_cs ~ (1|year) + (1|id) +  (1|id:year) + release_yr_c,
                               data = mod_data, iter = 2000, cores = 2L,
                               seed = 789)
 
     library(loo)
-    compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit))
+    compare(loo(RES_fullest), loo(RES_yrs_fit), loo(RES_rel_fit))
     save(RES_yrs_fit, RES_rel_fit, file = "../output/bivar_fit.Rda")
     # Add random slopes for ID
     RES_fuller = stan_glmer(yield_cs ~ (1|year) + (1 + yrs_in_trial|id) +
-                                release_yr_c + yrs_in_trial,
+                                 (1|id:year) + release_yr_c + yrs_in_trial,
                       data = mod_data, iter = 2000, cores = 2L,
                       seed = 789)
 
-    compare(loo(RES_full), loo(RES_yrs_fit), loo(RES_rel_fit), loo(RES_fuller))
+    compare(loo(RES_fullest), loo(RES_yrs_fit), loo(RES_rel_fit), loo(RES_fuller))
+
+# 10 Mar 2018 
+# fuller and fullest are mis-labels,
+# as fullest has fewer p than fuller but not going to change to avoid causing issues
+#                  looic   se_looic elpd_loo se_elpd_loo p_loo   se_p_loo
+# loo(RES_fullest)  4300.7    60.5  -2150.4     30.2       144.4     6.1 
+# loo(RES_fuller)   4303.2    60.5  -2151.6     30.2       146.5     6.2 
+# loo(RES_yrs_fit)  4303.2    60.6  -2151.6     30.3       145.4     6.1 
+# loo(RES_rel_fit)  4451.4    64.1  -2225.7     32.1        47.5     2.5 
 
     RES_fullest = stan_glmer(yield_cs ~ (1|year) + (1|id) +
                                  (1|id:year)+ release_yr_c + yrs_in_trial,
