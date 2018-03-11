@@ -330,7 +330,7 @@ efficient means of conducting leave-one-out cross validation
 the interval containing 90\% of the distribution of estimated credible
 parameter values given the data, was calculated as a measure of
 uncertainty in the parameter estimates using the quantile method. The
-90\% CI is more stable to sample to sample variance
+90\% CI is more stable to sample-to-sample variance
 and hence is preferable to the 95\% interval~\citep{rstanarm}. To
 verify the estimates, the analysis was also conducted using classical
 methods, specifically frequentist mixed-effects models fit by maximum
@@ -726,9 +726,9 @@ based on the average experimental yields prior to public release
 yields of newly released varieties cultivars have remained between
 10.8 and 11.5 Mg ha\tsups{-1} (Fig. \ref{fig:first_yrs}), with the
 exception of M\=/204 and M\=/205 (M\=/204 is no longer grown and M\=/205 has
-limited adoaptation range so is only grown in a limited area). The
+limited adaptation range so is only grown in a limited area). The
 variety cultivar M\=/206 was released in 2004 and is currently still the
-most widely grown rice varietycultivar in California. At the time of
+most widely grown rice cultivar in California. At the time of
 its release, M\=/206 was reported to yield \Sexpr{round(9350*1.12/1000,1)} Mg
 ha\tsups{-1} -- similar to what we found based on our analysis
 (Fig. \ref{fig:first_yrs}). Based on this premise, it is clear that
@@ -740,7 +740,7 @@ had higher yields than previously released cultivars. Based on their
 analyses,~\citet{Omar2014} reported yield gains from the rice breeding
 program of 37 to 60 kg ha\tsups{-1} yr\tsups{-1} and
 ~\citet{mckenzie2014} a yield increase of 25 kg ha\tsups{-1}
-yr\tsups{-1}. The simpliest model (Model 2) in this study is similar
+yr\tsups{-1}. The simplest model (Model 2) in this study is similar
 to the analyses of~\citet{Omar2014} and ~\citet{mckenzie2014}, and
 results in similar findings; yields were estimated to increase by
 \Sexpr{only_release_coef} kg ha\tsups{-1} yr\tsups{-1}
@@ -761,13 +761,13 @@ probability of a rate of yield increase equal to or greater than 25
 kg ha\tsups{-1} yr\tsups{-1} during the study
 period. ~\citet{Peng2010} also found that a cultivar's yield potential
 declines over time and reported a 15\% decline over a 30 yr period.
-In this study, over a 30 year period and a \Sexpr{yrs_coef*-1} kg
+In this study, over a 30-year period and a \Sexpr{yrs_coef*-1} kg
 ha\tsups{-1} yr\tsups{-1} rate, the yield decline would be
 approximately \Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg),2)*100}\%.
 
 This analysis suggests that the CCRRF breeding program has
 maintained but not substantially improved the yield potential in the
-face of changing biotic and abiotic pressures over the 33 year time
+face of changing biotic and abiotic pressures over the 33-year time
 frame of this study. This conclusion holds
 true even when evaluating the cultivars which have been breed for
 broad adaption and high yield potential (M\=/202, M\=/206, and
@@ -956,16 +956,15 @@ yields to yields of the older cultivars when they were first
 released. Unfortunately, our analysis did not allow us to identify the
 cause of yield declines in this case. While efforts should be made to
 identify the cause of yield decline over time, this study highlights
-both the need for plant breeding to simply maintain current yields, as
-well as the challenge of increasing genetic yield potential,
-especially in systems such as CA where yield is approaching the
-physiological limit. The goal of increasing yield may require the
-yield performance of cultivars to be assessed earlier in the selection
-process to avoid discarding higher yielding entries without full
-consideration. We suggest here that historical benchmarks be used in
-to evaluate promising rice cultivars in addition to side-by-side
-comparisons to maintain perspective of the absolute yield gains being
-made.
+both the need for plant breeding to simply maintain current yields,
+and the challenge of increasing genetic yield potential, especially in
+systems such as CA where yield is approaching the physiological
+limit. The goal of increasing yield may require the yield performance
+of cultivars to be assessed earlier in the selection process to avoid
+discarding higher yielding entries without full consideration. We
+suggest here that historical benchmarks be used in to evaluate
+promising rice cultivars in addition to side-by-side comparisons to
+maintain perspective of the absolute yield gains being made.
   
 \newpage
 
