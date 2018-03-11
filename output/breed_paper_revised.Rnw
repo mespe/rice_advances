@@ -817,33 +817,6 @@ cultivars have differential declines over time.
 
 \subsection{Causes for statewide increases over time}
  
-\begin{comment}
-It is striking that the estimated yield decline over time is similar
-to that reported by \citet{Peng2010} over a similar time span (15\%
-decline over roughly 30 years). This suggests the mechanisms
-responsible could potentially be endemic to all rice production
-systems. While efforts should be made to identify the cause of yield
-decline over time, this study highlights both the need for maintenance
-of plant breeding and the difficulty of increasing genetic yield
-~\citep{espe2017} potential, especially in systems such as CA where
-yield is approaching the physiological limit \citep{espe16a}.
-
-A goal of many breeding programs is to not only maintain the benchmark
-yield of the previous ``standard'' but to surpass it, especially if we
-are to meet the target of 50\% increased food production by 2050
-\citep{Foley2011a}. Given the estimated yield decline over time, to hit an
-ambitious target of 500 kg ha\tsups{-1} (approximately 5\%) increase
-in yield per release (with roughly 4 years between releases), a new
-cultivar needs to yield an additional \Sexpr{round(yrs_coef*-4,-1)} kg
-ha\tsups{-1} in side-by-side comparison in addition to the 500 kg
-ha\tsups{-1} target improvement. Often side-by-side yield improvements
-show an improvement in grain yield of 2 to 3\% per release, in which case
-no absolute improvements in yield have been made beyond maintaining
-yield.
-
-
-\end{comment}
-
 California state average yields have increased slowly during the study
 period (Fig. \ref{fig:state_yield}) \citep{espe16a}. What are the
 potential causes?  It is not due to the adoption of the broadly
