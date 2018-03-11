@@ -833,37 +833,6 @@ show an improvement in grain yield of 2 to 3\% per release, in which case
 no absolute improvements in yield have been made beyond maintaining
 yield.
 
-\begin{figure}[h]
-<<fig = TRUE, echo = FALSE, width=5, height=5>>=
-
-plot(1, type = "n",
-     # xaxt = "n",
-     xlab = "Years",
-     ylab = expression("Grain yield ( Mg ha"^-1~")"),
-     ylim = c(8.5,11.5),
-     xlim = c(0,40),
-     xaxs = "i")
-
-# arrows(12, 8.2, 27, 8.2, xpd = TRUE, lwd = 2)
-abline(a = 10, b = fixef(RES_fullest)[3], lty = 2, lwd = 2)
-text(25, 10.85, "(3) target above maintenance", cex = 0.8,
-     srt = 18)#((atan(fixef(RES_fullest)[3] + 0.06) * 180))/pi)
-abline(h = 10, lty = 3, lwd = 2)
-text(25, 10.1, "(1) current situation", cex = 0.8)
-abline(a = 10, b = fixef(RES_fullest)[3] + 0.06, lty = 4, lwd = 2)
-text(25, 9.35, "(2) no maintenance breeding", cex = 0.8,
-     srt = -18)
-
-@ 
-\caption{A conceptual diagram highlighting three scenarios: (1)
-maintenance breeding, where losses over time are offset by
-improvements via plant improvement, (2) no maintenance breeding, where
-grain yield slowly declines over time (as estimated from this study),
-and (3) absolute improvement in grain yield (based on ``typical''
-yield goals of 3\% increase per release), where gains in grain yield
-exceed the losses over time.}
-\label{fig:theory}
-\end{figure}
 
 \end{comment}
 
@@ -934,6 +903,38 @@ yield at the time of release should provide information on the
 absolute improvements being made in yield potential over time. New
 technologies may need to be adapted to further increase yield
 potential, including hybrid rice.
+
+\begin{figure}[h]
+<<fig = TRUE, echo = FALSE, width=5, height=5>>=
+
+plot(1, type = "n",
+     # xaxt = "n",
+     xlab = "Years",
+     ylab = expression("Grain yield ( Mg ha"^-1~")"),
+     ylim = c(8.5,11.5),
+     xlim = c(0,40),
+     xaxs = "i")
+
+# arrows(12, 8.2, 27, 8.2, xpd = TRUE, lwd = 2)
+abline(a = 10, b = fixef(RES_fullest)[3], lty = 2, lwd = 2)
+text(25, 10.85, "(3) target above maintenance", cex = 0.8,
+     srt = 18)#((atan(fixef(RES_fullest)[3] + 0.06) * 180))/pi)
+abline(h = 10, lty = 3, lwd = 2)
+text(25, 10.1, "(1) current situation", cex = 0.8)
+abline(a = 10, b = fixef(RES_fullest)[3] + 0.06, lty = 4, lwd = 2)
+text(25, 9.35, "(2) no maintenance breeding", cex = 0.8,
+     srt = -18)
+
+@ 
+\caption{A conceptual diagram highlighting three scenarios: (1)
+maintenance breeding, where losses over time are offset by
+improvements via plant improvement, (2) no maintenance breeding, where
+grain yield slowly declines over time (as estimated from this study),
+and (3) absolute improvement in grain yield (based on ``typical''
+yield goals of 3\% increase per release), where gains in grain yield
+exceed the losses over time.}
+\label{fig:theory}
+\end{figure}
 
 \subsection{Other advances from breeding}
 
