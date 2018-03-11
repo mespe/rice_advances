@@ -712,46 +712,50 @@ the Sacramento Valley.
 
 The high yielding variety M-202 was released in 1985 and became the
 most widely planted cultivar for two decades~\citep{mkenzie2014}. At
-the time of release, M-202 yields were reported at 11.0 Mg ha\tsups{-1}~\citep{m202} which is almost identical to what we . This value of
-11.0 Mg ha\tsups{-1} is what we also found in this analysis based on the
-average experimental yields prior to public release (Fig. \ref{fig:first_yrs}). Since
-the release of M-202, the rice yields of newly released varieties
-cultivars have remained between 10.8 and 11.5 Mg ha\tsups{-1} (Fig. \ref{first_yrs}),
-with the exception of M-204 and M-205 (M-204 is no longer grown and
-M-205 has limited adoaptation range so is only grown in a limited
-area). The variety cultivar M-206 was released in 2004 and is
-currently still the most widely grown rice varietycultivar in
-California. At the time of its release, M-206 was reported to yield
-\Sexpr{round(9350*1.12,1)}
-Mg ha\tsups{-1} -- also similar to what we found based on our analysis (Fig. \ref{fig:first_yrs}). Based on this premise, it is clear that improvements
-in yield potential have not been made over the 33-yr period of this
-study. In contrast, both~\citet{Omar2014} and ~\citet{mckenzie2014}, report yield potential gains in California rice systems
-based on analyses that showed
-that newly released cultivars had higher yields than previously
-released cultivars. Based on their
-analyses,~\citet{Omar2014} reported yield gains from the rice
-breeding program of 37 to 60 kg ha\tsups{-1} yr\tsups{-1} and ~\citet{mckenzie2014} a
-yield increase of 25 kg ha\tsups{-1} yr\tsups{-1}. Using a similar
-approach to~\citet{Omar2014} and ~\citet{mckenzie2014}, when the compared average yields
-for the period 2011--2016 of varieties cultivars released since 1982 (and still in
+the time of release, M-202 yields were reported at 11.0 Mg
+ha\tsups{-1}~\citep{m202} which is almost identical to what we . This
+value of 11.0 Mg ha\tsups{-1} is what we also found in this analysis
+based on the average experimental yields prior to public release
+(Fig. \ref{fig:first_yrs}). Since the release of M-202, the rice
+yields of newly released varieties cultivars have remained between
+10.8 and 11.5 Mg ha\tsups{-1} (Fig. \ref{first_yrs}), with the
+exception of M-204 and M-205 (M-204 is no longer grown and M-205 has
+limited adoaptation range so is only grown in a limited area). The
+variety cultivar M-206 was released in 2004 and is currently still the
+most widely grown rice varietycultivar in California. At the time of
+its release, M-206 was reported to yield \Sexpr{round(9350*1.12,1)} Mg
+ha\tsups{-1} -- also similar to what we found based on our analysis
+(Fig. \ref{fig:first_yrs}). Based on this premise, it is clear that
+improvements in yield potential have not been made over the 33-yr
+period of this study. In contrast, both~\citet{Omar2014} and
+~\citet{mckenzie2014}, report yield potential gains in California rice
+systems based on analyses that showed that newly released cultivars
+had higher yields than previously released cultivars. Based on their
+analyses,~\citet{Omar2014} reported yield gains from the rice breeding
+program of 37 to 60 kg ha\tsups{-1} yr\tsups{-1} and
+~\citet{mckenzie2014} a yield increase of 25 kg ha\tsups{-1}
+yr\tsups{-1}. Using a similar approach to~\citet{Omar2014} and
+~\citet{mckenzie2014}, when the compared average yields for the period
+2011--2016 of varieties cultivars released since 1982 (and still in
 the variety trials from 2011-- 2016) was compared without accounting
-for yield declines over time, yields were
-estimated to increase by \Sexpr{only_release_coef} kg ha\tsups{-1}
-yr\tsups{-1} (Fig. \ref{fig:wo_erosion}), almost identical to what
+for yield declines over time, yields were estimated to increase by
+\Sexpr{only_release_coef} kg ha\tsups{-1} yr\tsups{-1}
+(Fig. \ref{fig:wo_erosion}), almost identical to what
 ~\citet{mckenzie2014}.
 
-The only way to reconcile the two apparently
-contradictory findings, is that the yield of potential of varieties
-cultivars decline over time such that when newly released varieties
-cultivars are compared with the older variety cultivar (as shown by
-~\citet{Omar2014}, ~\citet{mckenzie2014}, and Fig. \ref{fig:wo_erosion}), yields of
-the new cultivar variety are higher. Here we provide evidence that
-cultivar varietal yield does decline - on average at a rate of \Sexpr{yrs_coef} kg
-ha\tsups{-1} yr\tsups{-1} (Fig. \ref{w_erosion}). ~\citet{Peng2010} also found that a cultivar’s
+The only way to reconcile the two apparently contradictory findings,
+is that the yield of potential of varieties cultivars decline over
+time such that when newly released varieties cultivars are compared
+with the older variety cultivar (as shown by ~\citet{Omar2014},
+~\citet{mckenzie2014}, and Fig. \ref{fig:wo_erosion}), yields of the
+new cultivar variety are higher. Here we provide evidence that
+cultivar varietal yield does decline - on average at a rate of
+\Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1}
+(Fig. \ref{w_erosion}). ~\citet{Peng2010} also found that a cultivar’s
 varieties yield potential declines over time and reported a 15\%
-decline over a 30 yr period.  In this study, over a 30 year period
-and a \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1} yield decline rate, the yield
-decline would be approximately
+decline over a 30 yr period.  In this study, over a 30 year period and
+a \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1} yield decline rate,
+the yield decline would be approximately
 \Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg), 3)*100}\%.
 
 This analysis suggests that the CCRRF breeding program has
@@ -760,13 +764,9 @@ face of changing biotic and abiotic pressures over the 33 year time
 frame of this study. This conclusion holds
 true even when evaluating the cultivars which have been breed for
 broad adaption and high yield potential (M-202, M-206 and
-M-105). Yields of these cultivars at time of release have all yielded
-between
-\Sexpr{tmp=mod_data[mod_data[,"yrs_in_trial"]<=0&mod_data[,"id"]%in%c("M202","M206","M105"),];round(min(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
-    and
-    \Sexpr{round(max(by(tmp,tmp[,"id"],function(x)mean(x[,"yield_kg"]))/1000),2)}
-    Mg ha\tsups{-1} with no indication of yields increasing
-    (Fig. \ref{fig:first_yrs}).
+M-105).
+
+\subsection{Causes of declining yields}
 
 Yields of a particular cultivar may decline overtime for a number of
 reasons. First, ~\citet{Nie2009} reported yield declines in rice due
@@ -775,37 +775,50 @@ be overcome with improved N management. This is likely not the case
 here as the fields used in this study grow rice only one season a year
 and tend to be non-flooded for the remainder of the year. Furthermore,
 at this location and unlike most CA rice fields, the fields are left
-fallow every other year. Second, changing climate may influence yields
-with either warmer~\citep{van2013} or cooler~\citep{espe2017}
-temperatures reducing yields. Again, this is unlikely to be the case
-in this situation as ~\citet{espe2017} found no substantial changes in
-growing season temperatures (either high, low, or average temps) the
-Sacramento Valley during the study period. Thirdly, small changes in
-biotic and abiotic forces have previously been speculated as the cause
-for yield decline over time of the cultivar IR8 at IRRI~\citep{Peng1998,
-Peng2000, Peng2010}. Since the cultivar's genetics remain stable from
-the time of selection but the conditions the cultivar experiences over
-time are continuously changing, accumulated changes too small to
-reliably measure could plausibly lead to yield
-declines over time~\citep{Peng1998, Peng2000, Peng2010, Mackay2011}. However, it is not clear
-if this mechanism is responsible for the yield decline over time of
-\Sexpr{yrs_coef} Mg ha\tsups{-1} year\tsups{-1} found in this
+fallow every other year. Secondly, small changes in biotic and abiotic
+forces have previously been speculated as the cause for yield decline
+over time of the cultivar IR8 at IRRI~\citep{Peng1998, Peng2000,
+  Peng2010}. Since the cultivar's genetics remain stable from the time
+of selection but the conditions the cultivar experiences over time are
+continuously changing, accumulated changes too small to reliably
+measure could plausibly lead to yield declines over
+time~\citep{Peng1998, Peng2000, Peng2010, Mackay2011}. However, it is
+not clear if this mechanism is responsible for the yield decline over
+time of \Sexpr{yrs_coef} Mg ha\tsups{-1} year\tsups{-1} found in this
 analysis. Biotic stressors such as pests and diseases are low in this
 Mediterranean climate. Furthermore, these fields are fallowed every
 other year and the residues are burned, further lowering the potential
-for pest and disease pressure. More data is needed to further explore
-the exact cause of the yield declines observed here, as well to
-determine if different cultivars have differential declines over time.
+for pest and disease pressure. Thirdly, changing climate may influence
+yield potential with either warmer~\citep{van2013} or
+cooler~\citep{espe2017} temperatures reducing
+yields. Yield potential can be defined as the yield of optimum
+cultivar in the absence of biotic and abiotic stresses in a given
+environment \citep{vanIttersum2013}. However, ~\citet{espe2017} found
+no substantial trends in growing season temperatures (either high,
+low, or average temps) in the Sacramento Valley during the study
+period, suggesting that older cultivars do not have lower yield
+potential due to changing climatic factors. While our analysis
+indicates that there is no interaction between cultivar and year (CI
+includes zero), visual examination suggests that cultivars may be
+different in terms of rates of yield decline
+(Fig. \ref{fig:all_cult}); however, we do not have sufficient data nor
+the proper controls in the existing data set to fully test this
+hypothesis. More data is needed to further explore the exact cause of
+the yield declines observed here, as well to determine if different
+cultivars have differential declines over time.
 
-It is striking that the estimated yield decline over time is similar to that
-reported by \citet{Peng2010} over a similar time span (15\% decline
-over roughly 30 years). This suggests the mechanisms responsible could
-potentially be endemic to all rice production systems. While efforts
-should be made to identify the cause of yield decline over time, this study highlights
-both the need for maintenance of plant breeding and the difficulty of
-increasing genetic yield ~\citep{espe2017} potential, especially in
-systems such as CA where yield is approaching the physiological limit
-\citep{espe16a}.
+\subsection{Causes for statewide increases over time}
+
+\begin{comment}
+It is striking that the estimated yield decline over time is similar
+to that reported by \citet{Peng2010} over a similar time span (15\%
+decline over roughly 30 years). This suggests the mechanisms
+responsible could potentially be endemic to all rice production
+systems. While efforts should be made to identify the cause of yield
+decline over time, this study highlights both the need for maintenance
+of plant breeding and the difficulty of increasing genetic yield
+~\citep{espe2017} potential, especially in systems such as CA where
+yield is approaching the physiological limit \citep{espe16a}.
 
 A goal of many breeding programs is to not only maintain the benchmark
 yield of the previous ``standard'' but to surpass it, especially if we
@@ -852,36 +865,26 @@ exceed the losses over time.}
 \label{fig:theory}
 \end{figure}
 
-Our investigation here is narrowly focused on the rough-rice/field
-grain yield. Other advancements due to plant improvement, including
-increased quality~\citep{mckenzie1993} and milling
-yield~\citep{mckenzie1994}, have been made over the study period and
-are important. Additionally, crop duration has been reduced in CA rice
-cultivars. For example, while the predominate cultivars M-202 and
-M-206 had similar yield potentials at the time of release (Fig. 5),
-M-206 matures about 6 days earlier than M-202 (Table
-\ref{tbl:ids}). Shorter duration is very important in CA due to an
-already short growing season and water limitations (shorter duration
-cultivars would presumably require less irrigation water). For a
-detailed discussion of cultivars' agronomic and grain quality
-characteristics, refer to \url{http://rice.ucanr.edu/Reports-Publications/Rice_Production_Workshop_Manual/}.
+\end{comment}
 
 California state average yields have increased slowly during the study
 period (Fig. \ref{fig:state_yield}) \citep{espe16a}. What are the
 potential causes?  It is not due to the adoption of the broadly
-adapted cultivars (M-202, M-206, and M-105) as there is no evidence of
+adapted cultivars (M-206 and M-105) as there is no evidence of
 increased yield potential among these (Fig. \ref{fig:first_yrs} \&
-\ref{fig:compare_yrs}). Although M-205 is not broadly adapted, it has
-increase yield potential and its adoption (although limited) in the
+\ref{fig:compare_yrs}) compared to M-202 released at the start of this
+period. Although M-205 is not broadly adapted, it has
+increase yield potential (Fig. \ref{fig:first_yrs} and its adoption (although limited) in the
 northern and warmer part of CA may contribute to some yield gains
 reported at the state level. Other factors include improvement in
 agronomic management, including more efficient nutrient
 management~\citep{Lundy2012, Lundy2015, linquist2009}, and weed
-management~\citep{Saito2008, Pittelkow2012, linquist2008}. However,
+management~\citep{deforest2017, Pittelkow2012, caton2002}. However,
 recent rates of state-wide yield gains are far less than those of the
 preceding era, consistent with a system near the yield
 ceiling~\citep{Grassini2013}.
 
+\begin{comment}
 \citet{mckenzie2014} explored the yield of rice in this same system
 during a similar time period using similar data as these here, but
 concluded that genetic rice yield potential has increased over this
@@ -916,16 +919,7 @@ which fully accounts for non-independence between similar
 observations. In doing this, the analysis makes fewer assumptions and
 more fully captures the structural relationships in the data. Hence,
 the estimates presented here are likely more reliable.
-
-It should be noted that while our investigation has been concerned
-about increasing yield potential, the estimates here might not capture
-yield stability (how consistent grain yields are from year to year). The
-occurrence of stress events (e.g., extreme temperatures) are
-unpredictable across years and are not well captured by the analysis
-here. Yield stability is notoriously difficult to
-quantify~\citep[e.g.,][]{lobell2011}, hence further investigation is
-needed to explore how yield stability has changed over the study
-period.
+\end{comment}
 
 Planning to meet future demand necessitates increases in grain
 yield~\citep{Godfray2010, Foley2011a, Mueller2012}. Meeting the
@@ -941,7 +935,55 @@ absolute improvements being made in yield potential over time. New
 technologies may need to be adapted to further increase yield
 potential, including hybrid rice.
 
+\subsection{Other advances from breeding}
+
+Our investigation here is narrowly focused on the rough-rice/field
+grain yield. Other advancements due to plant improvement, including
+increased quality~\citep{mckenzie1993} and milling
+yield~\citep{mckenzie1994}, have been made over the study period and
+are important. Additionally, crop duration has been reduced in CA rice
+cultivars. For example, while the predominate cultivars M-202 and
+M-206 had similar yield potentials at the time of release (Fig. 5),
+M-206 matures about 6 days earlier than M-202 (Table
+\ref{tbl:ids}). Shorter duration is very important in CA due to an
+already short growing season and water limitations (shorter duration
+cultivars would presumably require less irrigation water). For a
+detailed discussion of cultivars' agronomic and grain quality
+characteristics, refer to \url{http://rice.ucanr.edu/Reports-Publications/Rice_Production_Workshop_Manual/}.
+
+It should be noted that while our investigation has been concerned
+about increasing yield potential, the estimates here might not capture
+yield stability (how consistent grain yields are from year to year). The
+occurrence of stress events (e.g., extreme temperatures) are
+unpredictable across years and are not well captured by the analysis
+here. Yield stability is notoriously difficult to
+quantify~\citep[e.g.,][]{lobell2011}, hence further investigation is
+needed to explore how yield stability has changed over the study
+period.
+
 \section{Conclusions}
+
+Increasing grain yield is essential to meeting the challenges of
+feeding a growing population in a changing world. Here we show that
+side-by-side cultivar comparisons do not necessarily indicate gains in
+yield potential as they do not account for yield declines over time of
+the older cultivars being tested. Here we show, as have others, that
+the yield of a cultivar declines over time. Therefore, quantifying
+changes in yield potential requires comparing yields of new cultivar
+yields to yields of the older cultivars when they were first
+released. Unfortunately, our analysis did not allow us to identify the
+cause of yield declines in this case. While efforts should be made to
+identify the cause of yield decline over time, this study highlights
+both the need for plant breeding to simply maintain current yields, as
+well as the challenge of increasing genetic yield potential,
+especially in systems such as CA where yield is approaching the
+physiological limit. The goal of increasing yield may require the
+yield performance of cultivars to be assessed earlier in the selection
+process to avoid discarding higher yielding entries without full
+consideration. We suggest here that historical benchmarks be used in
+to evaluate promising rice cultivars in addition to side-by-side
+comparisons to maintain perspective of the absolute yield gains being
+made.
 
 Here we show that side-by-side cultivar comparisons do not necessarily
 indicate gains in yield potential as they do not account for yield
