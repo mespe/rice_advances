@@ -754,33 +754,10 @@ and a \Sexpr{yrs_coef} kg ha\tsups{-1} yr\tsups{-1} yield decline rate, the yiel
 decline would be approximately
 \Sexpr{round((yrs_coef*-30)/mean(mod_data$yield_kg), 3)*100}\%.
 
-Not accounting for yield decline over time, the estimated yield
-improvement of \Sexpr{only_release_coef} kg ha\tsups{-1}
-year\tsups{-1} (Fig. \ref{fig:wo_erosion}) is lower than the 37 to 60
-kg ha\tsups{-1} year\tsups{-1} estimated by~\citet{Omar2014} in
-side-by-side comparisons. To evaluate if 37 to 60 kg ha\tsups{-1}
-year\tsups{-1} is reasonable, the potential yields at
-the beginning and end of the study period can be compared. ~\citet{vanIttersum2013} defined potential
-yield as the yield of optimum management and well-adapted cultivars given
-current environmental limitations. Under this definition, potential yield
-could be reasonably estimated from the yields of 'M-202' and 'M-206'
-in experimental plots at the RES in the years 1984 and 2015,
-respectively. Given these criteria, it is clear that potential yield
-has changed little over the study period
-(Fig. \ref{fig:first_yrs}). When accounting for yield decline over
-time across all cultivars, there is no conclusive evidence of
-increased genetic yield potential in medium grain rice cultivars
-released by CCRRF's breeding improvement program over the period
-\Sexpr{min(mod_data[,'year'])} to \Sexpr{max(mod_data[,'year'])}.
-Grain yield over this period has stayed relatively constant at an
-average \Sexpr{round(mean(mod_data[,"yield_kg"])/1000, 1)} Mg
-ha\tsups{-1}. Since the estimated yield improvement spans from
-\Sexpr{rel_CI[1]} to \Sexpr{rel_CI[2]} kg ha\tsups{-1} year\tsups{-1}
-(Fig. \ref{fig:RES_year}; Table \ref{tbl:coef}), both increases and
-decreases in the genetic yield potential over the study period are
-plausible. This analysis suggests that the CCRRF breeding program has
+This analysis suggests that the CCRRF breeding program has
 maintained but not substantially improved the yield potential in the
-face of changing biotic and abiotic pressures. This conclusion holds
+face of changing biotic and abiotic pressures over the 33 year time
+frame of this study. This conclusion holds
 true even when evaluating the cultivars which have been breed for
 broad adaption and high yield potential (M-202, M-206 and
 M-105). Yields of these cultivars at time of release have all yielded
