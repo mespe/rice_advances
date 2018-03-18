@@ -3,7 +3,7 @@ SWEAVE = Rscript -e "Sweave('$(notdir $<)')"
 PDF_COMPILE = pdflatex $(notdir $<) && bibtex $(basename $(notdir $<)) && pdflatex $(notdir $<) && pdflatex $(notdir $<)
 
 
-all_responses.pdf: output/review_responses.pdf output/diffs.pdf output/breed_paper_revised.pdf
+Espe_rice_yield_improvement_responses.pdf: output/review_responses.pdf output/diffs.pdf output/breed_paper_revised.pdf
 	pdfunite $^ $@
 
 output/review_responses.pdf: output/review_responses.tex output/response_letter.pdf

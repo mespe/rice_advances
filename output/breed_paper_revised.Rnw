@@ -483,9 +483,9 @@ mtext("Adjusting for yield decline over time", adj = 0)
 \label{fig:RES_year}
 \end{figure}
 
-Based on Model 3, there was no evidence of consistent differences between cultivars in
+Based on Model 3, there was no evidence of differences between cultivars in
 the rate of yield decline over time (i.e., all cultivar specific rates
-of decline overlapped with eachother and zero). Differences between cultivars in the decline
+of decline overlapped with eachother). Differences between cultivars in the decline
 of yield over time, seen in the raw data (Fig. \ref{fig:all_cult}),
 are therefore likely small and uncertain. Given this, the model excluding varying
 rates of decline by cultivar (Model 2) is presented here. The yields
@@ -939,7 +939,8 @@ Our investigation here is narrowly focused on the rough-rice/field
 grain yield. Other advancements due to plant improvement, including
 increased quality~\citep{mckenzie1993} and milling
 yield~\citep{mckenzie1994}, have been made over the study period and
-are important. Additionally, crop duration has been reduced in CA rice
+are important. Furthermore, as previously mentioned, important disease
+resistance traits have been developed. Additionally, crop duration has been reduced in CA rice
 cultivars. For example, while the predominate cultivars M\=/202 and
 M\=/206 had similar yield potentials at the time of release (Fig. 5),
 M\=/206 matures about 6 days earlier than M\=/202 (Table
